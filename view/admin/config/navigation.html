@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.navigation} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+		<style type="text/css">
+			.layui-table .layui-input{padding-left: 0;text-align: center;}
+		</style>
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<a href="{$Request.root}/config/" ><span>{$langHtml.common.config}</span></a>
+			<a href="{$Request.root}/config/navigation"><span class="this">{$langHtml.common.navigation}</span></a>
+			<a href="{$Request.root}/config/limit"><span >{$langHtml.common.limit}</span></a>
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div id="layui-setup">
+				<div>
+					<table id="dataTable" lay-filter="dataTable"></table>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/html" id="toolbarDemo">
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="add" >
+		<i class="layui-icon layui-icon-add-1"></i>{$langHtml.common.add}
+	</button>
+	<button class="layui-btn layui-btn-success layui-btn-sm layui-bg-color" lay-event="expandAll">
+		<i class="layui-icon layui-icon-spread-left"></i>
+		{$langHtml.common.expand}
+	</button>
+	<button class="layui-btn layui-btn-success layui-btn-sm layui-bg-color" lay-event="foldAll">
+		<i class="layui-icon layui-icon-shrink-right"></i>
+		{$langHtml.common.fold}
+	</button>
+	<button class="layui-btn layui-btn-sm layui-bg-red" lay-event="recycle">
+		<i class="layui-icon layui-icon-delete"></i>
+		{$langHtml.common.recycle}
+	</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="cond" >{$langHtml.common.showAllSetting}</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="conh" >{$langHtml.common.hideAllSetting}</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="seod" >{$langHtml.common.showAllSEO}</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="seoh" >{$langHtml.common.hideAllSEO}</button>
+</script>
+<script type="text/html" id="stateDemo">
+	<input type="checkbox" name="pass" value="{{d.id}}" lay-skin="switch" lay-text="{$langHtml.common.use}|{$langHtml.common.stop}" lay-filter="pass" {{# if(d.pass==1){ }} checked {{# } }}>
+</script>
+<script type="text/html" id="operateDemo">
+	<button class="layui-btn layui-btn-xs layui-bg-color" type="button" lay-event="copy"><i class="layui-icon layui-icon-file"></i>{$langHtml.common.copy}</button>
+	<button class="layui-btn layui-btn-xs layui-bg-color" type="button" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>{$langHtml.common.edit}</button>
+	<button class="layui-btn layui-btn-xs layui-bg-red" type="button" lay-event="del"><i class="layui-icon layui-icon-delete"></i>{$langHtml.common.delete}</button>
+</script>
+<script type="text/javascript">
+	layui.use(['form','layer','jquery'],function(){
+		form = layui.form;
+		$ = layui.jquery;
+
+		form.on('switch(pass)', function(data){
+			var ac = $(data.elem).attr('name');
+			var id = data.value;
+			$.post("{$Request.root}/{$route}/navigation",{'id':id,'ac':ac},function(res){
+				if(res.code==200){
+					layer.msg(res.msg,{icon:1});
+					setTimeout(function(){window.location.reload();},1000);
+				}else{
+					layer.alert(res.msg,{icon:2});
+				}
+			},'json');
+		});
+	});
+	function save(ac){
+		$.post('{$Request.root}/{$route}/navigation?ac='+ac,$('form').serialize(),function(res){
+			if(res.code==200){
+				layer.msg(res.msg,{'icon':1});
+				setTimeout(function(){window.location.reload();},100);
+			}else{
+				layer.msg(res.msg,{'icon':2});
+			}
+		},'json');
+	}
+	function make(ac,id){
+		$.post('{$Request.root}/{$route}/navigation',{'ac':ac},function(res){
+			if(res.code==200){
+				layer.msg(res.msg,{'icon':1});
+				setTimeout(function(){window.location.reload();},100);
+			}else{
+				layer.msg(res.msg,{'icon':2});
+			}
+		},'json');
+	}
+
+	// 复制
+
+	function navCopy(id,act){
+		layer.open({
+			type: 2,
+			title: '{$langHtml.common.copy}',
+			shade: 0.3,
+			area: ['80%','80%'],
+			fixed: false, //不固定
+			maxmin: true,
+			content: "{$Request.root}/{$route}/navCopy?id="+id+'&act='+act
+		});
+	}
+
+	// 添加
+	function navAdd(){
+		layer.open({
+			type: 2,
+			title: '{$langHtml.common.add}',
+			shade: 0.3,
+			area: ['80%','80%'],
+			fixed: false, //不固定
+			maxmin: true,
+			content: "{$Request.root}/{$route}/navAdd"
+		});
+	}
+	// 编辑
+	function navEdit(id){
+		layer.open({
+			type: 2,
+			title: '{$langHtml.common.edit}',
+			shade: 0.3,
+			area: ['80%','80%'],
+			fixed: false, //不固定
+			maxmin: true,
+			content: "{$Request.root}/{$route}/navEdit?id="+id
+		});
+	}
+
+	// 删除
+	function navDel(id){
+		layer.confirm('{$langHtml.common.deleteTip}', {
+			icon:3,
+			title: '{$langHtml.common.delete}',
+			btn: ['{$langHtml.common.confirm}','{$langHtml.common.cancel}']
+		}, function(){
+		  $.post("{$Request.root}/{$route}/navDel",{'id':id},function(res){
+				if(res.code==200){
+					layer.msg(res.msg,{icon:1});
+					setTimeout(function(){window.location.reload();},1000);
+				}else{
+					layer.alert(res.msg,{icon:2});
+				}
+		  },'json');
+		});
+	}
+</script>
+<script type="text/javascript">
+	layui.use(function(){
+		var treeTable = layui.treeTable;
+		var MODULE_PATH = "{$Request.root}/{$route}/";
+
+		var inst = treeTable.render({
+			elem: '#dataTable',
+			url: MODULE_PATH + 'navigation?ac=list',
+			tree: {
+				customName: {name : 'title'},
+				view: {icon: ' ',showIcon: false, expandAllDefault:true},
+			},
+			toolbar: '#toolbarDemo',
+			method:'post',
+			cols: [
+				[
+				{field: 'px', width: 80, edit: 'text',title: '{$langHtml.common.sort}',align: 'center',fixed: 'left'},
+				{field: 'id', width: 50,title: '{$langHtml.common.id}',align: 'center',fixed: 'left'},
+				{field: 'title', minWidth: 200, title: '{$langHtml.common.navName}', templet: function(d){
+					return '<i class="layui-icon '+ d.icon +'"></i> ' + d.title;
+				}},
+				{title: '{$langHtml.common.state}',width: 100,templet: '#stateDemo',align: 'center'},
+				{title: '{$langHtml.common.operate}',width: 220,templet: '#operateDemo',align: 'center', fixed: 'right'},
+				]
+			],
+			height: 910
+		})
+
+		treeTable.on('toolbar(dataTable)', function(obj){
+			var event = obj.event
+			if(event === 'expandAll'){
+				treeTable.expandAll("dataTable",true);
+				return;
+			}
+			if(event === 'foldAll'){
+				treeTable.expandAll("dataTable",false);
+				return;
+			}
+
+			if(event === 'recycle'){
+				recycle(MODULE_PATH + 'navRecycle')
+				return;
+			}
+
+			if(event === 'add'){
+				navAdd();
+				return;
+			}
+			var eventArr = ['cond','conh','seod','seoh'];
+			if(eventArr.includes(event)){
+				make(event);
+				return;
+			}
+		})
+		treeTable.on('edit(dataTable)', function(obj){
+			var px = obj.value //得到修改后的值
+			,data = obj.data //得到所在行所有键值
+			,field = obj.field; //得到字段
+			$.post('{$Request.root}/{$route}/navigation',{'ac':'px','id':data.id,'px':px},function(res){
+				if(res.code==200){
+					layer.msg(res.msg,{icon:1});
+					setTimeout(function(){window.location.reload();},1000);
+				}else{
+					layer.alert(res.msg,{icon:2});
+				}
+			},'json')
+		})
+
+		treeTable.on('tool(dataTable)', function(obj){
+			var data = obj.data; // 获得当前行数据
+			if(obj.event === 'copy'){
+				navCopy(data.id,1)
+			}
+			if(obj.event === 'edit'){
+				navEdit(data.id)
+			}
+			if(obj.event === 'del'){
+				navDel(data.id)
+			}
+		})
+	})
+</script>
+{include file="public/footer" /}

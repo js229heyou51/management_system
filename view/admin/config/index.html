@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.config} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<a href="{$Request.root}/config/" ><span class="this">{$langHtml.common.config}</span></a>
+			<a href="{$Request.root}/config/navigation"><span >{$langHtml.common.navigation}</span></a>
+			<a href="{$Request.root}/config/limit"><span >{$langHtml.common.limit}</span></a>
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div id="layui-setup">
+				<form class="layui-form">
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.seo}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="sy_seo" value="1" {if(!empty($find.config.sy_seo))}{:$find.config.sy_seo == 1 ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="sy_seo" value="0" {if(!empty($find.config.sy_seo))}{:$find.config.sy_seo == 0 ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.log}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="log" value="1" {if(!empty($find.config.log))}{:$find.config.log == 1 ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="log" value="0" {if(!empty($find.config.log))}{:$find.config.log == 0 ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.key}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="key" value="1" {if(!empty($find.config.key))}{:$find.config.key == 1 ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="key" value="0" {if(!empty($find.config.key))}{:$find.config.key == 0 ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.langSetting}</label>
+						{if(!empty($find.config.mlang))}
+						{volist name="find.config.mlang" id="v"}
+						<div class="layui-input-block layui-input-block-large mb5">
+							<label class="layui-form-label layui-form-label-auto">{$langHtml.common.langName}</label>
+							<div class="layui-input-inline layui-input-inline-sm">
+								<input type="text" class="layui-input" name="name[]" value="{$v.name}">
+							</div>
+							<label class="layui-form-label layui-form-label-auto">{$langHtml.common.langLang}</label>
+							<div class="layui-input-inline layui-input-inline-sm">
+								<input type="text" class="layui-input" name="lang[]" value="{$v.lang}">
+							</div>
+							<div class="layui-input-inline">
+								{if ($key == 0)}
+								<button type="button" class="layui-btn layui-bg-color" onclick="addLang(this)"><i class="layui-icon layui-icon-add-circle"></i></button>
+								{/if}
+								{if ($key > 0)}
+								<button type="button" class="layui-btn layui-bg-color" onclick="removeLang(this)"><i class="layui-icon layui-icon-reduce-circle"></i></button>
+								{/if}
+							</div>
+						</div>
+						{/volist}
+						{else}
+						<div class="layui-input-block layui-input-block-large mb5">
+							<label class="layui-form-label layui-form-label-auto">{$langHtml.common.langName}</label>
+							<div class="layui-input-inline layui-input-inline-sm">
+								<input type="text" class="layui-input" name="name[]" value="">
+							</div>
+							<label class="layui-form-label layui-form-label-auto">{$langHtml.common.langLang}</label>
+							<div class="layui-input-inline layui-input-inline-sm">
+								<input type="text" class="layui-input" name="lang[]" value="">
+							</div>
+							<div class="layui-input-inline">
+								<button type="button" class="layui-btn layui-bg-color" onclick="addLang(this)"><i class="layui-icon layui-icon-add-circle"></i></button>
+							</div>
+						</div>
+						{/if}
+					</div>
+				</form>
+				<div class="layui-form-item">
+					<div class="layui-input-block layui-input-block-large">
+						<button type="button" class="layui-btn layui-bg-color" onclick="save('{$Request.root}/{$route}/index')">{$langHtml.common.save}</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-form">
+			<div id="langBox" style="display: none;">
+				<div class="layui-input-block layui-input-block-large mb5">
+					<label class="layui-form-label layui-form-label-auto">{$langHtml.common.langName}</label>
+					<div class="layui-input-inline layui-input-inline-sm">
+						<input type="text" class="layui-input" name="name[]" value="">
+					</div>
+					<label class="layui-form-label layui-form-label-auto">{$langHtml.common.langLang}</label>
+					<div class="layui-input-inline layui-input-inline-sm">
+						<input type="text" class="layui-input" name="lang[]" value="">
+					</div>
+					<div class="layui-input-inline">
+						<button type="button" class="layui-btn layui-bg-color" onclick="removeLang(this)"><i class="layui-icon layui-icon-reduce-circle"></i></button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			// 菜单点击
+			function menuFire(obj){
+				$('iframe').attr('src',obj);
+				var width = screen();
+				if(width < 2){
+					shrink();
+				}
+			}
+			function addLang(self){
+				var html = $('#langBox').html();
+				var that = $(self);
+				that.parent().parent().parent().append(html);
+			}
+			function removeLang(self){
+				$(self).parent().parent().remove();
+			}
+		</script>
+	</body>
+</html>
+{include file="public/footer" /}

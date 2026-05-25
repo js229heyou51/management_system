@@ -1,0 +1,119 @@
+			<!-- header -->
+			<div class="header">
+				{if(!empty($nav) && $nav == 'index')}
+				<div class="index-top">
+					<div class="container">
+						<div class="index-ttext flex flexalign">
+							<h2>优质稳定的货源</h2>
+							<h3>经验丰富的电子元器件销售团队</h3>
+							<div class="index-more">
+								<a href="">了解更多</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				{/if}
+				<div class="header-top">
+					<div class="container">
+						<div class="header-tcon flex flexalign flexbetween">
+							<div class="header-tleft flex flexalign">
+								<p><span>您好！欢迎来到电子商城！</span>
+									{if(!empty($userInfo.username))}
+									<a href="/person/">{$userInfo.rename??''}</a> | <a href="javascript:;" onclick="logout()">退出登录</a>
+									{else}
+									<a href="/login/">请登录</a> | <a href="/register">免费注册</a>
+									{/if}
+								</p>
+							</div>
+							<div class="header-tright flex flexalign">
+								<p>
+									<span><img src="/static/index/images/top01.png">3007726439</span>
+									<span><img src="/static/index/images/top02.png">18594233960</span>
+									| <a href="/person/">会员中心</a> | <a href="/person/message/">消息(<span>{$messageCount??0}</span>)</a> | <a href="">English</a>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="header-con">
+					<div class="container">
+						<div class="header-ccon flex flexalign">
+							<div class="header-lt">
+								<div class="logo">
+									<a href="/"><img src="/static/index/images/logo.png"></a>
+								</div>
+								<div class="logo-text">
+									<p>经验丰富的电子元器件销售团队</p>
+									<p>正品保障 · 海量现货 · 价格公正</p>
+								</div>
+							</div>
+							<div class="header-scbox">
+								<div class="header-search">
+									<form class="flex" action="/product/search/">
+										<div class="header-inp">
+											<input type="text" name="keyword" placeholder="请输入型号、参数，搜索全站库存数据">
+										</div>
+										<div class="header-fil">
+											<a href=""><img src="/static/index/images/top04.png"></a>
+										</div>
+										<div class="search-btn">
+											<button><img src="/static/index/images/top05.png"></button>
+										</div>
+									</form>
+								</div>
+								<div class="header-cart">
+									<a href="/cart/"><span><img src="/static/index/images/top06.png">购物车(<font id="cartCount">{$cartCount??0}</font>)</span></a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="nav">
+					<div class="container">
+						<div class="nav-con flex">
+							<div class="nav-left {if(!empty($nav) && $nav != 'index')}nynav-left{/if}">
+								<h2>全部分类</h2>
+								<div class="nav-list {if(!empty($nav) && $nav == 'index')}active{/if}">
+									{volist name="productcategory" id="cv"}
+									<div class="nav-box">
+										<ul class="flex">
+											{volist name="cv" id="v"}
+											<li><a href="/product/category/{$v.id_lm}">{$v.title_lm}</a></li>
+											{/volist}
+										</ul>
+										<div class="nav-left-list">
+											{volist name="cv" id="v"}
+											<div class="nav-left-box">
+												<h3>{$v['title_lm']}</h3>
+												<ul class="flex">
+													{volist name="v.children" id="childValue"}
+													<li><a href="/product/list/{$childValue.id_lm}">{$childValue.title_lm}</a></li>
+													{/volist}
+												</ul>
+											</div>
+											{/volist}
+										</div>
+									</div>
+									{/volist}
+									<div class="nav-more">
+										<a href="/product/">查看全部</a>
+									</div>
+								</div>
+							</div>
+							<div class="nav-right">
+								<ul class="flex">
+									<li {if(!empty($nav) && $nav == 'index')}class="active"{/if}><a href="/">首页</a></li>
+									<li {if(!empty($nav) && $nav == 'bom')}class="active"{/if}><a href="/bom/">BOM配单</a></li>
+									<li {if(!empty($nav) && $nav == 'special')}class="active"{/if}><a href="/special/">特价专区</a></li>
+									<li {if(!empty($nav) && $nav == 'product')}class="active"{/if}><a href="/product/">商品目录</a></li>
+									<li {if(!empty($nav) && $nav == 'brand')}class="active"{/if}><a href="/brand/">品牌专区</a></li>
+									<li {if(!empty($nav) && $nav == 'about')}class="active"{/if}><a href="/about/">关于我们</a></li>
+									<li {if(!empty($nav) && $nav == 'contact')}class="active"{/if}><a href="/contact/">联系我们</a></li>
+								</ul>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			<!-- header -->

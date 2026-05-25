@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.navigation} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	
+	<body style="padding:10px; box-sizing: border-box;">
+		<form class="layui-form">
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.superiorNavigation}</label>
+				<div class="layui-input-block">
+					<select name="fid" id="fid" lay-filter="fid" onchange="changeValue(this.value)">
+						<option value=0>{$langHtml.common.primaryNavigation}</option>
+						{if !empty($nav)}
+							{foreach $nav as $nv}
+								<option value="{$nv.id}">{$nv.title}</option>
+							{/foreach}
+						{/if}
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item" id="ty_div" style="display: none;">
+				<label class="layui-form-label">{$langHtml.common.navType}</label>
+				<div class="layui-input-block">
+					<input type="radio" name="ty" checked value="1" title="{$langHtml.common.NormalNavigation}">
+					<input type="radio" name="ty" value="2" title="{$langHtml.common.SettingNavigation}">
+					<input type="radio" name="ty" value="3" title="{$langHtml.common.SEONavigation}">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<span>
+					<label class="layui-form-label">{$langHtml.common.navName}</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" name="title" placeholder="{$langHtml.common.enter}{$langHtml.common.navName}" value="">
+					</div>
+				</span>
+			</div>
+			<div class="layui-form-item" id="link_url_div" style="display: none;">
+				<label class="layui-form-label">{$langHtml.common.navLink}</label>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" name="link_url" placeholder="{$langHtml.common.enter}{$langHtml.common.navLink}" value="">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.navState}</label>
+				<div class="layui-input-block">
+					<input type="radio" name="pass" checked value="1" title="{$langHtml.common.use}">
+					<input type="radio" name="pass" value="0" title="{$langHtml.common.stop}">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.sort}</label>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" name="px" placeholder="{$langHtml.common.sort}" value="1" >
+				</div>
+			</div>
+		</form>
+		<div class="layui-form-item" style="margin-top:10px;">
+			<div class="layui-input-block">
+				<button type="button" class="layui-btn" onclick="save('{$Request.root}/{$route}/navAdd')">{$langHtml.common.save}</button>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	layui.use(['form'],function(){
+		var form = layui.form;
+
+		form.on('select(fid)', function(data){
+			changeValue(data.value)
+		}); 
+	});
+	function changeValue(val){
+		if(val == 0){
+			$('#ty_div').hide();
+			$('#title2_div').hide();
+			$('#link_url_div').hide();
+		}else{
+			$('#ty_div').show();
+			$('#title2_div').show();
+			$('#link_url_div').show();
+		}
+	}
+</script>
+{include file="public/footer" /}

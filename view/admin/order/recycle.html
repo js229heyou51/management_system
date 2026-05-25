@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.recycle} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div>
+				<form action="" class="layui-form" id="sform">
+					<div class="layui-inline">
+						<label>{$langHtml.common.search}</label>
+					</div>
+					<div class="layui-inline">
+						<input type="text" class="layui-input" name="keyword" value="{$searchItem.keyword??''}">
+					</div>
+					<div class="layui-inline">
+						<button class="layui-btn layui-bg-color">{$langHtml.common.search}</button>
+					</div>
+				</form>
+				<br>
+				<form action="" class="layui-form" id="listForm" method="post">
+					<table id="dataTable" lay-filter="dataTable"></table>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/html" id="toolbarDemo">
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="recovery" >
+		<i class="layui-icon layui-icon-refresh"></i> {$langHtml.common.restoreData} 
+	</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="remove"  >
+		<i class="layui-icon layui-icon-delete"></i> {$langHtml.common.completelyDelete} 
+	</button>
+</script>
+<script type="text/html" id="state">
+	<input type="checkbox" name="pass" value="{{d.id}}" lay-skin="switch" lay-text="{$langHtml.common.shield}|{$langHtml.common.unshielded}" lay-filter="pass" {{# if(d.pass==0){ }} checked {{# } }}>
+</script>
+<script type="text/javascript">
+	layui.use(['layer','form','laypage','table'],function(){
+		layer = layui.layer;
+		$ = layui.jquery;
+		var form = layui.form; 
+		var table = layui.table; 
+		laypage = layui.laypage; 
+		
+		var colsInit = [
+			{field: 'order_sn', title: '订单号', align: 'center', width: 200},
+			{field: '', title: '商品信息', templet: function(d){
+				var html = '';
+				for (var i = 0; i < d.orderItem.length; i++) {
+					html += '<div class="goods_row" lay-tips=\''+ JSON.stringify(d.orderItem[i]) +'\'>';
+					html += '<div class="goods_image">';
+					html += '<img src="' + d.orderItem[i].goods_image + '" >';
+					html += '</div>';
+					html += '<div class="goods_name">';
+					html += d.orderItem[i].goods_name;
+					html += '</div>';
+					html += '</div>';
+				}
+				return html;
+			}},
+			{field: '', title: '用户信息', align: 'center', width: 200, templet: '{{=d.userinfo?.username}}'},
+			{field: 'pay_time', title: '支付时间', align: 'center', width: 150},
+			{field: 'order_status', title: '订单状态', align: 'center', width: 150,templet: function(d){
+				return d.order_status.statusHtml;
+			}}
+		];
+
+		var colsParam = [];
+		var initData = {
+			url: '{$Request.root}/{$route}/',
+			table: table,
+			elem: 'dataTable',
+			data: {:json_encode($lists)},
+			langText: {:json_encode($langHtml.common)},
+			colsInit : colsInit,
+			colsType: true,
+			recycleType: true,
+			isTitle: false,
+			isState: false,
+			isPx: false,
+			lineStyle: 'height: auto',
+			height: 'full-113',
+			pageInit: {limit: 10}
+		}
+		tableInit(initData);
+
+		$('.goods_row').on('mouseover',function(){
+			var orderItem = JSON.parse($(this).attr('lay-tips'));
+			var content = '<span class="goods-tips-name">商品名称：' + orderItem.goods_name + '</span><br>规格名称：' + orderItem.specifications + '<br>支付价格：￥' + orderItem.goods_price + '<br>购买数量：' + orderItem.quantity;
+			layer.tips(content, this, {
+				tips: 1,
+				time: 0,
+				maxWidth: 'auto'
+			});
+		}).on('mouseout',function(){
+			layer.closeAll('tips');
+		})
+	});
+</script>

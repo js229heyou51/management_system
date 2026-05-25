@@ -1,0 +1,142 @@
+{extend name="common/co/edit" /}
+
+{block name="header"}
+
+{/block}
+{block name="content"}
+	<div>
+		<form class="layui-form">
+			<input type="hidden" name="id" value="{$find.id??''}">
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.username??''}</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" name="username" placeholder="{$langHtml.common.username??''}" value="{$find.username??''}"  {if(!empty($find))}readonly{/if}>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.password??''}</label>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" name="password" placeholder="{$langHtml.common.password??''}">
+				</div>
+				<div class="layui-form-mid layui-word-aux">{$langHtml.common.editPwdTip??''}</div>
+			</div>
+			{if ($conf.co.name == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.name??''}</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" name="rename" placeholder="{$langHtml.common.name??''}" value="{$find.rename??''}">
+				</div>
+			</div>
+			{/if}
+			{if ($conf.co.sex == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.sex??''}</label>
+				<div class="layui-input-block">
+					<input type="radio" name="sex" value="1" title="{$langHtml.common.male??''}" {if (isset($find.sex) && $find.sex == 1)}checked{/if}>
+					<input type="radio" name="sex" value="2" title="{$langHtml.common.female??''}" {if (isset($find.sex) && $find.sex == 2)}checked{/if}> 
+					<input type="radio" name="sex" value="3" title="保密" {if (isset($find.sex) && ($find.sex == 3 || $find.sex == 0))}checked{/if}> 
+				</div>
+			</div>
+			{/if}
+			{if ($conf.co.phone == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.phone??''}</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" name="phone" placeholder="{$langHtml.common.phone??''}" value="{$find.phone??''}">
+				</div>
+			</div>
+			{/if}
+			{if ($conf.co.fax == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.fax??''}</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" name="fax" placeholder="{$langHtml.common.fax??''}" value="{$find.fax??''}">
+				</div>
+			</div>
+			{/if}
+			{if ($conf.co.email == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.email??''}</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" name="email" placeholder="{$langHtml.common.email??''}" value="{$find.email??''}">
+				</div>
+			</div>
+			{/if}
+			{if ($conf.co.qq == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.qq??''}</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" name="qq" placeholder="{$langHtml.common.qq??''}" value="{$find.qq??''}">
+				</div>
+			</div>
+			{/if}
+			{if ($conf.co.wx == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.wechat??''}</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" name="wx" placeholder="{$langHtml.common.wechat??''}" value="{$find.wx??''}">
+				</div>
+			</div>
+			{/if}
+			{if ($conf.co.compname == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.company??''}</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" name="compname" placeholder="{$langHtml.common.company??''}" value="{$find.compname??''}">
+				</div>
+			</div>
+			{/if}
+			{if ($conf.co.img_sl == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.webIcon??''}</label>
+				<div class="layui-input-block">
+					<div class="upload-list" id="img_sl_list">
+						{if(!empty($galleryList.imgList))}
+						{volist name="galleryList.imgList" id="item"}
+						<div class="upload_pic_li" data-id="{$item.id}"><span onclick="delImg(this,'img_sl')"></span><img src="{$item.path}" alt="" class="layui-upload-img"></div>
+						{/volist}
+						{/if}
+					</div><div class="layui-inline">
+						<div class="layui-upload-drag" onclick="uploadTool({elem:'img_sl',url:'{$Request.root}/Gallery/index',type:'image',title:'图片上传'})">
+							<i class="layui-icon layui-icon-picture"></i> 
+						</div>
+					</div>
+					<input type="hidden" name="img_sl" id="img_sl" value="{$find.img_sl??''}">
+				</div>
+			</div>
+			{/if}
+			{if ($conf.co.post == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.post??''}</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" name="post" placeholder="{$langHtml.common.post??''}" value="{$find.post??''}">
+				</div>
+			</div>
+			{/if}
+			{if ($conf.co.info == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.notes??''}</label>
+				<div class="layui-input-block">
+					<textarea class="layui-textarea" id="z_body" name="z_body" placeholder="{$langHtml.common.notes??''}">{$find.z_body??''}</textarea>
+				</div>
+			</div>
+			{/if}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.review??''}</label>
+				<div class="layui-input-block">
+					<input type="radio" name="pass" value="1" title="{$langHtml.common.unreviewed??''}" {if (isset($find.pass) && $find.pass == 1)}checked{/if}>
+					<input type="radio" name="pass" value="2" title="{$langHtml.common.notPassed??''}" {if (isset($find.pass) && $find.pass == 2)}checked{/if}> 
+					<input type="radio" name="pass" value="3" title="{$langHtml.common.approved??''}" {if (isset($find.pass) && $find.pass == 3)}checked{/if}> 
+					<input type="radio" name="pass" value="4" title="{$langHtml.common.shield??''}" {if (isset($find.pass) && $find.pass == 4)}checked{/if}> 
+				</div>
+			</div>
+		</form>
+		<div class="layui-form-item" style="margin-top:10px;">
+			<div class="layui-input-block">
+				<button type="button" class="layui-btn layui-bg-color" onclick="save('{$Request.root}/{$route}/edit')">{$langHtml.common.save??''}</button>
+			</div>
+		</div>
+	</div>
+{/block}
+{block name="script"}
+{/block}

@@ -1,0 +1,31 @@
+<script type="text/javascript">
+	layui.use(function(){
+		layer = layui.layer;
+		$ = layui.jquery;
+		var form = layui.form; 
+		var table = layui.table; 
+		laypage = layui.laypage; 
+		
+		var colsInit = [
+			{type: 'checkbox', fixed: 'left'},
+			{field: 'px', title: '{$langHtml.common.sort}', width: 60, align: 'center',sort:'desc', fixed: 'left',edit: 'text'},
+			{field: 'id_lm', title: '{$langHtml.common.id}', width: 80, align: 'center'},
+			{field: 'title_lm', title: '{$langHtml.common.title}'},
+			{field: 'wtime', title: '{$langHtml.common.time}', width: 160, sort:'desc',align: 'center'},
+			{field: '', title: '{$langHtml.common.state}', width: 270 , maxWidth:300, align: 'center',templet: '#state'}
+		];
+		var initData = {
+			url: '{$Request.root}/{$route}/',
+			table: table,
+			elem: 'dataTable',
+			data: {:json_encode($lists)},
+			langText: {:json_encode($langHtml.common)},
+			colsInit : colsInit,
+			colsType: false,
+			recycleType: true,
+			height: 'full-113',
+			pageInit: {limit: 10}
+		}
+		tableInit(initData);
+	});
+</script>

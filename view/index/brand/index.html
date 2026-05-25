@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head" /}
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header" /}
+			<!-- main -->
+			<div class="ny2">
+				<div class="nydao">
+					<div class="container">
+						<a href="">首页</a> 
+						<a>></a> 
+						<a href="" class="cur">品牌专区</a>
+					</div>
+				</div>
+				<div class="brand-con">
+					<div class="container">
+						<div class="brand-top">
+							<div class="brand-ttit">
+								<h5>按字母索引：</h5>
+							</div>
+							<div class="brand-search">
+								<form>
+									<input type="text" name="keyword" placeholder="请输入品牌关键词" value="{$keyword??''}">
+									<button><img src="/static/index/images/brand_06.png"></button>
+								</form>
+							</div>
+						</div>
+						<div class="brand-nav">
+							<ul class="flex">
+								<li {if($keyword == '')}class="cur"{/if}><a href="/brand/">全部品牌</a></li>
+								{volist name="data.letters" id="letVal"}
+								<li {if(!empty($keyword) && $keyword == $letVal)}class="cur"{/if}><a href="/brand/{$letVal}">{$letVal}</a></li>
+								{/volist}
+							</ul>
+						</div>
+						<div class="brand-list">
+							<ul class="flex">
+								{volist name="data.list" id="lv"}
+								<li>
+									<a href="javascript:;">
+										<div class="brand-img">
+											<img src="{$lv.gallery_list.0.path??''}">
+										</div>
+									</a>
+								</li>
+								{/volist}
+							</ul>
+						</div>
+						<div class="pages" id="proResultPages">
+							{$page | raw}
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer" /}
+		</div>
+	</body>
+</html>

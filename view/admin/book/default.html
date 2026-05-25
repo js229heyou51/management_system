@@ -1,0 +1,146 @@
+{extend name="common/co/default" /}
+
+{block name="search"}
+	<form action="" class="layui-form" id="sform">
+		<div class="layui-inline">
+			<label>{$langHtml.common.search}</label>
+		</div>
+		<div class="layui-inline">
+			<select name="chakan" id="chakan" lay-filter="chakan">
+				<option value="">{$langHtml.common.allState}</option>
+				<option value="chakan1" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'chakan1'"}selected{/if}>{$langHtml.common.view}</option>
+				<option value="chakan2" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'chakan2'"}selected{/if}>{$langHtml.common.notView}</option>
+				{if ($conf.sy.huifu == 'true')} 
+				<option value="huifu1" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'huifu1'"}selected{/if}>{$langHtml.common.reply}</option>
+				<option value="huifu2" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'huifu2'"}selected{/if}>{$langHtml.common.notReply}</option>
+				{/if}
+				<option value="pass1" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'pass1'"}selected{/if}>{$langHtml.common.show}</option>
+				<option value="pass2" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'pass2'"}selected{/if}>{$langHtml.common.hide}</option>
+			</select>
+		</div>
+		<div class="layui-inline">
+			<input type="text" class="layui-input" name="keyword" value="{$searchItem.keyword??''}">
+		</div>
+		<div class="layui-inline">
+			<button type="button" class="layui-btn layui-bg-color" onclick="search()">{$langHtml.common.search}</button>
+		</div>
+	</form>
+{/block}
+
+{block name="toolbar"}
+<script type="text/html" id="toolbarDemo">
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="recycle">
+		<i class="layui-icon layui-icon-delete"></i>{$langHtml.common.recycle}
+	</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="del" >{$langHtml.common.deleteSelected}</button>
+</script>
+{/block}
+
+{block name="state"}
+	
+{/block}
+
+{block name="operate"}
+<script type="text/html" id="operateDemo">
+	<div class="layui-inline">
+		<button type="button" class="layui-btn layui-btn-xs layui-bg-color" lay-on="show" data-id="{{d.id}}">
+			<i class="layui-icon layui-icon-read"></i>{$langHtml.common.view}
+		</button>
+	</div>
+	<div class="layui-inline">
+		<button type="button" class="layui-btn layui-btn-xs layui-bg-color" lay-on="hide" data-id="{{d.id}}">
+			<i class="layui-icon layui-icon-menu-fill"></i>{{# if(d.pass==1){ }} {$langHtml.common.show} {{# }else{ }} {$langHtml.common.hide} {{# } }}
+		</button>
+	</div>
+	<div class="layui-inline">
+		<button type="button" class="layui-btn layui-btn-xs layui-bg-red" lay-event="del" data-id="{{d.id}}">
+			<i class="layui-icon layui-icon-delete"></i>{$langHtml.common.delete}
+		</button>
+	</div>
+</script>
+{/block}
+
+{block name="script"}
+	<script type="text/javascript">
+		window.extraOptions = {
+			url: '{$Request.root}/{$route}/',
+			colsInit: [
+				{field: 'rename', title: '{$langHtml.common.name}', align: 'center', width: 370},
+				{field: 'state', title: '{$langHtml.common.state}', align: 'center', width: 170, templet: function(d){
+					var html = '<span>';
+					if(d.chakan == 1){
+						html += '{$langHtml.common.view}'
+					}else{
+						html += '<font color="#009688">{$langHtml.common.notView}</font>'
+					}
+					html += '</span>&nbsp;&nbsp;';
+					html += '<span>';
+					if(d.huifu == 1){
+						html += '{$langHtml.common.reply}'
+					}else{
+						html += '<font color="#009688">{$langHtml.common.notReply}</font>'
+					}
+					html += '</span>&nbsp;&nbsp;';
+					html += '<span>';
+					if(d.pass == 1){
+						html += '{$langHtml.common.show}'
+					}else{
+						html += '<font color="#009688">{$langHtml.common.hide}</font>'
+					}
+					html += '</span>';
+					return html;
+				}}
+			],
+			isPx: false,
+			isTitleEdit: false,
+		}
+	</script>
+	<script type="text/javascript">
+		layui.use(function(){
+			layer = layui.layer;
+			$ = layui.jquery;
+			var form = layui.form; 
+			util = layui.util; 
+
+			form.on('select(chakan)', function(data){
+				$.post(extraOptions.url + "default",$('#sform').serialize(),function(res){
+					if(res.code==200){
+						setTimeout(function(){window.location.href= extraOptions.url + 'default?'+res.where;},500);
+					}else{
+						layer.alert(res.msg,{icon:2});
+					}
+				},'json');
+			});
+
+			util.on({
+				'show': function(obj){
+					const elem = obj[0];
+					const id = $(elem).data('id');
+					layer.full(layer.open({
+						type: 2,
+						title: '{$langHtml.common.view}',
+						shade: 0.3,
+						area: ['90%','80%'],
+						fixed: false, //不固定
+						maxmin: true,
+						content: extraOptions.url + "show?id="+id
+					}));
+				},
+				'hide': function(obj){
+					const elem = obj[0];
+					const id = $(elem).data('id');
+					$.post(extraOptions.url + "hide",{'id':id},function(res){
+						if(res.code==200){
+							layer.msg(res.msg,{'icon':1});
+							setTimeout(function(){window.location.reload();},1000);
+						}else{
+							layer.msg(res.msg,{'icon':2});
+						}
+					},'json');
+				}
+			})
+
+		});
+	</script>
+	{include file="common/co/script" /}
+{/block}

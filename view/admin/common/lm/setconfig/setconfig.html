@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.config} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			{block name="header"}header{/block}
+		</div>
+		<div class="layui-wrap">
+			{block name="setup"}setup{/block}
+			{block name="category"}category{/block}
+			{block name="information"}information{/block}
+		</div>
+	</body>
+</html>

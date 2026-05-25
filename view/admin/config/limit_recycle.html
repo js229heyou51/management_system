@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.recycle} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div>
+				<form action="" class="layui-form" id="listForm" method="post">
+					<table id="dataTable" lay-filter="dataTable"></table>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/html" id="toolbarDemo">
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="recovery" >
+		<i class="layui-icon layui-icon-refresh"></i> {$langHtml.common.restoreData} 
+	</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="remove"  >
+		<i class="layui-icon layui-icon-delete"></i> {$langHtml.common.completelyDelete} 
+	</button>
+</script>
+<script type="text/html" id="state">
+	<input type="checkbox" name="pass" value="{{d.id}}" lay-skin="switch" lay-text="{$langHtml.common.shield}|{$langHtml.common.unshielded}" lay-filter="pass" {{# if(d.pass==0){ }} checked {{# } }}>
+</script>
+<script type="text/javascript">
+	layui.use(['layer','form','laypage','table'],function(){
+		layer = layui.layer;
+		$ = layui.jquery;
+		var form = layui.form; 
+		var table = layui.table; 
+		laypage = layui.laypage; 
+		
+		var colsInit = [];
+		var initData = {
+			url: '{$Request.root}/{$route}',
+			table: table,
+			elem: 'dataTable',
+			data: {:json_encode($lists)},
+			langText: {:json_encode($langHtml.common)},
+			colsInit : colsInit,
+			colsType: true,
+			recycleType:true,
+			recycleMake: 'limitRecycleMake'
+		}
+		tableInit(initData);
+	});
+</script>
+{include file="public/footer" /}

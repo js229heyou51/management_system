@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>网易外贸通 - AI尊享版 & 邮件营销100万封 | 官方咨询</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fc;
+            color: #1e293b;
+            line-height: 1.5;
+        }
+        :root {
+            --primary: #4c6aff;
+            --primary-dark: #3347ab;
+            --primary-light: #eef3fc;
+            --accent: #f5a623;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+            --radius-lg: 1.5rem;
+            --radius-md: 1rem;
+            --radius-sm: 0.75rem;
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        /* 导航 */
+        .navbar {
+            background: white;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+            background-color: rgba(255,255,255,0.96);
+        }
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 1rem 0;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .logo-icon {
+            background: var(--primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+        }
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--primary-dark);
+        }
+        .logo-sub {
+            font-size: 0.75rem;
+            color: var(--gray-600);
+        }
+        .tel-header {
+            background: var(--primary-light);
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+        .tel-header i {
+            margin-right: 6px;
+        }
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f6fe 100%);
+            padding: 2.5rem 0 2rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .hero h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1f4870, #2c5e9c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+        .hero-desc {
+            font-size: 1.1rem;
+            color: var(--gray-600);
+            max-width: 720px;
+        }
+        /* 等高双栏布局 */
+        .pricing-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 3rem 0 2.5rem;
+        }
+        .card {
+            flex: 1;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: transform 0.2s ease, box-shadow 0.2s;
+            overflow: hidden;
+            border: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .card-header {
+            padding: 1.5rem 1.8rem 1rem;
+            background: white;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .card-badge {
+            font-size: 0.75rem;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+        .price-unit {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--gray-600);
+        }
+        .card-body {
+            padding: 1.5rem 1.8rem 1.8rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        /* 功能列表 */
+        .feature-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+        .feature-list li {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+        .feature-list i.fa-check-circle {
+            color: #2b7e3a;
+            font-size: 1rem;
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+        }
+        .btn {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            padding: 0.8rem 0;
+            font-weight: 600;
+            border-radius: 2rem;
+            transition: all 0.2s;
+            text-decoration: none;
+            font-size: 0.95rem;
+            margin-top: auto;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--primary);
+            color: var(--primary);
+        }
+        .btn-outline:hover {
+            background: var(--primary-light);
+        }
+        .promo-box {
+            background: #fef9e6;
+            border-left: 5px solid var(--accent);
+            padding: 0.8rem 1rem;
+            border-radius: var(--radius-sm);
+            margin: 1rem 0 0.5rem;
+            font-size: 0.85rem;
+        }
+        .promo-box strong {
+            color: #c46f0a;
+        }
+        /* 邮件套餐内样式 */
+        .email-plan {
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+            padding: 1.2rem;
+            margin-bottom: 1.2rem;
+            border: 1px solid var(--gray-200);
+        }
+        .plan-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+        .plan-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .plan-price {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+        }
+        .plan-price small {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .plan-desc {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            margin: 0.5rem 0 0.8rem;
+        }
+        /* 询盘模块 */
+        .inquiry-module {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            margin: 2rem 0 3rem;
+            overflow: hidden;
+            border: 1px solid var(--gray-200);
+        }
+        .inquiry-header {
+            background: linear-gradient(98deg, #eef3fc 0%, #ffffff 100%);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .inquiry-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .inquiry-header p {
+            color: var(--gray-600);
+        }
+        .inquiry-form-container {
+            padding: 2rem;
+            background: var(--gray-50);
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            font-size: 0.85rem;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 0.75rem;
+            font-family: inherit;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(44,94,156,0.1);
+        }
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-submit:hover {
+            background: var(--primary-dark);
+        }
+        .tel-big {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .tel-big a {
+            color: var(--primary);
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .footer {
+            background: white;
+            border-top: 1px solid var(--gray-200);
+            padding: 2rem 0;
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--gray-600);
+        }
+        @media (max-width: 800px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .pricing-wrapper {
+                flex-direction: column;
+            }
+        }
+        .badge-hot {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 导航栏 + 电话 -->
+<div class="navbar">
+    <div class="container nav-inner">
+        <div class="logo-area">
+            <div class="logo-icon"><i class="fas fa-envelope-open-text"></i></div>
+            <div>
+                <div class="logo-text">网易外贸通</div>
+                <div class="logo-sub">AI驱动 · 全球增长</div>
+            </div>
+        </div>
+        <div class="tel-header">
+            <i class="fas fa-phone-alt"></i> 咨询专线 400-669-6649
+        </div>
+    </div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <h1>AI尊享版 + 邮件营销100万封<br>智能外贸增长方案</h1>
+        <p><strong>网易外贸通AI尊享版</strong> 是一套专为外贸企业打造的智能化客户管理与营销增长系统。它整合了全球海关数据、多维度客户搜索、AI客户画像分析、自动化营销流程、销售漏斗与商机预测等核心能力，帮助企业精准挖掘潜在买家，高效培育线索，加速订单转化。AI引擎可自动识别客户采购意图，推荐最佳跟进策略，让团队告别盲目开发，实现数据驱动的科学决策。</p>
+        <p style="margin-top: 0.75rem;"><strong>邮件营销</strong> 提供企业级邮件发送服务。依托网易全球智能邮件通道，保障到达率≥95%；支持专属IP预热、智能反垃圾优化、多账号轮发，有效提升发件人信誉。内置300+响应式邮件模板、可视化编辑器、A/B测试工具，轻松创建专业营销内容。实时追踪打开率、点击率、转化路径，自动标记高意向客户并同步至CRM。更可设置自动化旅程（定时触发、行为追踪、二次营销），形成从触达到转化的完整闭环。此外，我们支持200万封、500万封等更大额度定制，满足您规模化营销需求。</p>
+    </div>
+</section>
+
+<div class="container">
+    <!-- 等高双栏：AI尊享版 + 邮件营销100万封 -->
+    <div class="pricing-wrapper">
+        <!-- AI尊享版卡片（功能详细） -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-badge"><i class="fas fa-microchip"></i> 智能外贸引擎</div>
+                <div class="card-title">AI尊享版</div>
+                <div class="price">¥19,990 <span class="price-unit">/ 年 (5用户)</span></div>
+                <div class="price-sub">含客户管理、AI辅助、数据洞察、自动化营销</div>
+            </div>
+            <div class="card-body">
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> <strong>全球海关数据 & 客户搜索</strong> – 覆盖200+国家进出口数据，精准定位目标买家</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>AI客户画像分析</strong> – 基于行为数据自动生成采购偏好、信用评分、最佳联系时段</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>智能营销自动化</strong> – 预设触发式邮件序列、个性化内容推荐，提升打开率与转化</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>销售漏斗与商机预测</strong> – 可视化跟进阶段，AI预测成交概率，指导资源分配</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>团队协作 & 数据驾驶舱</strong> – 多角色权限、业绩看板、实时ROI分析</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>邮件模板库 & A/B测试</strong> – 内置高转化模板，支持变量插入，持续优化</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>API对接 & 生态集成</strong> – 无缝连接企业官网、WhatsApp、海关数据平台</li>
+                </ul>
+                <div class="promo-box">
+                    <i class="fas fa-gift"></i> <strong>多年订购超值赠送</strong><br>
+                    买两年送半年 → 总价 ¥39,980 (相当于每年 ¥15,992)<br>
+                    买三年送一年 → 总价 ¥59,970 (相当于每年 ¥14,992)
+                </div>
+                <a href="tel:4006696649" class="btn btn-primary"><i class="fas fa-headset"></i> 立即咨询AI尊享版</a>
+            </div>
+        </div>
+
+        <!-- 邮件营销卡片：仅保留100万封，功能更详细 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-badge badge-hot"><i class="fas fa-paper-plane"></i> 邮件营销 · 全球触达</div>
+                <div class="card-title">企业邮件营销套餐</div>
+                <div class="price">¥21,000 <span class="price-unit">/ 年 (100万封)</span></div>
+                <div class="price-sub">适合中大型外贸团队，高并发海量发送，深度数据分析</div>
+            </div>
+            <div class="card-body">
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> 100万封/年邮件额度，支持多账号轮发，提升信誉</li>
+                    <li><i class="fas fa-check-circle"></i> 专属IP预热 & 智能反垃圾优化，全球收件箱到达率≥95%</li>
+                    <li><i class="fas fa-check-circle"></i> 邮件编辑器 + 300+响应式模板，支持附件/个性化变量</li>
+                    <li><i class="fas fa-check-circle"></i> 实时打开展示统计、点击热图、自动标记高意向客户</li>
+                    <li><i class="fas fa-check-circle"></i> 自动化旅程：定时触发、行为追踪、自动二次营销</li>
+                    <li><i class="fas fa-check-circle"></i> 线索直接同步至CRM或AI尊享版，形成营销闭环</li>
+                    <li><i class="fas fa-check-circle"></i> 多语言邮件支持 + 全球时区智能发送</li>
+                </ul>
+
+                <!-- 更大额度定制提示 -->
+                <div class="promo-box" style="background: #eef3fc; margin-top: 0.8rem;">
+                    <i class="fas fa-chart-line"></i> <strong>更大额度 & 组合优惠</strong><br>
+                    如需200万封、500万封或AI尊享版+邮件套餐组合购买，享专属折扣。<br>请联系客户经理定制方案。
+                </div>
+                <!-- 占位确保按钮在底部一致 -->
+                <div style="flex:1"></div>
+                <a href="tel:4006696649" class="btn btn-primary" style="margin-top: 1rem;"><i class="fas fa-envelope-open-text"></i> 获取邮件营销专属报价</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 独立询盘模块：仅为表单收集咨询信息，并非产品功能 -->
+    <div class="inquiry-module">
+        <div class="inquiry-header">
+            <h2><i class="fas fa-comment-dots" style="color: var(--primary); margin-right: 10px;"></i> 获取专属方案</h2>
+            <p>留下您的联系方式，我们的外贸顾问将为您提供AI尊享版演示及邮件营销100万封详细报价。</p>
+        </div>
+        <div class="inquiry-form-container">
+            <form id="inquiryForm" action="#" method="post">
+                <div class="form-group">
+                    <label>您的姓名 *</label>
+                    <input type="text" id="name" placeholder="张经理 / 李总" required>
+                </div>
+                <div class="form-group">
+                    <label>企业邮箱 *</label>
+                    <input type="email" id="email" placeholder="sales@company.com" required>
+                </div>
+                <div class="form-group">
+                    <label>联系电话</label>
+                    <input type="tel" id="phone" placeholder="手机 / 座机">
+                </div>
+                <div class="form-group">
+                    <label>感兴趣的产品/套餐 *</label>
+                    <textarea rows="2" id="message" placeholder="例如：AI尊享版+100万封邮件组合 / 单独100万封邮件报价 / 多年优惠" required></textarea>
+                </div>
+                <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> 提交询盘 · 获取方案</button>
+            </form>
+            <div class="tel-big">
+                <i class="fas fa-phone-volume"></i> 或直接致电官方热线：<a href="tel:4006696649">400-669-6649</a> （工作日9:00-18:00）
+            </div>
+            <p style="font-size: 0.7rem; color: #8896a8; margin-top: 1rem; text-align: center;">我们将在1个工作日内与您联系，提供详细资料及报价。</p>
+        </div>
+    </div>
+
+    <!-- 辅助价值点（非产品功能，仅增值服务展示） -->
+    <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: space-between; margin: 1rem 0 1rem;">
+        <div style="flex:1; min-width: 170px; background: white; border-radius: 1rem; padding: 1rem; text-align: center; box-shadow: var(--shadow-sm);">
+            <i class="fas fa-chart-line" style="font-size: 2rem; color: var(--primary);"></i>
+            <h4 style="margin-top: 0.5rem;">数据驱动决策</h4>
+            <p style="font-size: 0.75rem;">AI尊享版提供深度分析</p>
+        </div>
+        <div style="flex:1; min-width: 170px; background: white; border-radius: 1rem; padding: 1rem; text-align: center; box-shadow: var(--shadow-sm);">
+            <i class="fas fa-globe" style="font-size: 2rem; color: var(--primary);"></i>
+            <h4 style="margin-top: 0.5rem;">全球邮件通道</h4>
+            <p style="font-size: 0.75rem;">高送达率保障</p>
+        </div>
+        <div style="flex:1; min-width: 170px; background: white; border-radius: 1rem; padding: 1rem; text-align: center; box-shadow: var(--shadow-sm);">
+            <i class="fas fa-shield-alt" style="font-size: 2rem; color: var(--primary);"></i>
+            <h4 style="margin-top: 0.5rem;">网易安全体系</h4>
+            <p style="font-size: 0.75rem;">数据加密 品牌信誉</p>
+        </div>
+        <div style="flex:1; min-width: 170px; background: white; border-radius: 1rem; padding: 1rem; text-align: center; box-shadow: var(--shadow-sm);">
+            <i class="fas fa-headset" style="font-size: 2rem; color: var(--primary);"></i>
+            <h4 style="margin-top: 0.5rem;">1对1客户成功</h4>
+            <p style="font-size: 0.75rem;">专属顾问全程支持</p>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="container">
+        <p>© 网易外贸通 官方授权服务商 | 地址：杭州市滨江区网商路399号 | 咨询热线：400-669-6649</p>
+        <p style="margin-top: 0.5rem;">*以上价格及活动最终解释权归网易外贸通所有，具体合同条款以官方确认为准。邮件营销100万封起，可选200万封/500万封等定制。</p>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const form = document.getElementById('inquiryForm');
+        if(form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const msg = document.getElementById('message').value.trim();
+                if(!name || !email || !msg) {
+                    alert('请完整填写姓名、企业邮箱及询盘需求，以便我们为您提供精准方案。');
+                    return;
+                }
+                if(!email.includes('@') || !email.includes('.')) {
+                    alert('请输入有效的企业邮箱地址。');
+                    return;
+                }
+                alert(`尊敬的 ${name}，您的询盘已提交成功！\n外贸专家将在24小时内通过 ${email} 与您联系，提供AI尊享版演示及邮件营销100万封专属报价。\n紧急咨询请拨打 400-669-6649。`);
+                form.reset();
+            });
+        }
+    })();
+</script>
+</body>
+</html>

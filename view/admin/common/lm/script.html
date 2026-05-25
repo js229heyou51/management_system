@@ -1,0 +1,35 @@
+<script>
+	layui.use(function(){
+		layer = layui.layer;
+		$ = layui.jquery;
+		const treeTable = layui.treeTable;
+		const MODULE_PATH = "{$Request.root}/{$route}/";
+		const isState = window.extraOptions?.isState ?? ('{$conf.lm.tuijian_lm??''}' || '{$conf.lm.hot_lm??''}' || '{$conf.lm.pass_lm??''}' ? true : false);
+		const stateWidth = window.extraOptions?.stateWidth ?? '{:getLmStateWidth($conf)}';
+		const langText = window.extraOptions?.langText ?? {:json_encode($langHtml.common)};
+		const extraOptions = window.extraOptions ?? {};
+
+		let config = {
+			treeTable: treeTable,
+			elem: 'dataTable',
+			langText: langText,
+			url: MODULE_PATH,
+			isState : isState,
+			stateWidth: stateWidth,
+			...extraOptions
+		}
+
+		treeTableInit(config);
+
+
+		{if(isset($conf.lm.tuijian_lm) && $conf.lm.tuijian_lm == true)}
+		state('{$Request.root}/{$route}/make','tuijian_lm','id_lm');
+		{/if}
+		{if(isset($conf.lm.hot_lm) && $conf.lm.hot_lm == true)}
+		state('{$Request.root}/{$route}/make','hot_lm','id_lm');
+		{/if}
+		{if(isset($conf.lm.pass_lm) && $conf.lm.pass_lm == true)}
+		state('{$Request.root}/{$route}/make','pass_lm','id_lm');
+		{/if}
+	})
+</script>

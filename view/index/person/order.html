@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head"}
+	<script type="text/javascript" src=""></script>
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header"}
+			<!-- main -->
+			<div class="person">
+				<div class="container">
+					<div class="person_con">
+						{include file="person/left"}
+						<div class="person_right">
+							<div class="person_rtop">
+								<div class="person_rc">
+									<div class="person_rcl">
+										<ul class="flex">
+											<li class="{$zt==1?'active':''}">
+												<a href="/person/order?zt=1">
+													<div class="person_rclb">
+														<div class="person_rclbi">
+															<img src="/static/index/images/per_07.png">
+														</div>
+														<div class="person_rclbt">
+															待付款 <span>{$count.pay??0}</span>
+														</div>
+													</div>
+												</a>
+											</li>
+											<li class="{$zt==2?'active':''}">
+												<a href="/person/order?zt=2">
+													<div class="person_rclb">
+														<div class="person_rclbi">
+															<img src="/static/index/images/per_08.png">
+														</div>
+														<div class="person_rclbt">
+															待发货 <span>{$count.deliver??0}</span>
+														</div>
+													</div>
+												</a>
+											</li>
+											<li class="{$zt==3?'active':''}">
+												<a href="/person/order?zt=3">
+													<div class="person_rclb">
+														<div class="person_rclbi">
+															<img src="/static/index/images/per_09.png">
+														</div>
+														<div class="person_rclbt">
+															待收货 <span>{$count.receive??0}</span>
+														</div>
+													</div>
+												</a>
+											</li>
+											<li class="{$zt==4?'active':''}">
+												<a href="/person/order?zt=4">
+													<div class="person_rclb">
+														<div class="person_rclbi">
+															<img src="/static/index/images/per_10.png">
+														</div>
+														<div class="person_rclbt">
+															申请退款 <span>{$count.refund??0}</span>
+														</div>
+													</div>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div class="person_rbottom">
+								<div class="order-bottom user-order-list">
+									{if(!empty($orderList))}
+									<div class="order-list">
+										<ul>
+											{volist name="orderList" id="orderVal"}
+											<li>
+												<div class="bd">
+													<div class="order-txt">
+														订单号：<span>{$orderVal.order_sn}</span>&nbsp;&nbsp;订单日期: {$orderVal.wtime}
+														<span class="status">{$orderVal.order_status.statusText??''}</span>
+													</div>
+													<div class="content">
+														{volist name="orderVal.orderItem" id="item"}
+														<div class="goods-item">
+															<div class="img-box">
+																<img src="{$item.goods_image}" alt="">
+															</div>
+															<div class="info-txt">
+																<div class="title line2">
+																	{$item.goods_name}
+																</div>
+																<div class="info">
+																	{$item.specifications}
+																</div>
+																<div class="price">
+																	¥ {$item.goods_price}
+																</div>
+																<span class="num">x{$item.quantity}</span>
+															</div>
+														</div>
+														{/volist}
+													</div>
+												</div>
+												<div class="foot">
+													<p>共{$orderVal.proOrderConut}件商品，总金额<span>￥{$orderVal.pay_amount | number_format="2"} </span><br>(含运费￥{$orderVal.postage | number_format="2"},增值税￥{$orderVal.valueAdded??'0.00'})</p>
+													<div class="btn-wrapper">
+														<a href="/person/orderDetail/?order_sn={$orderVal.order_sn}"><div class="pay">查看详情</div></a>
+													</div>
+												</div>
+											</li>
+											{/volist}
+										</ul>
+									</div>
+									{else}
+									<div class="cart-empty" style="text-align: center;">
+										<i class="fa fa-warning"></i>暂无相关订单，<a href="product.php">快去选购心仪的商品！</a>
+									</div>
+									{/if}
+								</div>
+								<div class="pages">
+									{$page | raw}
+									<ul class="flex">
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer"}
+		</div>
+	</body>
+</html>

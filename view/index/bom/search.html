@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head" /}
+	<script type="text/javascript" src="/static/index/js/bom.js"></script>
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header" /}
+			<!-- main -->
+			<div class="bom">
+				<div class="bom-banner">
+					<img src="/static/index/images/bom_01.jpg">
+				</div>
+				<div class="container">
+					<div class="bomlist_tabs">
+						<div class="bomlist_box">
+							<input type="hidden" id="total-num">
+							<input type="hidden" id="total-price">
+							<input id="IsLoginVisiblePrice" type="hidden" value="0">
+							<button type="button" id="selAll" class="layui-btn layui-btn-color">全选/取消</button>
+							<button type="button" id="addToCart" class="layui-btn layui-btn-color">一键加入购物车</button>
+							<label class="fr mr40 mt5 fs-14">
+								共匹配到<span id="matchCount" class="color-red fs-16">{$count}</span>个型号,预计成本：<span class="color-red fs-16">￥</span> <span id="matchAmount" class="color-red fs-16">0</span>
+							</label>
+						</div>
+						<form id="bomForm" action="" method="post" class="layui-form">
+							<div class="bomlist_main bomlist_cont">
+								<table id="matchResult" class="bomlist_main_tab mb20" border="0" cellspacing="0" cellpadding="0">
+									<thead>
+										<tr>
+											<th width="34"></th>
+											<th width="192">询价型号</th>
+											<th width="89" title="询价数量" class="match_inquireQty">询价数量</th>
+											<th width="194">匹配型号</th>
+											<th width="151">品牌</th>
+											<!-- <th width="122">供应商</th> -->
+											<th width="151">数量</th>
+											<th width="100">库存量/起订量</th>
+											<th width="151">
+												售价(含税)
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{volist name="dataList" id="val" }
+										<tr data-model="" data-pid="{if(!empty($val.proInfo))}{$val.proInfo.id}{/if}" class="" >
+											<td>
+												<input type="hidden" name="pid[]" value="{if(!empty($val.proInfo))}{$val.proInfo.id}{/if}">
+												<input type="hidden" class="bomprice" name="price[{if(!empty($val.proInfo))}{$val.proInfo.id}{/if}]" value="{$val.price}">
+												<input type="checkbox" class="layui-input " lay-skin="primary" lay-filter="select" name="sel[{if(!empty($val.proInfo))}{$val.proInfo.id}{/if}]">
+											</td>
+											<td>
+												{$val.title}
+											</td>
+											<td class="match_inquireQty">
+												{$val.num}
+											</td>
+											<td>
+												<span class="color-red">
+													{if(!empty($val.proInfo))}{$val.proInfo.title}{/if}
+												</span>
+											</td>
+											<td title="">
+												{$val.paramBrand}
+											</td>
+											<!-- <td width="122" title=""></td> -->
+											<td>
+												<input type="text" value="{$val.totalNum}" class="bomnum" name="num[{if(!empty($val.proInfo))}{$val.proInfo.id}{/if}]">
+											</td>
+											<td>{$val.proInfo.stock??0}/1</td>
+											<td class="td-hover">
+												<span class="color-red" data-tag="orderprice" data-value="{$val.price}">
+													￥{$val.price}
+												</span>
+												<div class="box-hover p-pri">
+													<table border="0" cellspacing="0" cellpadding="0" class="bomlist_main_tab">
+														<tbody>
+															<tr>
+																<td>价格梯度</td>
+																<td>
+																	售价(含税))
+																</td>
+															</tr>
+															{volist name="val.priceList" id="priceVal"}
+															<tr>
+																<td class="color-red">{$priceVal.title}</td>
+																<td class="color-red">￥{$priceVal.price}</td>
+															</tr>
+															{/volist}
+														</tbody>
+													</table>
+												</div>
+											</td>
+										</tr>
+										{/volist}
+									</tbody>
+								</table>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer" /}
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	layui.use(['layer','form'],function(){
+		$ = layui.jquery;
+
+	})
+</script>

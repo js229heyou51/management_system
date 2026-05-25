@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.edit}{$langHtml.common.keyword}-{$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+		</div>
+		<div class="layui-wrap">
+			<div>
+				<form class="layui-form">
+					<input type="hidden" name="id" value="{$find.id??''}" >
+					<div class="layui-form-item">
+						<label class="layui-form-label">{$langHtml.common.keyword}</label>
+						<div class="layui-input-block">
+							<input type="text" class="layui-input" name="title" placeholder="{$langHtml.common.enter}{$langHtml.common.keyword}" value="{$find.title??''}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">{$langHtml.common.link}</label>
+						<div class="layui-input-block">
+							<input type="text" class="layui-input" name="link_url" placeholder="{$langHtml.common.enter}{$langHtml.common.link}" value="{$find.link_url??''}">
+						</div>
+					</div>
+					
+					<div class="layui-form-item">
+						<label class="layui-form-label">{$langHtml.common.sort}</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="px" placeholder="{$langHtml.common.sort}" value="{$find.px??'100'}" >
+						</div>
+					</div>
+
+
+				</form>
+				<div class="layui-form-item" style="margin-top:10px;">
+					<div class="layui-input-block">
+						<button type="button" class="layui-btn layui-bg-color" onclick="save()">{$langHtml.common.save}</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+{include file="public/footer" /}

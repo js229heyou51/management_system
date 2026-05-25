@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head"}
+	<script src="/static/index/js/cart.js"></script>
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header"}
+			<!-- main -->
+			<div class="cart">
+				<div class="cart-nav">
+					<div class="container">
+						<div class="cart-navcon flex">
+							<div class="cart-nleft">
+								<h2><img src="/static/index/images/ny3_06.png"> 我的购物车</h2>
+							</div>
+							<div class="cart-nright">
+								<ul class="flex">
+									<li class="active">
+										<div class="cart-y1">
+											<div class="cart-y2">
+												01
+											</div>
+										</div>
+										<p>我的购物车</p>
+									</li>
+									<li>
+										<div class="cart-y1">
+											<div class="cart-y2">
+												02
+											</div>
+										</div>
+										<p>填写订单及核实</p>
+									</li>
+									<li>
+										<div class="cart-y1">
+											<div class="cart-y2">
+												03
+											</div>
+										</div>
+										<p>提交订单</p>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="cart-con">
+					<div class="container">
+						<div class="cart-table">
+							<table cellpadding="0" cellspacing="0" border="0">
+								<tr>
+									<td>
+										<input type="checkbox" name="selectAll" onclick="selectAll(this)">
+									</td>
+									<td>全选</td>
+									<td>商品编号</td>
+									<td>商品信息</td>
+									<td>数量</td>
+									<td>单价</td>
+									<td>金额</td>
+									<td>操作</td>
+								</tr>
+								{if(!empty($cartList))}
+									{volist name="cartList" id="cartVal"}
+									<tr class="cartItem">
+										<td>
+											<input type="checkbox" name="cartSelect[]" onclick="selectOne(this)" value="{$cartVal.id}">
+											<input type="hidden" name="pid" value="{$cartVal.pid}">
+											<input type="hidden" name="stock" value="{$cartVal.product.stock}">
+										</td>
+										<td>
+											<div class="cart-limg">
+												<a href="/product/show/{$cartVal.pid}"><img src="{$cartVal.product.img_sl}"></a>
+											</div>
+										</td>
+										<td>
+											<div class="cart-ctit"><a href="/product/show/{$cartVal.pid}"><p>{$cartVal.product.title}</p></a></div>
+										</td>
+										<td>
+											<div class="cart-ccan">
+												{if(!empty($cartVal.paramLists))}
+												{volist name="cartVal.paramLists" id="paramVal"}
+												<span>{$paramVal.title}：{$paramVal.param_name}</span>
+												{/volist}
+												{/if}
+											</div>
+										</td>
+										<td>
+											<div class="ny3-tmninp">
+												<button type="button" class="num-less" onclick="cartLess(this)">-</button>
+												<input type="text" name="num" value="{$cartVal.num}">
+												<button type="button" class="num-plus" onclick="cartPlus(this)">+</button>
+												<input type="hidden" name="priceLists" value="{$cartVal.price_lists}">
+											</div>
+											<div class="cart-cstock">
+												<p>库存量:{$cartVal.product.stock}</p>
+											</div>
+										</td>
+										<td>
+											<div class="cart-cprice">
+												<h3>￥<span>{$cartVal.price}</span></h3>
+												<p>价格梯度 <a href="javascript:;"><img src="/static/index/images/cart_01.png"></a></p>
+												<div class="cart-jgjt">
+													<div class="cart-jgjtcon">
+														<ul>
+															<li>
+																<span>价格梯度</span>
+																<span>单价(含税)</span>
+															</li>
+															{if(!empty($cartVal.product.priceLists))}
+															{volist name="cartVal.product.priceLists" id="priceVal"}
+															<li>
+																<span>{$priceVal.title}+：</span>
+																<span>￥<span>{$priceVal.price}</span></span>
+															</li>
+															{/volist}
+															{/if}
+														</ul>
+													</div>
+												</div>
+											</div>
+										</td>
+										<td>
+											<p class="cart_aprice">
+												￥<span>{$cartVal.total}</span>
+												<input type="hidden" name="totalPrice" value="{$cartVal.total}">
+											</p>
+										</td>
+										<td>
+											<div class="cart-cz">
+												<p><a href="javascript:;" id="collectText" onclick="collect(this)" data-id="{$cartVal.pid}">{if($cartVal.collect_count == 1)}取消收藏{else}移入收藏{/if}</a></p>
+												<p><a href="javascript:;" onclick="delCart({$cartVal.id})">删除</a></p>
+											</div>
+										</td>
+									</tr>
+									{/volist}
+								{else}
+									<tr>
+										<td colspan="8">
+											<div class="cart-empty" style="text-align: center;">
+												<img src="/static/index/images/noCart1.2eddc36.png" alt="">
+												<br><br>
+												亲，购物车还是空的哟~
+												<a href="/product/" class="goIndex nuxt-link-active">继续逛</a>
+											</div>
+										</td>
+									</tr>
+								{/if}
+							</table>
+						</div>
+						{if(!empty($cartList))}
+						<div class="cart-bottom">
+							<div class="cart-bcon">
+								<div class="cart-bleft">
+									<input type="checkbox" name="selectAll" onclick="selectAll(this)">
+									<span class="cart-ball">全选</span>
+									<span class="cart-balldel"><a href="javascript:;" onclick="selectDel()">批量删除</a></span>
+									<span class="cart-bexcel"><a href=""><img src="/static/index/images/cart_02.png"> 导出Excel</a></span>
+								</div>
+								<div class="cart-bright">
+									<input type="hidden" id="totalNum" value="">
+									<input type="hidden" id="totalPrice" value="">
+									<p>
+										
+										已选&nbsp;&nbsp;<span id="totalNumText">0</span>&nbsp;&nbsp;件商品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										总计（不含运费）：<span>￥</span><span id="totalPriceText">0.00</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										<a href="javascript:;" onclick="settlement()">结 算</a>
+									</p>
+								</div>
+							</div>
+						</div>
+						{/if}
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer"}
+		</div>
+	</body>
+</html>

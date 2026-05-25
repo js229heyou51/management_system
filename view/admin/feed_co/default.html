@@ -1,0 +1,56 @@
+{extend name="common/co/default" /}
+
+{block name="search"}
+	{include file="common/co/search" /}
+{/block}
+
+{block name="toolbar"}
+	{include file="common/co/toolbar" /}
+{/block}
+
+{block name="state"}
+	{include file="common/co/state" /}
+{/block}
+
+{block name="operate"}
+<script type="text/html" id="operateDemo">
+	<div class="layui-clear-space">
+		<button type="button" class="layui-btn layui-btn-xs layui-bg-color" lay-event="create">
+			<i class="layui-icon layui-icon-release"></i>开始投喂
+		</button>
+		<button type="button" class="layui-btn layui-btn-xs layui-bg-color" lay-event="edit">
+			<i class="layui-icon layui-icon-edit"></i>{$langHtml.common.edit}
+		</button>
+		<button type="button" class="layui-btn layui-bg-red layui-btn-xs" lay-event="del">
+			<i class="layui-icon layui-icon-delete"></i>{$langHtml.common.delete}
+		</button>
+	</div>
+</script> 
+{/block}
+
+{block name="script"}
+	<script type="text/javascript">
+		window.extraOptions = {
+			colsInit: [
+				{field: 'article_id', title: '文章分类', width: 250, align: 'center',templet: function(d){
+					var html = '<span>';
+					html += d.article?.title_lm;
+					html += '(' + d.article?.info_count + ')-(已发布 ' + d.article?.used_count + ')'
+					html += '</span>';
+					return html;	
+				} },
+				{field: 'num', title: '今日发布', width: 120, align: 'center',templet: function(d){
+						var html = '<span>';
+						html += d.record_count ?? 0;
+						html += ' / ';
+						html += d.num;
+						html += '</span>';
+						return html;
+					}
+				},
+			],
+			operateWidth: 250
+		}
+	</script>
+	{include file="common/co/script" /}
+{/block}

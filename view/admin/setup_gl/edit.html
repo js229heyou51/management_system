@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.basicSettings}-{$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			{if ($conf.email == true)}
+				<a href="javascript:;" onclick="tab(this,'layui-setup')"><span class="this">{$langHtml.common.basicSettings}</span></a>
+				<a href="javascript:;" onclick="tab(this,'layui-email')"><span>{$langHtml.common.emailSettings}</span></a>
+			{/if}
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div id="layui-setup">
+				<form class="layui-form">
+					{if ($conf.logo == true)}
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.webLogo}</label>
+						<div class="layui-input-block">
+							<div class="upload-list" id="logo_list">
+								{if(!empty($galleryList.logoList))}
+								{volist name="galleryList.logoList" id="item"}
+								<div class="upload_pic_li" data-id="{$item.id}"><span onclick="delImg(this,'logo')"></span><img src="{$item.path}" alt="" class="layui-upload-img"></div>
+								{/volist}
+								{/if}
+							</div><div class="layui-inline">
+								<div class="layui-upload-drag" onclick="uploadTool({elem:'logo',url:'{$Request.root}/Gallery/index',type:'image',title:'图片上传'})">
+									<i class="layui-icon layui-icon-picture"></i> 
+								</div>
+							</div>
+							<input type="hidden" name="logo" id="logo" value="{:json_encode($setup.logo??'')}">
+						</div>
+					</div>
+					{/if}
+					{if ($conf.icon == true)}
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.webIcon}</label>
+						<div class="layui-input-block">
+							<div class="upload-list" id="icon_list">
+								{if(!empty($galleryList.iconList))}
+								{volist name="galleryList.iconList" id="item"}
+								<div class="upload_pic_li" data-id="{$item.id}"><span onclick="delImg(this,'icon')"></span><img src="{$item.path}" alt="" class="layui-upload-img"></div>
+								{/volist}
+								{/if}
+							</div><div class="layui-inline">
+								<div class="layui-upload-drag" onclick="uploadTool({elem:'icon',url:'{$Request.root}/Gallery/index',type:'image',title:'图片上传'})">
+									<i class="layui-icon layui-icon-picture"></i> 
+								</div>
+							</div>
+							<input type="hidden" name="icon" id="icon" value="{:json_encode($setup.icon??'')}">
+						</div>
+					</div>
+					{/if}
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.webTitle}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<textarea class="layui-textarea" id="ym_tit" name="ym_tit">{$setup.ym_tit??''}</textarea>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.webKeyword}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<textarea class="layui-textarea" id="ym_key" name="ym_key">{$setup.ym_key??''}</textarea>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.webDesc}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<textarea class="layui-textarea" id="ym_des" name="ym_des">{$setup.ym_des??''}</textarea>
+						</div>
+					</div>
+					{if ($conf.ym_hcode == true)}
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.webHeadCodeTitle}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<textarea class="layui-textarea" id="ym_hcode" name="ym_hcode">{$setup.ym_hcode??''}</textarea>
+							<div class="layui-form-mid layui-word-aux">{$langHtml.common.webHeadCodeTip}</div>
+						</div>
+					</div>
+					{/if}
+					{if ($conf.ym_bcode == true)}
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.webBodyCodeTitle}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<textarea class="layui-textarea" id="ym_bcode" name="ym_bcode">{$setup.ym_bcode??''}</textarea>
+							<div class="layui-form-mid layui-word-aux">{$langHtml.common.webBodyCodeTip}</div>
+						</div>
+					</div>
+					{/if}
+
+
+					{if ($conf.ym_bot == true)}
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.webBottom}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<textarea id="ym_bot" name="ym_bot" style="width:100%;height:250px;">{$setup.ym_bot??''}</textarea>
+						</div>
+						<script>
+							tinymceEditor('ym_bot');
+						</script>
+					</div>
+					{/if}
+					{if ($conf.map == true)}
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large"><strong>{$langHtml.common.companyMap}</strong></label>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.company}</label>
+						<div class="layui-inline layui-col-xs4">
+							<input type="text" class="layui-input" name="title" placeholder="" value="{$setup.title??''}">
+						</div>
+						<div class="layui-form-mid layui-word-aux"></div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.contact}</label>
+						<!-- <br>公司地址 -->
+						<div class="layui-input-block layui-input-block-large">
+							<textarea class="layui-textarea" id="f_body" name="f_body">{$setup.f_body??''}</textarea>
+							<div class="layui-form-mid layui-word-aux"></div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.companyAddress}</label>
+						<div class="layui-inline layui-col-xs4">
+							<input type="text" class="layui-input" id="address" name="address" placeholder="" value="{$setup.address??''}">
+						</div>
+						<button class="layui-btn layui-bg-color" type="button" onclick="getpo($('#address').val())">{$langHtml.common.obtain}</button>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.mapCoordinates}</label>
+						<div class="layui-inline layui-col-xs4">
+							<input type="text" class="layui-input" name="zuobiao" id="zuobiao" placeholder="" value="{$setup.zuobiao??''}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">&nbsp;</label>
+						<div class="layui-input-block layui-input-block-large">
+							<div id="allmap" style="width: 100%;height: 400px;"></div>
+						</div>
+					</div>
+					{/if}
+
+				</form>
+				<div class="layui-form-item">
+					<div class="layui-input-block layui-input-block-large">
+						<button type="button" class="layui-btn layui-bg-color" onclick="save('{$Request.root}/{$route}/edit',1)">{$langHtml.common.save}</button>
+					</div>
+				</div>
+			</div>
+			{if ($conf.email == true)}
+			<div class="layui-box" id="layui-email" style="display:none;">
+				<form class="layui-form">
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.outbox}</label>
+						<div class="layui-inline layui-col-xs4">
+							<input type="text" class="layui-input" name="s_email" placeholder="" value="{$setup.s_email??''}">
+						</div>
+						<div class="layui-form-mid layui-word-aux"></div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.outboxUser}</label>
+						<div class="layui-inline layui-col-xs4">
+							<input type="text" class="layui-input" name="s_username" placeholder="" value="{$setup.s_username??''}">
+						</div>
+						<div class="layui-form-mid layui-word-aux"></div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.outboxPwd}</label>
+						<div class="layui-inline layui-col-xs4">
+							<input type="text" class="layui-input" name="s_password" placeholder="" value="{$setup.s_password??''}">
+						</div>
+						<div class="layui-form-mid layui-word-aux"></div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.outboxSmtp}</label>
+						<div class="layui-inline layui-col-xs4">
+							<input type="text" class="layui-input" name="s_server" placeholder="" value="{$setup.s_server??''}">
+						</div>
+						<div class="layui-form-mid layui-word-aux">{$langHtml.common.outboxSmtpTip}</div>
+					</div>
+					{if ($conf.r_email == true)}
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.inbox}</label>
+						<div class="layui-inline layui-col-xs4">
+							<textarea class="layui-textarea" id="r_email" name="r_email">{$setup.r_email??''}</textarea>
+						</div>
+					</div>
+					{/if}
+				</form>
+				<div class="layui-form-item">
+					<div class="layui-input-block layui-input-block-large">
+						<button type="button" class="layui-btn layui-bg-color" onclick="save('{$Request.root}/{$route}/edit',1)">{$langHtml.common.save}</button>
+					</div>
+				</div>
+			</div>
+			{/if}
+		</div>
+		{if ($conf.map == true)}
+		<!-- <script type="text/javascript" src="http://api.map.baidu.com/api?key=&v=1.4&services=true"></script> -->
+		<script type="text/javascript" src="//api.map.baidu.com/api?v=1.0&&type=webgl&ak=eDx5mde33mMgv3ks9Tw2NtRNpRm2SJ2m"></script>
+		<script type="text/javascript">
+			var map = new BMapGL.Map("allmap");
+			var point = new BMapGL.Point(116.331398,39.897445);
+			map.centerAndZoom(point,12);
+			map.enableKeyboard = true;
+			
+
+			map.addControl(new BMapGL.ScaleControl()); // 添加比例尺控件
+			// map.addControl(new BMapGL.ZoomControl()); // 添加缩放控件
+			// map.addControl(new BMapGL.CityListControl()); // 添加城市列表控件
+			map.enableScrollWheelZoom(); // 允许滚轮缩放
+		</script>
+		<script type="text/javascript">
+			layui.use(function(){
+				$ = layui.jquery
+			})
+			// 将地址解析结果显示在地图上,并调整地图视野
+			function getpo(str){
+				var myGeo = new BMapGL.Geocoder();
+				myGeo.getPoint(str, function(point){
+					if (point) {
+						showpo(point);
+					}else{
+						alert("{$langHtml.common.addressRes}");
+					}
+				}, "{$langHtml.common.beiJing}");
+			}
+			function showpo(point){
+				map.clearOverlays(); 
+				layui.jquery('#zuobiao').val(point.lng+","+point.lat);
+				map.centerAndZoom(point, 20);
+				marker=new BMapGL.Marker(point);
+				map.addOverlay(marker);
+				var opts = {
+					width : 'auto',     // 信息窗口宽度
+					height: 'auto',     // 信息窗口高度
+					title : "{$setup.title??''}" , // 信息窗口标题
+				}
+				var content = '<div class="layui-box" style="padding: 5px 5px 20px;"><h3>{$setup.title??''}</h3><p>{$setup.mapf_body | raw}</p></div>';
+				var infoWindow = new BMapGL.InfoWindow(content);  // 创建信息窗口对象 
+				marker.addEventListener("click", function(){
+					map.openInfoWindow(infoWindow, point); //开启信息窗口
+				}); 
+				marker.enableDragging();//可拖动
+				marker.addEventListener("dragend",getAttr);
+				function getAttr(){
+					var p = marker.getPosition();       //获取marker的位置
+					layui.jquery('#zuobiao').val(p.lng+","+p.lat); 
+				}
+			}
+
+		</script>
+		{/if}
+		{if($conf.map == true)}
+		<script type="text/javascript">
+			var point = new BMapGL.Point({$setup.zuobiao});
+			showpo(point);
+		</script>
+		{/if}
+	</body>
+</html>
+{include file="public/footer" /}

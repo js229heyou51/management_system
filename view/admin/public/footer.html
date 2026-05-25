@@ -1,0 +1,61 @@
+<div class="thinkaibox">
+	<div class="thinkaiicon" lay-on="thinkai-open">
+		<i class="layui-icon layui-icon-reply-fill"></i>
+	</div>
+</div>
+<style>
+:root{
+	--bs-primary: #3c60FF;
+}
+.thinkaibox{
+	position: fixed;
+	bottom: 20px;
+	left: auto;
+	right: 20px;
+	z-index: 4000;
+	background: var(--bs-primary);
+	width: 60px;
+	height: 60px;
+	color: rgb(255, 255, 255);
+	border-radius: 50%;
+	overflow: hidden;
+	cursor: pointer;
+}
+.thinkaiicon{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.thinkaibox i{
+	font-size: 30px
+}
+</style>
+<script>
+	layui.use(function(){
+		const layer = layui.layer;
+		const util = layui.util;
+
+		util.on({
+			'thinkai-open': function(obj){
+				const elem = obj[0];
+				layer.open({
+					type: 2,
+					// offset: 'rb',
+					anim: 'slideUp', // 从右往左
+					offset: ['calc(100% - 800px)', 'calc(100% - 540px)'],
+					area: ['520px', '710px'],
+					shade: 0.1,
+					title: false,
+					shadeClose: true,
+					id: 'thinkAiContent',
+					content: '{$Request.root}/thinkai/index',
+					success: function(){
+						
+					},
+				})
+			}
+		})
+	})
+</script>

@@ -1,0 +1,62 @@
+{extend name="common/co/edit" /}
+
+{block name="header"}
+	{include file="common/co/header" /}
+{/block}
+{block name="content"}
+	
+	{assign name="hasExtraContent" value="true" /}
+	{assign name="extraContent" value='
+		<div class="layui-form-item">
+			<label class="layui-form-label">参数列表</label>
+			<div class="layui-input-block" id="param_result">
+				
+			</div>
+		</div>
+	' /}
+	{include file="common/co/information" /}
+	{if ($conf.co.info == true)}
+	{include file="common/co/info" /}
+	{/if}
+	{if ($conf.co.file == true)}
+	{include file="common/co/file" /}
+	{/if}
+	{if ($conf.co.seo == true)}
+	{include file="common/co/seo" /}
+	{/if}
+{/block}
+{block name="script"}
+<script type="text/javascript">
+	layui.use(function(){
+		var form = layui.form;
+		layer = layui.layer;
+		$ = layui.jquery;
+
+		form.on('select(lm)',function(data){
+			fecthParamData(data.elem.value)
+		})
+
+		fecthParamData({$find.lm??''})
+
+		function fecthParamData(lm){
+			let paramList = {:$find['param_json']??'[]'};
+
+			$.post('{$Request.root}/ProCo/getParamData',{'lm':lm},function(res){
+				if(res.code == 200){
+					let html = '';
+					for(let i = 0; i < res.list.length; i ++){
+						html += '<div class="layui-inline"><label class="layui-form-label layui-form-label-auto pl0">'+res.list[i].title+'</label><div class="layui-inline"><select name="param[]"><option value="">请选择</option>';
+						for(j = 0 ; j < res.list[i].children.length; j++){
+							html += '<option '+(paramList.includes(String(res.list[i].children[j].id)) ? 'selected': '')+' value="'+res.list[i].children[j].id+'">'+res.list[i].children[j].title+'</option>'
+						}
+						html += '</select></div></div>';
+					}
+					$('#param_result').html(html);
+					form.render();
+				}
+
+			},'json');
+		}
+	});
+</script>
+{/block}

@@ -1,0 +1,197 @@
+{extend name="common/lm/edit" /}
+
+{block name="header"}
+	{include file="common/lm/header" /}
+{/block}
+{block name="content"}
+	<div id="layui-information">
+		<form class="layui-form">
+			<input type="hidden" name="id_lm" value="{$find.id_lm}">
+			{if ($conf.sy.need_lm == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.category}</label>
+				<div class="layui-input-block">
+					<select name="fid" id="fid">
+						<option value=0>{$langHtml.common.primaryCategory}</option>
+						{:categoryTree($category,0,'',$find.fid??'')}
+					</select>
+				</div>
+			</div>
+			{/if}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.categoryName}</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" name="title_lm" placeholder="{$langHtml.common.enter}{$langHtml.common.categoryName}" value="{$find.title_lm??''}">
+				</div>
+			</div>
+			{if ($conf.lm.apname_lm == true)}
+				<div class="layui-form-item">
+					<label class="layui-form-label">{$langHtml.common.apname}</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" name="apname_lm" placeholder="{$langHtml.common.enter}{$langHtml.common.apname}" value="{$find.apname_lm??''}">
+					</div>
+					<div class="layui-form-mid layui-word-aux">{$langHtml.common.apnameTip}</div>
+				</div>
+				{/if}{if ($conf.lm.url_lm == true)}
+				<div class="layui-form-item">
+					<label class="layui-form-label">{$langHtml.common.link}</label>
+					<div class="layui-input-block">
+						<input type="text" class="layui-input" name="url_lm" placeholder="{$langHtml.common.enter}{$langHtml.common.link}" value="{$find.url_lm??''}">
+					</div>
+				</div>
+				{/if}{if ($conf.lm.img_sl_lm == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.picture}</label>
+				<div class="layui-input-block">
+					<div class="layui-inline">
+						<button type="button" class="layui-btn" id="img_sl_lm">{$langHtml.common.uploadImg}</button>
+					</div>
+					<div class="layui-inline">
+						<div class="layui-upload-list" id="add_img_sl_lm">
+							{if(!empty($find.img_sl_lm))}
+							<div class="upload_pic_li">
+								<span></span>
+								<img src="{$find.img_sl_lm}" class="layui-upload-img">
+								<input type="hidden" name="img_sl_lm" value="{$find.img_sl_lm}"/>
+							</div>
+							{/if}
+						</div>
+					</div>
+				</div>
+				<script type="text/javascript">
+					imgUpload('img_sl_lm','{$Request.root}/HomeLm/upload_img');
+				</script>
+			</div>
+			{/if}{if ($conf.lm.f_body_lm == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.desc}</label>
+				<div class="layui-input-block">
+					<textarea class="layui-textarea" id="f_body_lm" name="f_body_lm" placeholder="{$langHtml.common.desc}">{$find.f_body_lm??''}</textarea>
+				</div>
+			</div>
+			{/if}{if ($conf.lm.z_body_lm == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.det}</label>
+				<div class="layui-input-block">
+					<textarea id="z_body_lm" name="z_body_lm" style="width:100%;height:250px;">{$find.z_body_lm??''}</textarea>
+				</div>
+				<script>
+					tinymceEditor('z_body_lm');
+				</script>
+			</div>
+			{/if}{if ($conf.lm.con_att_lm == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.attribute}</label>
+				<div class="layui-input-block">
+					<input type="checkbox" class="layui-input" lay-filter="show" lay-skin="primary" title="{$langHtml.common.displaySettings}" >
+				</div>
+			</div>
+			<div id="show" style="display: none;">
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<div class="layui-form-item mb0">
+							<input type="radio" name="add_xx" value="yes" {if condition="!empty($find.add_xx) && $find.add_xx == 'yes'"}checked{/if} title="{$langHtml.common.canAddInfo}">
+							<input type="radio" name="add_xx" value="no" {if condition="!empty($find.add_xx) && $find.add_xx == 'no'"}checked{/if} title="{$langHtml.common.cannotAddInfo}">
+						</div>
+						<div class="layui-form-item mb0">
+							<input type="radio" name="add_xia" value="yes" {if condition="!empty($find.add_xia) && $find.add_xia == 'yes'"}checked{/if} title="{$langHtml.common.canAddCategory}">
+							<input type="radio" name="add_xia" value="no" {if condition="!empty($find.add_xia) && $find.add_xia == 'no'"}checked{/if} title="{$langHtml.common.cannotAddCategory}">
+						</div>
+						<div class="layui-form-item mb0">
+							<input type="radio" name="con_att" value="1" {if condition="!empty($find.con_att) && $find.con_att == 1"}checked{/if} title="{$langHtml.common.fullControl}">
+							<input type="radio" name="con_att" value="2" {if condition="!empty($find.con_att) && $find.con_att == 2"}checked{/if} title="{$langHtml.common.canOnlyReadAndModify}">
+							<input type="radio" name="con_att" value="3" {if condition="!empty($find.con_att) && $find.con_att == 3"}checked{/if} title="{$langHtml.common.canOnlyRead}">
+						</div>
+						<div class="layui-form-item mb0">
+							<input type="radio" name="info_apname" value="yes" {if (!empty($find.info_apname))} {:$find.info_apname == 'yes' ? 'checked' : '';} {/if} title="{$langHtml.common.use}">
+							<input type="radio" name="info_apname" value="no" {if (!empty($find.info_apname))} {:$find.info_apname == 'no' ? 'checked' : '';} {/if} title="{$langHtml.common.notUse}"> <div class="layui-form-mid layui-form-midd">{$langHtml.common.apname}</div>
+						</div>
+						<div class="layui-form-item mb0">
+							<input type="radio" name="info_keyword" value="yes" {if (!empty($find.info_keyword))} {:$find.info_keyword == 'yes' ? 'checked' : '';} {/if} title="{$langHtml.common.use}">
+							<input type="radio" name="info_keyword" value="no" {if (!empty($find.info_keyword))} {:$find.info_keyword == 'no' ? 'checked' : '';} {/if} title="{$langHtml.common.notUse}"> <div class="layui-form-mid layui-form-midd">{$langHtml.common.keyword}</div>
+						</div>
+						<div class="layui-form-item mb0">
+							<input type="radio" name="info_link" value="yes" {if (!empty($find.info_link))} {:$find.info_link == 'yes' ? 'checked' : '';} {/if} title="{$langHtml.common.use}">
+							<input type="radio" name="info_link" value="no" {if (!empty($find.info_link))} {:$find.info_link == 'no' ? 'checked' : '';} {/if} title="{$langHtml.common.notUse}"> <div class="layui-form-mid layui-form-midd">{$langHtml.common.link}</div>
+						</div>
+						<div class="layui-form-item mb0">
+							<input type="radio" name="info_f_body" value="yes" {if (!empty($find.info_f_body))} {:$find.info_f_body == 'yes' ? 'checked' : '';} {/if} title="{$langHtml.common.use}">
+							<input type="radio" name="info_f_body" value="no" {if (!empty($find.info_f_body))} {:$find.info_f_body == 'no' ? 'checked' : '';} {/if} title="{$langHtml.common.notUse}"> <div class="layui-form-mid layui-form-midd">{$langHtml.common.desc}</div>
+						</div>
+						<div class="layui-form-item mb0">
+							<input type="radio" name="info_z_body" value="yes" {if (!empty($find.info_z_body))} {:$find.info_z_body == 'yes' ? 'checked' : '';} {/if} title="{$langHtml.common.use}">
+							<input type="radio" name="info_z_body" value="no" {if (!empty($find.info_z_body))} {:$find.info_z_body == 'no' ? 'checked' : '';} {/if} title="{$langHtml.common.notUse}"> <div class="layui-form-mid layui-form-midd">{$langHtml.common.det}</div>
+						</div>
+						<div class="layui-form-item mb0">
+							<input type="radio" name="info_img_sl" value="yes" {if (!empty($find.info_img_sl))} {:$find.info_img_sl == 'yes' ? 'checked' : '';} {/if} title="{$langHtml.common.use}" lay-filter="img">
+							<input type="radio" name="info_img_sl" value="no" {if (!empty($find.info_img_sl))} {:$find.info_img_sl == 'no' ? 'checked' : '';} {/if} title="{$langHtml.common.notUse}"  lay-filter="img"> <div class="layui-form-mid layui-form-midd">{$langHtml.common.picture}</div>
+						</div>
+						<div class="layui-form-item mb0">
+							<input type="radio" name="info_pic_sl" value="yes" {if (!empty($find.info_pic_sl))} {:$find.info_pic_sl == 'yes' ? 'checked' : '';} {/if} title="{$langHtml.common.use}" lay-filter="pic">
+							<input type="radio" name="info_pic_sl" value="no" {if (!empty($find.info_pic_sl))} {:$find.info_pic_sl == 'no' ? 'checked' : '';} {/if} title="{$langHtml.common.notUse}" lay-filter="pic"> <div class="layui-form-mid layui-form-midd">{$langHtml.common.picture} 2</div>
+						</div>
+						<div class="layui-form-item mb0">
+							<input type="radio" name="info_fil_sl" value="yes" {if (!empty($find.info_fil_sl))} {:$find.info_fil_sl == 'yes' ? 'checked' : '';} {/if} title="{$langHtml.common.use}">
+							<input type="radio" name="info_fil_sl" value="no" {if (!empty($find.info_fil_sl))} {:$find.info_fil_sl == 'no' ? 'checked' : '';} {/if} title="{$langHtml.common.notUse}"> <div class="layui-form-mid layui-form-midd">{$langHtml.common.file}</div>
+						</div>
+						<div class="layui-form-item mb0">
+							<input type="radio" name="info_vid_sl" value="yes" {if (!empty($find.info_vid_sl))} {:$find.info_vid_sl == 'yes' ? 'checked' : '';} {/if} title="{$langHtml.common.use}">
+							<input type="radio" name="info_vid_sl" value="no" {if (!empty($find.info_vid_sl))} {:$find.info_vid_sl == 'no' ? 'checked' : '';} {/if} title="{$langHtml.common.notUse}"> <div class="layui-form-mid layui-form-midd">{$langHtml.common.video}</div>
+						</div>
+						<div class="layui-form-item mb0">
+							<input type="radio" name="info_duotu" value="yes" {if (!empty($find.info_duotu))} {:$find.info_duotu == 'yes' ? 'checked' : '';} {/if} title="{$langHtml.common.use}">
+							<input type="radio" name="info_duotu" value="no" {if (!empty($find.info_duotu))} {:$find.info_duotu == 'no' ? 'checked' : '';} {/if} title="{$langHtml.common.notUse}"> <div class="layui-form-mid layui-form-midd">{$langHtml.common.uploadMultiple}</div>
+						</div>
+						<div class="layui-form-item mb0">
+							<input type="radio" name="info_info" value="yes" {if (!empty($find.info_info))} {:$find.info_info == 'yes' ? 'checked' : '';} {/if} title="{$langHtml.common.use}">
+							<input type="radio" name="info_info" value="no" {if (!empty($find.info_info))} {:$find.info_info == 'no' ? 'checked' : '';} {/if} title="{$langHtml.common.notUse}"> <div class="layui-form-mid layui-form-midd">{$langHtml.common.relatedInformation}</div>
+						</div>
+						<div class="layui-form-item mb0">
+							<input type="radio" name="info_file" value="yes" {if (!empty($find.info_file))} {:$find.info_file == 'yes' ? 'checked' : '';} {/if} title="{$langHtml.common.use}">
+							<input type="radio" name="info_file" value="no" {if (!empty($find.info_file))} {:$find.info_file == 'no' ? 'checked' : '';} {/if} title="{$langHtml.common.notUse}"> <div class="layui-form-mid layui-form-midd">{$langHtml.common.relatedFile}</div>
+						</div>
+						<div class="layui-form-item mb0">
+							<input type="radio" name="info_wtime" value="yes" {if (!empty($find.info_wtime))} {:$find.info_wtime == 'yes' ? 'checked' : '';} {/if} title="{$langHtml.common.use}">
+							<input type="radio" name="info_wtime" value="no" {if (!empty($find.info_wtime))} {:$find.info_wtime == 'no' ? 'checked' : '';} {/if} title="{$langHtml.common.notUse}"> <div class="layui-form-mid layui-form-midd">{$langHtml.common.releaseTime}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{/if}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.sort}</label>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" name="px" placeholder="{$langHtml.common.sort}" value="{$find.px??'100'}" >
+				</div>
+			</div>
+
+
+		</form>
+		<div class="layui-form-item" style="margin-top:10px;">
+			<div class="layui-input-block">
+				<button type="button" class="layui-btn layui-bg-color" onclick="save()">{$langHtml.common.save}</button>
+			</div>
+		</div>
+	</div>
+
+	{if ($conf.lm.seo_lm == true)}
+	{include file="common/lm/seo" /}
+	{/if}
+{/block}
+{block name="script"}
+<script type="text/javascript">
+	layui.use(['layer','form'],function(){
+		var form = layui.form;
+		layer = layui.layer;
+		$ = layui.jquery;
+		form.on('checkbox(show)', function(data){
+			if(data.elem.checked == true){
+				$('#show').show();
+			}else{
+				$('#show').hide();
+			}
+		})
+		
+	})
+</script>
+{/block}

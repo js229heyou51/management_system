@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.navigation} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	
+	<body style="padding:10px; box-sizing: border-box;">
+		<form class="layui-form">
+			<input type="hidden" name="id" value="{$find.id}">
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.superiorNavigation}</label>
+				<div class="layui-input-block">
+					<select name="fid" id="fid" lay-filter="fid" onchange="changeValue(this.value)">
+						<option value=0>{$langHtml.common.primaryNavigation}</option>
+						{if !empty($nav)}
+							{foreach $nav as $nv}
+								<option value="{$nv.id}" {:$find.fid == $nv.id ? 'selected' : '';}>{$nv.title}</option>
+							{/foreach}
+						{/if}
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item" id="ty_div" >
+				<label class="layui-form-label">{$langHtml.common.navType}</label>
+				<div class="layui-input-block">
+					<input type="radio" name="ty" value="1" {:$find.ty == '1' ? 'checked' : '';} title="{$langHtml.common.NormalNavigation}">
+					<input type="radio" name="ty" value="2" {:$find.ty == '2' ? 'checked' : '';} title="{$langHtml.common.SettingNavigation}">
+					<input type="radio" name="ty" value="3" {:$find.ty == '3' ? 'checked' : '';} title="{$langHtml.common.SEONavigation}">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<span>
+					<label class="layui-form-label">{$langHtml.common.navName}</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" name="title" placeholder="{$langHtml.common.enter}{$langHtml.common.navName}" value="{$find.title}">
+					</div>
+				</span>
+			</div>
+
+			<div class="layui-form-item">
+				<span>
+					<label class="layui-form-label">{$langHtml.common.icon}</label>
+					<div class="layui-input-inline">
+						<input type="hidden" name="icon" value="{$find.icon}" id="icon">
+						<button type="button" id="icon-dropdown" class="layui-btn layui-btn-lg layui-btn-primary layui-border"><i class="layui-icon {$find.icon??''}"></i></button>
+					</div>
+				</span>
+			</div>
+			<div class="layui-form-item" id="link_url_div">
+				<label class="layui-form-label">{$langHtml.common.navLink}</label>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" name="link_url" placeholder="{$langHtml.common.enter}{$langHtml.common.navLink}" value="{$find.link_url}">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.navState}</label>
+				<div class="layui-input-block">
+					<input type="radio" name="pass" value="1" {:$find.pass == '1' ? 'checked' : '';} title="{$langHtml.common.use}">
+					<input type="radio" name="pass" value="0" {:$find.pass == '0' ? 'checked' : '';} title="{$langHtml.common.stop}">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.sort}</label>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" name="px" placeholder="{$langHtml.common.sort}" value="{$find.px}" >
+				</div>
+			</div>
+		</form>
+		<div class="layui-form-item" style="margin-top:10px;">
+			<div class="layui-input-block">
+				<button type="button" class="layui-btn layui-bg-color" onclick="save('{$Request.root}/{$route}/navEdit')">{$langHtml.common.save}</button>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	// layui.use(['layer','form','jquery'],function(){
+	// 	var form = layui.form;
+	// 	layer = layui.layer;
+	// 	$ = layui.jquery;
+	// 	changeValue({$find.fid})
+	// });
+
+	layui.use(function(){
+		var form = layui.form;
+		$ = layui.jquery;
+
+		var dropdown = layui.dropdown;
+
+		var dropdownHtml = '';
+		var iconList = {:json_encode($iconList)};
+		for (var i = 0; i < iconList.length; i++) {
+			dropdownHtml += '<div class="layui-col-xs3" onclick=selectIcon("'+ iconList[i]['keyword'] +'")>';
+			dropdownHtml += '<div style="text-align:center;">';
+			dropdownHtml += '<i class="layui-icon ' + iconList[i]['keyword'] + '" style="font-size: 32px;"></i>';
+			dropdownHtml += '</div>';
+			dropdownHtml += '</div>';
+		}
+
+
+		dropdown.render({
+			elem: '#icon-dropdown',
+			content: ['<div class="layui-panel" style="padding: 16px;">',
+				'<div class="layui-row">',
+				dropdownHtml,
+				'</div>',
+				'</div>'].join(''),
+			style: 'height: 200px; width: 418px; box-shadow: 1px 1px 30px rgb(0 0 0 / 12%);'
+		})
+
+		changeValue({$find.fid})
+	})
+	function selectIcon(icon){
+		$('#icon').val(icon);
+		$('#icon-dropdown').children().remove();
+		$('#icon-dropdown').html('<i class="layui-icon '+ icon +'"></i>');
+	}
+
+	function changeValue(val){
+		if(val == 0){
+			$('#ty_div').hide();
+			$('#title2_div').hide();
+			$('#link_url_div').hide();
+		}else{
+			$('#ty_div').show();
+			$('#title2_div').show();
+			$('#link_url_div').show();
+		}
+	}
+</script>
+{include file="public/footer" /}

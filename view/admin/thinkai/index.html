@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	{include file="public/head" /}
+	<style>
+		body {
+			background: #f5f5f5;
+		}
+		.chat-container {
+			max-width: 100%;
+			margin: 0 auto;
+			background: #fff;
+			border-radius: 8px;
+			box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+			overflow: hidden;
+		}
+		.chat-header {
+			background: #1E9FFF;
+			padding: 15px 20px;
+			color: white;
+			font-size: 18px;
+			font-weight: bold;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+		.chat-header i {
+			font-size: 24px;
+		}
+		.chat-messages {
+			height: 500px;
+			overflow-y: auto;
+			padding: 20px;
+			background: #fafafa;
+		}
+		.message {
+			margin-bottom: 20px;
+			display: flex;
+			align-items: flex-start;
+			gap: 10px;
+		}
+		.message.user {
+			flex-direction: row-reverse;
+		}
+		.avatar {
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			background: #e6e6e6;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 20px;
+			flex-shrink: 0;
+		}
+		.message.user .avatar {
+			background: #5FB878;
+			color: white;
+		}
+		.message.assistant .avatar {
+			background: #1E9FFF;
+			color: white;
+		}
+		.bubble {
+			max-width: 70%;
+			padding: 10px 15px;
+			border-radius: 12px;
+			background: white;
+			box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+			position: relative;
+			word-wrap: break-word;
+		}
+		.message.user .bubble {
+			background: #1E9FFF;
+			color: white;
+		}
+		.message.assistant .bubble {
+			background: #f0f0f0;
+			color: #333;
+		}
+		.bubble .time {
+			font-size: 12px;
+			color: #999;
+			margin-top: 5px;
+			text-align: right;
+		}
+		.message.user .bubble .time {
+			color: rgba(255,255,255,0.7);
+		}
+		.chat-input-area {
+			padding: 15px 20px;
+			background: #fff;
+			border-top: 1px solid #eee;
+			display: flex;
+			gap: 10px;
+			align-items: flex-end;
+		}
+		.chat-input-area .layui-input {
+			flex: 1;
+			resize: none;
+			min-height: 70px;
+		}
+		.chat-input-area .layui-btn {
+			height: 70px;
+			line-height: 70px;
+			padding: 0 25px;
+		}
+		.typing {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			color: #999;
+			font-size: 14px;
+			margin-bottom: 20px;
+		}
+		.typing i {
+			font-size: 20px;
+		}
+		.scroll-to-bottom {
+			position: sticky;
+			bottom: 20px;
+			left: 100%;
+			transform: translateX(-40px);
+			background: #fff;
+			border-radius: 20px;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+			cursor: pointer;
+			width: 36px;
+			height: 36px;
+			text-align: center;
+			line-height: 36px;
+			margin-top: 10px;
+			float: right;
+		}
+	</style>
+</head>
+<body>
+<div class="chat-container">
+	<div class="chat-header">
+		<i class="layui-icon layui-icon-dialogue"></i>
+		<span>AI 助手 · 随时为您服务</span>
+	</div>
+	<div class="chat-messages" id="chatMessages">
+		<!-- 初始欢迎消息 -->
+		<div class="message assistant">
+			<div class="avatar"><i class="layui-icon layui-icon-user"></i></div>
+			<div class="bubble">
+				你好！我是 AI 助手，有什么可以帮你的吗？<br>
+				<span class="time">刚刚</span>
+			</div>
+		</div>
+	</div>
+	<div class="chat-input-area">
+		<textarea id="messageInput" class="layui-textarea layui-input" placeholder="输入消息... (Enter 发送，Shift+Enter 换行)"></textarea>
+		<button id="sendBtn" class="layui-btn layui-btn-primary"><i class="layui-icon layui-icon-send"></i> 发送</button>
+	</div>
+</div>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/layui@2.9.8/dist/layui.js"></script> -->
+<script>
+	layui.use(function(){
+		var layer = layui.layer;
+		var util = layui.util;
+		var $ = layui.$;
+
+		// 全局变量
+		var $messages = $('#chatMessages');
+		var $input = $('#messageInput');
+
+		let currentTypingTimer = null;       // 当前打字机计时器
+		let currentTypingMessageDiv = null;  // 正在打字的消息DOM元素（用于停止后移除）
+		let isTyping = false;                // 是否正在打字中
+
+		// 格式化时间
+		function getTime() {
+			var now = new Date();
+			return now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+		}
+		// 创建消息 DOM 元素（不填充内容）
+		function createMessageElement(role, content) {
+			var $class = role !== 'assistant' ? 'user' : 'assistant';
+			const $div = $('<div class="message ' + $class + '"></div>');
+			const avatar = role !== 'assistant' ? '<i class="layui-icon layui-icon-username"></i>' : '<i class="layui-icon layui-icon-user"></i>';
+			$div.append('<div class="avatar">' + avatar + '</div>');
+			const $bubble = $('<div class="bubble"></div>');
+			// 为了便于逐字追加，将内容区域单独放在一个 span 或 div 中
+			$bubble.html('<div class="content"></div><div class="time">' + (content ? getTime() : '') + '</div>');
+			$div.append($bubble);
+			return $div;
+		}
+
+		// 一次性显示消息（原逻辑）
+		function appendMessageElement(role, content) {
+			const $div = createMessageElement(role, content);
+			$div.find('.content').text(content); // 一次性填充
+			$messages.append($div);
+		}
+
+		function addMessage(role, content, isTyping = false, speed = 50){
+			if (role !== 'assistant') {
+				// 用户消息直接一次性显示
+				appendMessageElement(role, content);
+				scrollToBottom();
+				return;
+			}
+			if (!isTyping) {
+				// 不启用打字效果，直接显示
+				appendMessageElement(role, content);
+				scrollToBottom();
+				return;
+			}
+			// 启用打字效果：先创建一个空的气泡，然后逐字追加
+			const $messageDiv = createMessageElement(role, ''); // 初始内容为空
+			$messages.append($messageDiv);
+			const $bubble = $messageDiv.find('.bubble .content'); // 假设气泡内有一个专门放内容的容器
+			// 如果气泡结构中没有单独的 .content，需要调整选择器，下面提供一种通用写法
+
+			let index = 0;
+			const chars = content.split('');
+			const timer = setInterval(() => {
+				if (index < chars.length) {
+					$bubble.append(chars[index]);
+					index++;
+					// 每次添加字符后滚动到底部
+					scrollToBottom();
+				} else {
+					clearInterval(timer);
+					// 可选：打字完成后添加时间戳
+					$messageDiv.find('.time').text(getTime());
+					scrollToBottom();
+				}
+			}, speed);
+		}
+
+		// 打字机效果添加消息
+		function addMessageWithTyping(role, content, speed = 50) {
+			if (role !== 'assistant') {
+				// 用户消息直接显示
+				appendMessageElement(role, content);
+				return;
+			}
+			// 创建空消息容器
+			const $div = $('<div class="message assistant"></div>');
+			$div.html('<div class="avatar"><i class="layui-icon layui-icon-user"></i></div>' +
+					  '<div class="bubble"><span class="typing-content"></span><div class="time"></div></div>');
+			$messages.append($div);
+			const $contentSpan = $div.find('.typing-content');
+			const $timeSpan = $div.find('.time');
+			
+			let i = 0;
+			const chars = content.split('');
+			const timer = setInterval(() => {
+				if (i < chars.length) {
+					$contentSpan.append(chars[i]);
+					i++;
+					scrollToBottom();
+				} else {
+					clearInterval(timer);
+					$timeSpan.text(getTime());
+					scrollToBottom();
+				}
+			}, speed);
+		}
+
+		function startTypingEffect(content, onComplete) {
+			// 清除之前的计时器（防止冲突）
+			if (currentTypingTimer) clearInterval(currentTypingTimer);
+			if (currentTypingMessageDiv) currentTypingMessageDiv.remove();
+			
+			isTyping = true;
+			// 修改发送按钮为“停止”
+			changeSendButtonToStop();
+			
+			// 创建空消息容器
+			const $div = $('<div class="message assistant"></div>');
+			$div.html('<div class="avatar"><i class="layui-icon layui-icon-user"></i></div>' +
+					  '<div class="bubble"><div class="typing-content"></div><div class="time"></div></div>');
+			$messages.append($div);
+			currentTypingMessageDiv = $div;
+			const $contentSpan = $div.find('.typing-content');
+			const $timeSpan = $div.find('.time');
+			// 
+			const tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			const plainText = tempDiv.textContent || tempDiv.innerText || ''; // 提取纯文本
+			
+			let i = 0;
+			const chars = plainText.split('');
+			const speed = 50; // 毫秒/字
+			currentTypingTimer = setInterval(() => {
+				if (i < chars.length) {
+					$contentSpan.append(chars[i]);
+					i++;
+					// scrollToBottom();
+				} else {
+					// 打字完成
+					clearInterval(currentTypingTimer);
+					currentTypingTimer = null;
+					currentTypingMessageDiv = null;
+					isTyping = false;
+					$div.find('.typing-content').html(`<div class="content markdown-body">${content}</div>`)
+					$timeSpan.text(getTime());
+					// 恢复发送按钮
+					if (onComplete) onComplete();
+				}
+			}, speed);
+		}
+
+
+		// 简单的XSS防护
+		function escapeHtml(str) {
+			if (!str) return '';
+			return String(str).replace(/[&<>]/g, function(m) {
+				if (m === '&') return '&amp;';
+				if (m === '<') return '&lt;';
+				if (m === '>') return '&gt;';
+				return m;
+			}).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+				return c;
+			});
+		}
+
+		// 滚动到底部
+		function scrollToBottom() {
+			var $chatMessages = $('.chat-messages');
+			$chatMessages.animate({ scrollTop: $chatMessages[0].scrollHeight }, 200);
+		}
+
+		// 显示“正在输入”效果
+		function showTyping() {
+			var $typing = $('<div class="typing" id="typingIndicator"><i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate"></i> 正在输入...</div>');
+			$messages.append($typing);
+			scrollToBottom();
+			return $typing;
+		}
+
+		// 移除“正在输入”
+		function removeTyping($typing) {
+			if ($typing && $typing.length) $typing.remove();
+		}
+
+		// 模拟 AI 回复（可替换为真实接口）
+		function getAIReply(userMsg) {
+			return new Promise((resolve, reject) => {
+				$.post('{$Request.root}/{$route}/aiApi',{content: userMsg},function(res){
+					if (res && res.code === 200) {
+						resolve(res.reply || '抱歉，我没有理解您的问题。');
+					} else {
+						// 业务失败时，返回默认提示
+						resolve('服务暂时不可用，请稍后再试。');
+					}
+				},'json').fail(function(xhr, status, error) {
+					// 网络或服务器错误
+					console.error('AI接口请求失败:', error);
+					resolve('网络开小差了，请检查网络后重试。');
+				});
+			})
+		}
+
+		function stopCurrentTyping() {
+			if (currentTypingTimer) {
+				clearInterval(currentTypingTimer);
+				currentTypingTimer = null;
+			}
+		}
+
+		function stopTypingAndReset() {
+			if (currentTypingTimer) {
+				clearInterval(currentTypingTimer);
+				currentTypingTimer = null;
+			}
+			if (currentTypingMessageDiv) {
+				// currentTypingMessageDiv.remove();
+				currentTypingMessageDiv = null;
+			}
+			isTyping = false;
+			resetSendButtonToNormal();
+		}
+		function changeSendButtonToStop() {
+			var $btn = $('#sendBtn');
+			$btn.text('停止').removeClass('layui-btn-primary').addClass('layui-btn-danger');
+			// 注意：按钮的点击事件已经在外部绑定，发送函数会根据 isTyping 判断，无需额外修改事件。
+			// 但为了用户体验，也可以临时解绑并重新绑定，但上面的 sendMessage 已经通过 if(isTyping) 处理了。
+		}
+
+		function resetSendButtonToNormal() {
+			var $btn = $('#sendBtn');
+			$btn.text('发送').removeClass('layui-btn-danger').addClass('layui-btn-primary');
+		}
+
+		// 发送消息主逻辑
+		async function sendMessage() {
+			// 如果正在打字，则停止打字并返回（不发送新消息）
+			if (isTyping) {
+				stopTypingAndReset();
+				return false;
+			}
+			var msg = $input.val().trim();
+			if (msg === '') {
+				layer.msg('请输入内容', { icon: 2 });
+				return;
+			}
+			// 清空输入框
+			$input.val('');
+			// 添加用户消息
+			addMessage('{$role ?? "user"}', msg);
+			// 显示正在输入
+			var $typing = showTyping();
+			// 获取 AI 回复
+			var reply = await getAIReply(msg);
+			// 移除正在输入
+			removeTyping($typing);
+			// 开始打字效果（传入回调，用于结束时重置按钮状态）
+			startTypingEffect(reply, () => {
+				// 打字结束后的回调：恢复发送按钮
+				resetSendButtonToNormal();
+			});
+			// // 添加 AI 回复
+			// addMessage('assistant', reply, true, 50);
+			// 滚动到底部
+			scrollToBottom();
+		}
+
+		// 绑定发送事件
+		$('#sendBtn').on('click', function() {
+			sendMessage();
+		});
+
+		// 支持 Enter 发送（Shift+Enter 换行）
+		$input.on('keydown', function(e) {
+			if (e.key === 'Enter' && !e.shiftKey) {
+				e.preventDefault();
+				sendMessage();
+			}
+		});
+
+		// 初次加载滚动到底部
+		scrollToBottom();
+
+		// 可选：滚动到底部按钮（在消息区域悬浮）
+		var $scrollBtn = $('<div class="scroll-to-bottom" style="display:none;"><i class="layui-icon layui-icon-down"></i></div>');
+		// $messages.append($scrollBtn);
+		// $scrollBtn.on('click', function() {
+		// 	scrollToBottom();
+		// });
+		$messages.on('scroll', function() {
+			var scrollTop = $(this).scrollTop();
+			var height = $(this).height();
+			var scrollHeight = this.scrollHeight;
+			if (scrollTop + height + 50 >= scrollHeight) {
+				$scrollBtn.fadeOut();
+			} else {
+				$scrollBtn.fadeIn();
+			}
+		});
+	});
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<script type="text/javascript">
+	layui.use(function(){
+		var table = layui.table; 
+		
+		var colsInit = [];
+		const extraOptions = window.extraOptions ?? {};
+		var initData = {
+			url: '{$Request.root}/{$route}/',
+			table: table,
+			elem: 'dataTable',
+			data: {:json_encode($lists)},
+			langText: {:json_encode($langHtml.common)},
+			colsInit : colsInit,
+			colsType: true,
+			recycleType: true,
+			height: 'full-113',
+			pageInit: {limit: 10},
+			...extraOptions
+		}
+		tableInit(initData);
+	});
+</script>

@@ -1,0 +1,197 @@
+{extend name="common/co/edit" /}
+
+{block name="header"}
+	<a href="javascript:;" onclick="tab(this,'layui-information')"><span class="this">{$langHtml.common.detail}</span></a>
+	{if (isset($findLm.info_info) && $findLm.info_info == 'yes')}<a href="javascript:;" onclick="tab(this,'layui-info')"><span>{$langHtml.common.relatedInformation}</span></a>{/if}
+	{if (isset($findLm.info_file) && $findLm.info_file == 'yes')}<a href="javascript:;" onclick="tab(this,'layui-file')"><span>{$langHtml.common.relatedFile}</span></a>{/if}
+	{if ($conf.co.seo == true)}<a href="javascript:;" onclick="tab(this,'layui-seo')"><span>{$langHtml.common.seoSettings}</span></a>{/if}
+	<div></div>
+{/block}
+{block name="content"}
+	<div class="layui-step" id="layui-information">
+		<form class="layui-form">
+			<input type="hidden" name="id" value="{$find.id??''}">
+			{if ($conf.sy.need_lm == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.category}</label>
+				<div class="layui-input-block">
+					<select name="lm" id="lm" lay-filter="lm">
+						<option value=0>{$langHtml.common.primaryCategory}</option>
+						{:categoryTree($category,0,'',$find.lm??'')}
+					</select>
+				</div>
+			</div>
+			{/if}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.title}</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" name="title" placeholder="{$langHtml.common.enter}{$langHtml.common.title}" value="{$find.title??''}">
+				</div>
+			</div>
+			<div class="layui-form-item dis_apname" {:isset($findLm.info_apname) && $findLm.info_apname == 'yes' ? 'style="display:block;"' : 'style="display:none;"'}>
+				<label class="layui-form-label">{$langHtml.common.apname}</label>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" name="apname" placeholder="{$langHtml.common.enter}{$langHtml.common.apname}" value="{$find.apname??''}">
+				</div>
+				<div class="layui-form-mid layui-word-aux">{$langHtml.common.apnameTip}</div>
+			</div>
+			<div class="layui-form-item dis_keyword" {:isset($findLm.info_keyword) && $findLm.info_keyword == 'yes' ? 'style="display:block;"' : 'style="display:none;"'}>
+				<label class="layui-form-label">{$langHtml.common.keyword}</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" name="keyword" placeholder="{$langHtml.common.enter}{$langHtml.common.keyword}" value="{$find.keyword??''}">
+				</div>
+			</div>
+			<div class="layui-form-item dis_link" {:isset($findLm.info_link) && $findLm.info_link == 'yes' ? 'style="display:block;"' : 'style="display:none;"'}>
+				<label class="layui-form-label">{$langHtml.common.link}</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" name="link_url" placeholder="{$langHtml.common.enter}{$langHtml.common.link}" value="{$find.link_url??''}">
+				</div>
+			</div>
+			<div class="layui-form-item dis_img_sl" {:isset($findLm.info_img_sl) && $findLm.info_img_sl == 'yes' ? 'style="display:block;"' : 'style="display:none;"'}>
+				<label class="layui-form-label">{$langHtml.common.picture}</label>
+				<div class="layui-input-block">
+					<div class="upload-list" id="img_sl_list">
+						{if(isset($find.gallery_list))}
+						{volist name="find.gallery_list" id="item"}
+						<div class="upload_pic_li" data-id="{$item.id}"><span onclick="delImg(this,'img_sl')"></span><img src="{$item.path}" alt="" class="layui-upload-img"></div>
+						{/volist}
+						{/if}
+					</div><div class="layui-inline">
+						<div class="layui-upload-drag" onclick="uploadTool({elem:'img_sl',url:'{$Request.root}/Gallery/index',type:'image',title:'图片上传'})">
+							<i class="layui-icon layui-icon-picture"></i> 
+						</div>
+					</div>
+					<input type="hidden" name="img_sl" id="img_sl" value="{:json_encode($find.img_sl??[])}">
+				</div>
+			</div>
+			<div class="layui-form-item dis_pic_sl" {:isset($findLm.info_pic_sl) && $findLm.info_pic_sl == 'yes' ? 'style="display:block;"' : 'style="display:none;"'}>
+				<label class="layui-form-label">{$langHtml.common.picture}2</label>
+				<div class="layui-input-block">
+					<div class="upload-list" id="pic_sl_list">
+						{if(isset($find.picList))}
+						{volist name="find.picList" id="item"}
+						<div class="upload_pic_li" data-id="{$item.id}"><span onclick="delImg(this,'pic_sl')"></span><img src="{$item.path}" alt="" class="layui-upload-img"></div>
+						{/volist}
+						{/if}
+					</div><div class="layui-inline">
+						<div class="layui-upload-drag" onclick="uploadTool({elem:'pic_sl',url:'{$Request.root}/Gallery/index',type:'image',title:'图片上传'})">
+							<i class="layui-icon layui-icon-picture"></i> 
+						</div>
+					</div>
+					<input type="hidden" name="pic_sl" id="pic_sl" value="{:json_encode($find.pic_sl??'[]')}">
+				</div>
+			</div>
+			<div class="layui-form-item dis_fil_sl" {:isset($findLm.info_fil_sl) && $findLm.info_fil_sl == 'yes' ? 'style="display:block;"' : 'style="display:none;"'}>
+				<label class="layui-form-label">{$langHtml.common.file}</label>
+				<div class="layui-input-inline">
+					<button type="button" class="layui-btn" id="fil_sl">{$langHtml.common.uploadFile}</button>
+				</div>
+				<div class="layui-form-mid layui-word-aux"></div>
+			</div>
+			<div class="layui-form-item dis_fil_sl" {:isset($findLm.info_fil_sl) && $findLm.info_fil_sl == 'yes' ? 'style="display:block;"' : 'style="display:none;"'}>
+				<label class="layui-form-label">{$langHtml.common.fileLink}</label>
+				<div class="layui-input-block" id="add_fil_sl">
+					<div class="upload_file_li"><input type="text" class="layui-input" name="fil_sl" value="{$find.fil_sl??''}" ><input type="hidden" name="fil_sl" value="{$find.fil_sl??''}"/></div>
+				</div>
+			</div>
+			<script type="text/javascript">
+				fileUpload('fil_sl','{$Request.root}/{$route}/upload_file');
+			</script>
+			<div class="layui-form-item dis_vid_sl" {:isset($findLm.info_vid_sl) && $findLm.info_vid_sl == 'yes' ? 'style="display:block;"' : 'style="display:none;"'}>
+				<label class="layui-form-label">{$langHtml.common.video}</label>
+				<div class="layui-input-block">
+					<div id="vid_sl_list">
+						{if !(count($find.video_list??[]) == 0)}
+						{volist name="find.video_list" id="item"}
+						<div class="box-video-style">
+							<video src="{$item.video_url}" controls="controls" style="width: 100%; height: 100%;">您的浏览器不支持 video 标签。
+							</video>
+							<div class="mark"></div>
+							<i class="iconv layui-icon layui-icon-delete" lay-on="delTool" data-type="video" data-elem="vid_sl"></i>
+						</div>
+						{/volist}
+						{/if}
+						<div class="layui-inline" {if !(count($find.video_list??[]) == 0)}style="display:none"{/if}>
+							<div class="layui-upload-drag" onclick="uploadTool({elem:'vid_sl',url:'{$Request.root}/Video/index',type:'video',title:'视频上传'})">
+								<i class="layui-icon layui-icon-video"></i> 
+							</div>
+						</div>
+					</div>
+					<input type="hidden" name="vid_sl" id="vid_sl" value="{:json_encode($find.vid_sl??'')}">
+				</div>
+			</div>
+			<div class="layui-form-item dis_f_body" {:isset($findLm.info_f_body) && $findLm.info_f_body == 'yes' ? 'style="display:block;"' : 'style="display:none;"'}>
+				<label class="layui-form-label">{$langHtml.common.desc}</label>
+				<div class="layui-input-block ">
+					<textarea class="layui-textarea" id="f_body" name="f_body" placeholder="{$langHtml.common.desc}">{$find.f_body??''}</textarea>
+				</div>
+			</div>
+			<div class="layui-form-item dis_z_body" {:isset($findLm.info_z_body) && $findLm.info_z_body == 'yes' ? 'style="display:block;"' : 'style="display:none;"'}>
+				<label class="layui-form-label">{$langHtml.common.det}</label>
+				<div class="layui-input-block">
+					<textarea id="z_body" name="z_body" style="width:100%;height:250px;">{$find.z_body??''}</textarea>
+				</div>				
+				<script>
+					tinymceEditor('z_body');
+				</script>
+			</div>
+			<div class="layui-form-item dis_wtime" {:isset($findLm.info_wtime) && $findLm.info_wtime == 'yes' ? 'style="display:block;"' : 'style="display:none;"'}>
+				<label class="layui-form-label">{$langHtml.common.releaseTime}</label>
+				<div class="layui-input-block">
+					<input type="text" name="wtime" id="wtime" lay-verify="datetime" placeholder="yyyy-MM-dd HH:mm:ss" value="{if(!empty($find.wtime))}{$find.wtime | date='Y-m-d H:i:s'}{else}{:date('Y-m-d H:i:s')}{/if}" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.sort}</label>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" name="px" placeholder="{$langHtml.common.sort}" value="{$find.px??'100'}" >
+				</div>
+			</div>
+		</form>
+		<div class="layui-form-item" style="margin-top:10px;">
+			<div class="layui-input-block">
+				<button type="button" class="layui-btn layui-btn-primary" onclick="step('next')">{$langHtml.common.nextStep}</button>
+				<button type="button" class="layui-btn layui-bg-color" onclick="save()">{$langHtml.common.save}</button>
+			</div>
+		</div>
+	</div>
+	{if(isset($findLm.info_info) && $findLm.info_info == 'yes')}
+	{include file="common/co/info" /}
+	{/if}
+	{if(isset($findLm.info_file) && $findLm.info_file == 'yes')}
+	{include file="common/co/file" /}
+	{/if}
+	{if ($conf.co.seo == true)}
+	{include file="common/co/seo" /}
+	{/if}
+{/block}
+{block name="script"}
+<script type="text/javascript">
+	layui.use(function(){
+		var form = layui.form;
+		$ = layui.jquery;
+
+		form.on('select(lm)', function(data){
+			var lm = data.elem.value;
+			$.post("{$Request.root}/{$route}/make",{'act':'ajax','lm':lm},function(res){
+				if(res.code==200){
+					res.data.info_apname == 'yes' ? $('.dis_apname').show() : $('.dis_apname').hide();
+					res.data.info_keyword == 'yes' ? $('.dis_keyword').show() : $('.dis_keyword').hide();
+					res.data.info_from == 'yes' ? $('.dis_info_from').show() : $('.dis_info_from').hide();
+					res.data.info_link == 'yes' ? $('.dis_link').show() : $('.dis_link').hide();
+					res.data.info_f_body == 'yes' ? $('.dis_f_body').show() : $('.dis_f_body').hide();
+					res.data.info_z_body == 'yes' ? $('.dis_z_body').show() : $('.dis_z_body').hide();
+					res.data.info_img_sl == 'yes' ? $('.dis_img_sl').show() : $('.dis_img_sl').hide();
+					res.data.info_pic_sl == 'yes' ? $('.dis_pic_sl').show() : $('.dis_pic_sl').hide();
+					res.data.info_vid_sl == 'yes' ? $('.dis_vid_sl').show() : $('.dis_vid_sl').hide();
+					res.data.info_fil_sl == 'yes' ? $('.dis_fil_sl').show() : $('.dis_fil_sl').hide();
+					res.data.info_duotu == 'yes' ? $('.dis_duotu').show() : $('.dis_duotu').hide();
+					res.data.info_info == 'yes' ? $('.dis_info').show() : $('.dis_info').hide();
+					res.data.info_file == 'yes' ? $('.dis_file').show() : $('.dis_file').hide();
+					res.data.info_wtime == 'yes' ? $('.dis_wtime').show() : $('.dis_wtime').hide();
+				}
+			},'json');
+		})
+	});
+</script>
+{/block}

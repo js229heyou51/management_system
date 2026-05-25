@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+		<style type="text/css">
+			.layui-table .layui-input{padding-left: 0;text-align: center;}
+		</style>
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div class="layui-bg-gray" style="padding: 16px;">
+				<div class="layui-row layui-col-space15">
+					<div class="layui-col-md3">
+						<div class="layui-card top-card">
+							<div class="layui-card-header">今日发布</div>
+							<div class="layui-card-body">
+								<div class="layui-row layui-col-space5">
+									<div class="layui-col-md8 top-card-number">
+										0
+									</div>
+									<div class="layui-col-md4 top-card-tips">
+										<i class="layui-icon layui-icon-release"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md3">
+						<div class="layui-card top-card">
+							<div class="layui-card-header">今日访问</div>
+							<div class="layui-card-body">
+								<div class="layui-row layui-col-space5">
+									<div class="layui-col-md8 top-card-number">
+										0
+									</div>
+									<div class="layui-col-md4 top-card-tips">
+										<i class="layui-icon layui-icon-notice"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md3">
+						<div class="layui-card top-card">
+							<div class="layui-card-header">文章总量</div>
+							<div class="layui-card-body">
+								<div class="layui-row layui-col-space5">
+									<div class="layui-col-md8 top-card-number">
+										0
+									</div>
+									<div class="layui-col-md4 top-card-tips">
+										<i class="layui-icon layui-icon-read"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md3">
+						<div class="layui-card top-card">
+							<div class="layui-card-header">产品总量</div>
+							<div class="layui-card-body">
+								<div class="layui-row layui-col-space5">
+									<div class="layui-col-md8 top-card-number">
+										0
+									</div>
+									<div class="layui-col-md4 top-card-tips">
+										<i class="layui-icon layui-icon-app"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="layui-row layui-col-space15">
+					<div class="layui-col-md5">
+						<div class="layui-card">
+							<div class="layui-card-header">系统信息</div>
+							<div class="layui-card-body">
+								<table class="layui-table">
+									<tbody>
+										<tr>
+											<td>操作系统</td>
+											<td>{$serverInfo.os??''}</td>
+										</tr>
+										<tr>
+											<td>剩余空间</td>
+											<td>{$serverInfo.space??''}</td>
+										</tr>
+										<tr>
+											<td>服务器地址 </td>
+											<td>{$serverInfo.addr??''}</td>
+										</tr>
+										<tr>
+											<td>运行环境 </td>
+											<td>{$serverInfo.run??''}</td>
+										</tr>
+										<tr>
+											<td>PHP版本 </td>
+											<td>{$serverInfo.php??''}</td>
+										</tr>
+										<tr>
+											<td>PHP运行方式 </td>
+											<td>{$serverInfo.php_run??''}</td>
+										</tr>
+										<tr>
+											<td>MYSQL版本 </td>
+											<td>{$serverInfo.mysql??''}</td>
+										</tr>
+										<tr>
+											<td>THINKPHP版本 </td>
+											<td>{$serverInfo.think??''}</td>
+										</tr>
+										<tr>
+											<td>上传附件限制 </td>
+											<td>{$serverInfo.upload??''}</td>
+										</tr>
+										<tr>
+											<td>执行时间限制 </td>
+											<td>{$serverInfo.max??''}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md7">
+						<div class="layui-card">
+							<div class="layui-card-header">卡片面板</div>
+							<div class="layui-card-body">
+								<div id="main" style="width: 100%;height: 400px;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</body>
+</html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/6.0.0/echarts.common.min.js" integrity="sha512-aQ2y7xCpFa/w34flxY9jGFgJP2MdtzZTZiqCDlBTu1d0GcgzvPEkqrPbG24jwy5M2FyiJZZNbz6lC4K4NoqxEw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript">
+	var myChart = echarts.init(document.getElementById('main'));
+	window.addEventListener('resize', function() {
+		myChart.resize();
+	});
+	var option = {
+		xAxis: {
+			type: 'category',
+			data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+		},
+		yAxis: {
+			type: 'value'
+		},
+		legend: {
+			left: '0',
+			top: '0',
+		},
+		series: [
+			{
+				name: '2021',
+				data: [120, 200, 150, 80, 70, 110, 130, 80, 70, 110, 130, 130],
+				type: 'bar'
+			},
+			{
+				name: '2022',
+				data: [50, 250, 80, 60, 90, 190, 230, 250, 80, 60, 90, 190, 230],
+				type: 'bar'
+			},
+			{
+				name: '2023',
+				data: [50, 250, 80, 60, 90, 190, 230, 250, 80, 60, 90, 190, 230],
+				type: 'bar'
+			}
+		],
+	};
+	myChart.setOption(option);
+</script>
+{include file="public/footer" /}

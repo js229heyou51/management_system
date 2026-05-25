@@ -1,0 +1,71 @@
+{extend name="common/co/recycle/recycle" /}
+
+{block name="search"}
+{include file="common/co/recycle/search" /}
+{/block}
+
+{block name="toolbar"}
+{include file="common/co/recycle/toolbar" /}
+{/block}
+
+{block name="state"}
+
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+	layui.use(function(){
+		layer = layui.layer;
+		$ = layui.jquery;
+		var form = layui.form; 
+		var table = layui.table; 
+		laypage = layui.laypage; 
+
+
+		var langText = {:json_encode($langHtml.common)};
+		
+		var colsInit = [
+			{field: 'rename', title: langText.name, align: 'center', width: 370},
+			{field: 'state', title: langText.state, align: 'center', width: 170, templet: function(d){
+				var html = '<span>';
+				if(d.chakan == 1){
+					html += langText.view
+				}else{
+					html += '<font color="#009688">'+langText.notView+'</font>'
+				}
+				html += '</span>&nbsp;&nbsp;';
+				html += '<span>';
+				if(d.huifu == 1){
+					html += langText.reply
+				}else{
+					html += '<font color="#009688">'+langText.notReply+'</font>'
+				}
+				html += '</span>&nbsp;&nbsp;';
+				html += '<span>';
+				if(d.pass == 1){
+					html += langText.show
+				}else{
+					html += '<font color="#009688">'+langText.hide+'</font>'
+				}
+				html += '</span>';
+				return html;
+			}}
+		];
+		var initData = {
+			url: '{$Request.root}/{$route}/',
+			table: table,
+			elem: 'dataTable',
+			data: {:json_encode($lists)},
+			langText: langText,
+			colsInit : colsInit,
+			colsType: true,
+			recycleType: true,
+			isPx: false,
+			isState: false,
+			height: 'full-113',
+			pageInit: {limit: 10}
+		}
+		tableInit(initData);
+	});
+</script>
+{/block}

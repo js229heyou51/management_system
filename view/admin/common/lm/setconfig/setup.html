@@ -1,0 +1,55 @@
+<div id="layui-setup">
+	<form class="layui-form">
+		<div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.systemID}</label>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" name="sy[id]" id="id" placeholder="" value="{$conf.sy.id??''}">
+			</div>
+			<div class="layui-form-mid layui-word-aux">{$langHtml.common.systemIDTip}</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.systemName}</label>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" name="sy[name]" id="name" placeholder="" value="{$conf.sy.name??''}">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.systemPre}</label>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" name="sy[pre]" id="pre" placeholder="" value="{$conf.sy.pre??''}">
+			</div>
+			<div class="layui-form-mid layui-word-aux">{$langHtml.common.systemPreTip}</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.categoryTableName}</label>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" name="sy[table_lm]" id="table_lm" placeholder="" value="{$conf.sy.table_lm??''}">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.informationTableName}</label>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" name="sy[table_co]" id="table_co" placeholder="" value="{$conf.sy.table_co??''}">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.needCategory}</label>
+			<div class="layui-input-block layui-input-block-large">
+				<input type="radio" name="sy[need_lm]" value="true" {if (isset($conf.sy.need_lm))} {$conf.sy.need_lm == true ? 'checked' : '';} {/if} title="{$langHtml.common.use}">
+				<input type="radio" name="sy[need_lm]" value="false" {if (isset($conf.sy.need_lm))} {$conf.sy.need_lm == false ? 'checked' : '';} {/if} title="{$langHtml.common.notUse}">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.maxCategory}</label>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" name="sy[level_lm]" id="level_lm" placeholder="" value="{$conf.sy.level_lm??'0'}">
+			</div>
+			<div class="layui-form-mid layui-word-aux">{$langHtml.common.maxCategoryTip}</div>
+		</div>
+	</form>
+	<div class="layui-form-item">
+		<div class="layui-input-block layui-input-block-large">
+			<button type="button" class="layui-btn layui-bg-color" onclick="save('{$Request.root}/{$route}/setconfig',1)">{$langHtml.common.save}</button>
+		</div>
+	</div>
+</div>

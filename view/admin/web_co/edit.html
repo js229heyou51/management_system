@@ -1,0 +1,66 @@
+{extend name="common/co/edit" /}
+
+{block name="header"}
+	{include file="common/co/header" /}
+{/block}
+{block name="content"}
+	{php}
+		// 根据条件决定内容
+		$hasExtraContent = true;
+		$extraContent = '';
+		if($conf['co']['tlm'] == true){
+			$extraContent .= '<div class="layui-form-item"><label class="layui-form-label">';
+				$extraContent .= lang('common')['category'];
+				$extraContent .= '</label>';
+				$extraContent .= '<div class="layui-input-block">';
+				$extraContent .= '<input type="text" class="layui-input" name="tlm" placeholder="'.lang('common')['enter'].lang('common')['category'].'" value="'.($find['tlm'] ?? '').'">';
+				$extraContent .= '</div></div>';
+		}
+		if($conf['co']['table_co'] == true){
+			$extraContent .= '<div class="layui-form-item"><label class="layui-form-label">';
+				$extraContent .= lang('common')['informationTableName'];
+				$extraContent .= '</label>';
+				$extraContent .= '<div class="layui-input-block">';
+				$extraContent .= '<input type="text" class="layui-input" name="table_co" placeholder="'.lang('common')['enter'].lang('common')['informationTableName'].'" value="'.($find['table_co'] ?? '').'">';
+				$extraContent .= '</div></div>';
+		}
+		if($conf['co']['table_lm'] == true){
+			$extraContent .= '<div class="layui-form-item"><label class="layui-form-label">';
+				$extraContent .= lang('common')['categoryTableName'];
+				$extraContent .= '</label>';
+				$extraContent .= '<div class="layui-input-block">';
+				$extraContent .= '<input type="text" class="layui-input" name="table_lm" placeholder="'.lang('common')['enter'].lang('common')['categoryTableName'].'" value="'.($find['table_lm'] ?? '').'">';
+				$extraContent .= '</div></div>';
+		}
+		if($conf['co']['web_url'] == true){
+			$extraContent .= '<div class="layui-form-item"><label class="layui-form-label">网站链接</label>';
+				$extraContent .= '<div class="layui-input-block">';
+				$extraContent .= '<input type="text" class="layui-input" name="web_url" placeholder="'.lang('common')['enter'].'网站链接" value="'.($find['web_url'] ?? '').'">';
+				$extraContent .= '</div></div>';
+		}
+		if($conf['co']['release'] == true){
+			$extraContent .= '<div class="layui-form-item"><label class="layui-form-label">今日发布</label>';
+				$extraContent .= '<div class="layui-input-block">';
+				$extraContent .= '<input type="text" class="layui-input" name="release" placeholder="'.lang('common')['enter'].'今日发布" value="'.($find['release'] ?? '').'">';
+				$extraContent .= '</div></div>';
+		}
+		if($conf['co']['folder_path'] == true){
+			$extraContent .= '<div class="layui-form-item"><label class="layui-form-label">图库路径</label>';
+				$extraContent .= '<div class="layui-input-block">';
+				$extraContent .= '<input type="text" class="layui-input" name="folder_path" placeholder="'.lang('common')['enter'].'图库路径" value="'.($find['folder_path'] ?? '').'">';
+				$extraContent .= '</div></div>';
+		}
+	{/php}
+	{include file="common/co/information" /}
+	{if ($conf.co.info == true)}
+	{include file="common/co/info" /}
+	{/if}
+	{if ($conf.co.file == true)}
+	{include file="common/co/file" /}
+	{/if}
+	{if ($conf.co.seo == true)}
+	{include file="common/co/seo" /}
+	{/if}
+{/block}
+{block name="script"}
+{/block}

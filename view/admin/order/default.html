@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$conf.sy.name} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div>
+				<form action="" class="layui-form" id="sform" method="get">
+					<div class="layui-inline">
+						<label>{$langHtml.common.search}</label>
+					</div>
+					<div class="layui-inline">
+						<select name="zt_val" id="zt_val" lay-filter="zt_val">
+							<option value="">{$langHtml.common.allState}</option>
+							<option value="payState1" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'payState1'"}selected{/if}>待支付</option>
+							<option value="payState2" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'payState2'"}selected{/if}>待发货</option>
+							<option value="ding2" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'ding2'"}selected{/if}>待收货</option>
+							<option value="ding2" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'ding2'"}selected{/if}>待评价</option>
+							<option value="ding2" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'ding2'"}selected{/if}>已完成</option>
+							<option value="ding2" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'ding2'"}selected{/if}>已退款</option>
+							<option value="ding2" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'ding2'"}selected{/if}>已删除</option>
+						</select>
+					</div>
+					<div class="layui-inline">
+						<input type="text" class="layui-input" lay-affix="clear" name="keyword" value="{$searchItem.keyword??''}">
+					</div>
+					<div class="layui-inline">
+						<div class="layui-inline" id="searchDate">
+							<div class="layui-input-inline" >
+								<input type="text" autocomplete="off" name="startDate" id="start-date" class="layui-input" placeholder="开始日期" value="{$searchItem.startDate ?? ''}">
+							</div>
+							<div class="layui-form-mid">-</div>
+							<div class="layui-input-inline"> 
+								<input type="text" autocomplete="off" name="endDate" id="end-date" class="layui-input" placeholder="结束日期" value="{$searchItem.endDate ?? ''}">
+							</div>
+						</div>
+					</div>
+					<div class="layui-inline">
+						<button class="layui-btn layui-bg-color">{$langHtml.common.search}</button>
+					</div>
+				</form>
+				<br>
+				<form action="" class="layui-form" id="listForm" method="post">
+					<table id="dataTable" lay-filter="dataTable"></table>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/html" id="toolbarDemo">
+	<div class="layui-tabs mb10" id="payTabs" lay-options="{index: 1}">
+		<ul class="layui-tabs-header">
+			<li class="layui-this" onclick="getOrder(this)">全部</li>
+			<li lay-event="pay" onclick="getOrder(this,'pay')">待支付 ({$count.payCount ?? 0})</li>
+			<li lay-event="deliver" onclick="getOrder(this,'deliver')">待发货 ({$count.deliverCount ?? 0})</li>
+			<li lay-event="shipped" onclick="getOrder(this,'shipped')">待收货</li>
+			<li lay-event="received" onclick="getOrder(this,'received')">已完成</li>
+		</ul>
+	</div>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="recycle">
+		<i class="layui-icon layui-icon-delete"></i>{$langHtml.common.recycle}
+	</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="del" >{$langHtml.common.deleteSelected}</button>
+</script>
+<script type="text/html" id="state">
+	<input type="checkbox" name="pass" value="{{d.id}}" lay-skin="switch" lay-text="{$langHtml.common.shield}|{$langHtml.common.unshielded}" lay-filter="pass" {{# if(d.pass==0){ }} checked {{# } }}>
+</script>
+<script type="text/html" id="operateDemo">
+	<div class="layui-clear-space">
+		<button type="button" class="layui-btn layui-btn-xs" lay-event="edit">
+			<i class="layui-icon layui-icon-edit"></i>{$langHtml.common.edit}
+		</button>
+		<button type="button" class="layui-btn layui-btn-xs" lay-event="cart">
+			<i class="layui-icon layui-icon-cart"></i>{$langHtml.common.orderDetail}
+		</button>
+		<button type="button" class="layui-btn layui-bg-red layui-btn-xs" lay-event="del">
+			<i class="layui-icon layui-icon-delete"></i>{$langHtml.common.delete}
+		</button>
+	</div>
+</script> 
+<script type="text/javascript">
+	layui.use(function(){
+		layer = layui.layer;
+		$ = layui.jquery;
+		var form = layui.form; 
+		var table = layui.table; 
+		laypage = layui.laypage; 
+		var tabs = layui.tabs;
+		var langText = {:json_encode($langHtml.common)};
+
+		getOrder = function(self, type = 'all'){
+			var field = {type:type};
+			table.reload('dataTable',{
+				url: '{$Request.root}/{$route}/default',
+				page: {
+					curr: 1 // 重新从第 1 页开始
+				},
+				method: 'post',
+				where: field, // 搜索的字段
+				done: function(res){
+					$('.layui-tabs-header li[lay-event='+res.type+']').addClass('layui-this').siblings().removeClass('layui-this');
+				}
+			})
+			
+		}
+
+		var colsInit = [
+			{field: 'order_sn', title: langText.orderNumber, align: 'center', width: 200},
+			{field: '', title: langText.goodsDetail, templet: function(d){
+				var html = '';
+				for (var i = 0; i < d.orderItem.length; i++) {
+					html += '<div class="goods_row" lay-tips=\''+ JSON.stringify(d.orderItem[i]) +'\'>';
+					html += '<div class="goods_image">';
+					html += '<img src="' + d.orderItem[i].goods_image + '" >';
+					html += '</div>';
+					html += '<div class="goods_name">';
+					html += d.orderItem[i].goods_name;
+					html += '</div>';
+					html += '</div>';
+				}
+				return html;
+			}},
+			{field: '', title: langText.userinfo, align: 'center', width: 180, templet: '{{=d.userinfo?.username}}'},
+			{field: 'pay_time', title: langText.payTime, align: 'center', width: 170},
+			{field: 'order_status', title: langText.orderStatus, align: 'center', width: 100,templet: function(d){
+				return d.order_status.statusHtml;
+			}},
+			{field: 'wtime', title: langText.time, align: 'center', width: 170},
+			{field: '', title: langText.operate, align: 'center', width: 250,templet: '#operateDemo'},
+		];
+
+		var initData = {
+			url: '{$Request.root}/{$route}/',
+			table: table,
+			elem: 'dataTable',
+			data: {:json_encode($lists)},
+			langText: langText,
+			colsInit : colsInit,
+			colsType: true,
+			recycleType:true,
+			isTitle: false,
+			isState: false,
+			isPx: false,
+			isState: false,
+			isTime: false,
+			lineStyle: 'height: auto',
+			toolbarConfig: {
+				maxmin: false,
+				area: ['50%','100%'],
+				shadeClose: true, // 点击遮罩关闭层
+				offset: 'r',
+				anim: 'slideLeft', // 从右往左
+			},
+			pageInit: {limit : 10}
+		}
+		tableInit(initData);
+
+
+		$('.goods_row').on('mouseover',function(){
+			var orderItem = JSON.parse($(this).attr('lay-tips'));
+			var content = '<span class="goods-tips-name">商品名称：' + orderItem.goods_name + '</span><br>规格名称：' + orderItem.specifications + '<br>支付价格：￥' + orderItem.goods_price + '<br>购买数量：' + orderItem.quantity;
+			layer.tips(content, this, {
+				tips: 1,
+				time: 0,
+				maxWidth: 'auto'
+			});
+		}).on('mouseout',function(){
+			layer.closeAll('tips');
+		})
+
+		allState(initData.url + '/default','lm');
+		allState(initData.url + '/default','zt_val');
+	});
+</script>

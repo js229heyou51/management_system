@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>数据批量导出</title>
+		{include file="public/head" /}
+	</head>
+	
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<a href="javascript:;" onclick="tab(this,'layui-info')"><span class="this">批量导出</span></a>
+			<a href="javascript:;" onclick="setup()"><span>导出设置</span></a>
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div id="layui-info">
+				<form class="layui-form">
+					{if(!empty($plConf.exportConf) && $plConf.exportConf.need_lm == 'true')}
+					<div class="layui-form-item">
+						<label class="layui-form-label ">分类</label>
+						<div class="layui-inline layui-col-xs3">
+							<select name="lm" id="lm">
+								<option value=''>请选择分类</option>
+								{:categoryTree($category)}
+							</select>
+						</div>
+					</div>
+					{/if}
+					<div class="layui-form-item">
+						<label class="layui-form-label ">id段从</label>
+						<div class="layui-input-block">
+							<div class="layui-inline">
+								<input type="text" class="layui-input" name="s_id" placeholder="" >
+							</div>
+							<div class="layui-inline">
+								<label class="layui-form-label layui-form-label-auto pl0 pr0">到</label>
+							</div>
+							<div class="layui-inline">
+								<input type="text" class="layui-input" name="e_id" placeholder="" >
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">id列表</label>
+						<div class="layui-inline layui-col-xs3 ">
+							<input type="text" class="layui-input" name="idlist" placeholder="" >
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label ">时间从</label>
+						<div class="layui-input-block">
+							<div class="layui-inline">
+								<input type="text" class="layui-input" name="s_wtime" id="s_wtime" placeholder="" >
+							</div>
+							<div class="layui-inline">
+								<label class="layui-form-label layui-form-label-auto pl0 pr0">到</label>
+							</div>
+							<div class="layui-inline">
+								<input type="text" class="layui-input" name="e_wtime" id="e_wtime" placeholder="" >
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<strong>备注：</strong>
+							<p>导出文档列顺序：{$fieldLists}</p>
+						</div>
+					</div>
+				</form>
+				<div class="layui-form-item" style="margin-top:10px;">
+					<div class="layui-input-block ">
+						<button type="button" class="layui-btn" onclick="exportExcel()">导出</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	layui.use(['layer','form', 'laydate'],function(){
+		var form = layui.form;
+		layer = layui.layer;
+		$ = layui.jquery;
+		laydate = layui.laydate;
+		laydate.render({
+			elem: '#s_wtime',
+			type: 'datetime'
+		});
+		laydate.render({
+			elem: '#e_wtime',
+			type: 'datetime'
+		});
+	});
+	function exportExcel(){
+		$.post("{$Request.root}/{$route}/pl_dacu_tool",$('form').serialize(),function(res){
+			if(res.code==200){
+				// 创建一个 a 标签用于下载
+				var a = document.createElement("a");
+				a.href = res.filePath;
+				a.download = res.filename; // 设置下载文件的文件名
+				document.body.appendChild(a); 
+				a.click(); // 触发下载
+				window.URL.revokeObjectURL(a.href); // 释放 URL 对象
+				document.body.removeChild(a); // 移除 a 标签
+				layer.msg(res.msg,{'icon':1});
+				deleteFile(res.filePath);
+			}else{
+				layer.msg(res.msg,{'icon':2});
+			}
+		},'json');
+	}
+	function deleteFile(filepath){
+		$.post("{$Request.root}/{$route}/deleteFile",{'filepath':filepath},function(res){
+			layer.msg(res.msg,{'icon':1});
+		},'json');
+	}
+	function setup(){
+		layer.full(layer.open({
+			type: 2,
+			title: '导出设置',
+			shade: 0.3,
+			area: ['100%','100%'],
+			fixed: false, //不固定
+			maxmin: true,
+			content: "{$Request.root}/{$route}/exportSettings"
+		}));
+	}
+</script>
+{include file="public/footer" /}

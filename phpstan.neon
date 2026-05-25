@@ -1,0 +1,25 @@
+# 在项目根目录创建 phpstan.neon 文件
+
+includes:
+    # 引入IDE生成的辅助文件
+    - runtime/ide-helper/think-stubs.php
+    # 可选：引入基线文件
+    # - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - app
+        - app/common/model  # 显式包含公共模型路径
+    excludePaths:
+        - think
+        - runtime
+        - vendor
+        - public
+    bootstrapFiles:
+        - vendor/autoload.php
+    ignoreErrors:
+        # 忽略模型动态调用的误报
+        - '#Call to an undefined method think\\Db::[a-zA-Z]+#'
+        # 忽略控制器属性的误报
+        - '#Access to an undefined property think\\Controller::\$[a-zA-Z]+#'

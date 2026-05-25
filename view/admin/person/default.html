@@ -1,0 +1,36 @@
+{extend name="common/co/default" /}
+
+{block name="search"}
+	{include file="common/co/search" /}
+{/block}
+
+{block name="toolbar"}
+	{include file="common/co/toolbar" /}
+{/block}
+
+{block name="state"}
+	{include file="common/co/state" /}
+{/block}
+
+{block name="operate"}
+	{include file="common/co/operate" /}
+{/block}
+
+{block name="script"}
+	<script type="text/javascript">
+		window.extraOptions = {
+			colsInit: [
+				{field: 'username', title: '{$langHtml.common.username}'},
+				{field: 'rename', title: '{$langHtml.common.name}',align: 'center',width: 180},
+				{field: 'phone', title: '{$langHtml.common.phone}',align: 'center',width: 150},
+				{field: 'email', title: '{$langHtml.common.email}',align: 'center',width: 200},
+				{field: 'pass', title: '{$langHtml.common.state}',align: 'center',width: 100,templet:function(d){
+					return personState(d.pass,{:json_encode($langHtml.common)});
+				}}
+			],
+			isPx: false,
+			isTitle: false,
+		}
+	</script>
+	{include file="common/co/script" /}
+{/block}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head"}
+	<script type="text/javascript" src="/static/index/js/cart.js"></script>
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header"}
+			<!-- main -->
+			<div class="person">
+				<div class="container">
+					<div class="person_con">
+						{include file="person/left"}
+						<div class="person_right">
+							<div class="person_rbottom" style="margin-top: 0;">
+								<div class="person_rbt">
+									<h3>我的收藏</h3>
+								</div>
+								<div class="collect">
+									<ul>
+										{volist name="collectList" id="collectVal" }
+										<li>
+											<div class="hd">
+												<div class="img-box">
+													<img src="{$collectVal.product.img_sl}" alt="">
+												</div>
+												<div class="info line2">{$collectVal.product.title}</div>
+											</div>
+											<div class="bd">
+												<button type="button" class="collect-button" onclick="collect(this,'collect')" data-id="{$collectVal.product.id}"><span>取消收藏</span></button>
+												<a href="/product/show/{$collectVal.product.id}" class="collect-button"><span>查看商品</span></a>
+											</div>
+										</li>
+										{/volist}
+									</ul>
+								</div>
+								
+								<div class="pages">
+									{$page | raw}
+									<ul class="flex">
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer"}
+		</div>
+	</body>
+</html>

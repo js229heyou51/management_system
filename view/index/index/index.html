@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head" /}
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header" /}
+			<!-- main -->
+			<div class="main">
+				<div class="banner">
+					<div class="swiper-container">
+						<div class="swiper-wrapper">
+							{volist name="data.banner" id="bv"}
+							<div class="swiper-slide" style="background: url('{$bv.gallery_list.0.path??''}') no-repeat center;background-size: cover;">
+								{if(!empty($data.hotProduct[$key]))}
+								<div class="slide-con">
+									<div class="slide-left">
+										<h3>{$data.hotProduct[$key]['title']??''}</h3>
+										<h2>{$data.hotProduct[$key]['param_one']??''}</h2>
+										<p>price:<span>￥{$data.hotProduct[$key]['price']??''}</span></p>
+										<h5>{$data.hotProduct[$key]['keyword']??''}</h5>
+									</div>
+									<div class="slide-right">
+										<img src="">
+									</div>
+								</div>
+								{/if}
+							</div>
+							{/volist}
+						</div>
+						<div class="swiper-pagination"></div>
+					</div>
+					<div class="banner-con">
+						<div class="banner-login">
+							{if(!empty($userInfo))}
+							<div class="ban-img">
+								<img src="{$userInfo.img_sl??'/static/index/images/index02.png'}">
+							</div>
+							<div class="ban-text">
+								<p>Hi,您好！{$userInfo.rename}</p>
+							</div>
+							<div class="ban-reg-a">
+								<a href="/person/">会员中心</a>
+							</div>
+							<div class="ban-log-a">
+								<a href="javascript:;" onclick="logout()">退出登录</a>
+							</div>
+							{else}
+							<div class="ban-img">
+								<img src="/static/index/images/index02.png">
+							</div>
+							<div class="ban-text">
+								<p>Hi,您好！</p>
+							</div>
+							<div class="ban-reg-a">
+								<a href="/register/">免费注册</a>
+							</div>
+							<div class="ban-log-a">
+								<a href="/login/">登录</a>
+							</div>
+							{/if}
+							<div class="ban-bottom">
+								<p>咨询电话：18594233960</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- part1 -->
+				<div class="part1">
+					<div class="container">
+						<div class="index-title">
+							<h3>品牌专区 <span>原厂直购、正品保障</span></h3>
+						</div>
+						<div class="part1-con">
+							<div class="part1-list">
+								<ul class="flex">
+									{volist name="data.brand" id="brandValue"}
+									<li>
+										<a href="javascript:;">
+											<div class="img">
+												<img src="{$brandValue.gallery_list.0.path??''}">
+											</div>
+										</a>
+									</li>
+									{/volist}
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- part1 -->
+				<!-- part2 -->
+				<div class="part2">
+					<div class="container">
+						<div class="index-title flex flexbetween flexalign">
+							<h3>特价专区 <span>原厂直购、正品保障</span></h3>
+							<div class="part2-button">
+								<div class="swiper-button-next"></div>
+								<div class="swiper-button-prev"></div>
+							</div>
+						</div>
+						<div class="part2-con">
+							<div class="part2-list">
+								<div class="swiper-container">
+									<div class="swiper-wrapper">
+										{volist name="data.product" id="productValue"}
+										<div class="swiper-slide">
+											<a href="/product/show/{$productValue.id}">
+												<div class="img">
+													<img src="{$productValue.gallery_list.0.path??''}">
+												</div>
+												<div class="text">
+													<h4>{$productValue.title}</h4>
+													<p>price:<span>¥{$productValue.price}</span></p>
+												</div>
+											</a>
+										</div>
+										{/volist}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- part2 -->
+				<!-- part3 -->
+				<div class="part3">
+					<div class="container">
+						<div class="index-title">
+							<h3>推荐类别 <span>原厂直购、正品保障</span></h3>
+						</div>
+						<div class="part3-con">
+							<div class="part3-list">
+								<ul class="flex">
+									{volist name="data.productCategory" id="pcValue"}
+									<li>
+										<a href="/product/category/{$pcValue.id_lm}">
+											<div class="img">
+												{if(isset($pcValue.gallery_list))}
+												{volist name="pcValue.gallery_list" id="item"}
+												<img src="{$item.path}" class="{$key==0 ? 'show' : 'hide'}">
+												{/volist}
+												{/if}
+											</div>
+											<div class="text">
+												<p>{$pcValue.title_lm}</p>
+											</div>
+										</a>
+									</li>
+									{/volist}
+									<li>
+										<a href="/product/">
+											<div class="img">
+												<img src="/static/index/images/part3_10.png" class="show">
+												<img src="/static/index/images/part3_10_2.png" class="hide">
+											</div>
+											<div class="text">
+												<p>其他</p>
+											</div>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- part3 -->
+				<!-- part4 -->
+				<div class="part4">
+					<div class="container">
+						<div class="part4-con flex flexbetween">
+							<div class="part4-left">
+								<div class="index-title flex flexbetween flexalign">
+									<h3>新闻资讯 <span>电子行业资讯速递</span></h3>
+									<div class="part4-lmore">
+										<a href="/news/">更多</a>
+									</div>
+								</div>
+								<div class="part4-lcon flex flexbetween">
+									<div class="part4-lleft">
+										<a href="/news/"><img src="/static/index/images/part4_01.jpg"></a>
+									</div>
+									<div class="part4-lright">
+										<div class="part4-lrlist">
+											<ul>
+												{volist name="data.news" id="newsValue"}
+												<li><a href="/news/show/{$newsValue.id}">{$newsValue.title}</a></li>
+												{/volist}
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="part4-right">
+								<div class="part4-rtit">
+									<h4>成交信息 <span>今天已成交862单</span></h4>
+								</div>
+								<div class="part4-rlist">
+									<div class="part4-rbox flex flexbetween">
+										<p>18 ** 600</p>
+										<p>S171252338</p>
+										<p>￥ 20672.40</p>
+										<p>订单完成</p>
+									</div>
+									<div class="part4-rbox flex flexbetween">
+										<p>18 ** 600</p>
+										<p>S171252338</p>
+										<p>￥ 20672.40</p>
+										<p>订单完成</p>
+									</div>
+									<div class="part4-rbox flex flexbetween">
+										<p>18 ** 600</p>
+										<p>S171252338</p>
+										<p>￥ 20672.40</p>
+										<p>订单完成</p>
+									</div>
+									<div class="part4-rbox flex flexbetween">
+										<p>18 ** 600</p>
+										<p>S171252338</p>
+										<p>￥ 20672.40</p>
+										<p>订单完成</p>
+									</div>
+									<div class="part4-rbox flex flexbetween">
+										<p>18 ** 600</p>
+										<p>S171252338</p>
+										<p>￥ 20672.40</p>
+										<p>订单完成</p>
+									</div>
+									<div class="part4-rbox flex flexbetween">
+										<p>18 ** 600</p>
+										<p>S171252338</p>
+										<p>￥ 20672.40</p>
+										<p>订单完成</p>
+									</div>
+									<div class="part4-rbox flex flexbetween">
+										<p>18 ** 600</p>
+										<p>S171252338</p>
+										<p>￥ 20672.40</p>
+										<p>订单完成</p>
+									</div>
+									<div class="part4-rbox flex flexbetween">
+										<p>18 ** 600</p>
+										<p>S171252338</p>
+										<p>￥ 20672.40</p>
+										<p>订单完成</p>
+									</div>
+									<div class="part4-rbox flex flexbetween">
+										<p>18 ** 600</p>
+										<p>S171252338</p>
+										<p>￥ 20672.40</p>
+										<p>订单完成</p>
+									</div>
+									<div class="part4-rbox flex flexbetween">
+										<p>18 ** 600</p>
+										<p>S171252338</p>
+										<p>￥ 20672.40</p>
+										<p>订单完成</p>
+									</div>
+									<div class="part4-rbox flex flexbetween">
+										<p>18 ** 600</p>
+										<p>S171252338</p>
+										<p>￥ 20672.40</p>
+										<p>订单完成</p>
+									</div>
+									<div class="part4-rbox flex flexbetween">
+										<p>18 ** 600</p>
+										<p>S171252338</p>
+										<p>￥ 20672.40</p>
+										<p>订单完成</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- part4 -->
+			</div>
+			<!-- main -->
+			{include file="public/footer" /}
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	var swiper = new Swiper('.part2 .swiper-container', {
+		slidesPerView: 4,
+		spaceBetween: 16,
+		loop: true,
+		// autoplay: true,
+		// pagination: {
+		// 	el: '.part2 .swiper-pagination',
+		// 	clickable: true,
+		// },
+		navigation: {
+			nextEl: '.part2 .swiper-button-next',
+			prevEl: '.part2 .swiper-button-prev',
+		},
+
+	});
+</script>

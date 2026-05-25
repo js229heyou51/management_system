@@ -1,0 +1,54 @@
+{extend name="common/co/default" /}
+
+{block name="search"}
+	{include file="common/co/search" /}
+{/block}
+
+{block name="toolbar"}
+<script type="text/html" id="toolbarDemo">
+	{if ($conf.co.add_xx == true)}
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="add" ><i class="layui-icon layui-icon-add-1"></i>{$langHtml.common.add}</button>
+	{/if}
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="recycleRecord">
+		<i class="layui-icon layui-icon-delete"></i>{$langHtml.common.recycle}
+	</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="del" >{$langHtml.common.deleteSelected}</button>
+</script>
+{/block}
+
+{block name="state"}
+<script type="text/html" id="state">
+	<span class="layui-badge {{= d.pass === 1 ? 'layui-bg-blue' : 'layui-bg-gray'}} ">{{= d.pass === 1 ? '完成' : '失败'}}</span>
+</script>
+{/block}
+
+{block name="operate"}
+<script type="text/html" id="operateDemo">
+	<button type="button" class="layui-btn layui-bg-red layui-btn-xs" lay-event="del">
+		<i class="layui-icon layui-icon-delete"></i>{$langHtml.common.delete}
+	</button>
+</script> 
+{/block}
+
+{block name="script"}
+	<script type="text/javascript">
+		window.extraOptions = {
+			colsInit: [ // 表头
+				{type: 'checkbox', fixed: 'left'},
+				{field: 'id', title: 'ID', width: 60,  fixed: 'left', align: 'center',sort:'desc'}
+				,{field: 'title', title: '任务名', width: 120, align: 'center'}
+				,{field: 'account', title: '投喂账号', width: 150}
+				// ,{field: 'title_lm', title: '文章分类', width: 120, align: 'center'}
+				,{field: 'name', title: '文章标题'}
+				,{field: 'ym_key', title: '文章关键词'}
+				,{field: 'article_id', title: '文章ID', width: 80, align: 'center'}
+				,{field: 'wtime', title: '{$langHtml.common.time}', width: 160, align: 'center',sort:'desc'}
+				,{field: '', title: '{$langHtml.common.state}', width: 100, align: 'center',templet: '#state'}
+				,{field: '', title: '{$langHtml.common.operate}', width: 150, align: 'center',templet: '#operateDemo',fixed: 'right'}
+			],
+
+			colsType: false,
+		}
+	</script>
+	{include file="common/co/script" /}
+{/block}

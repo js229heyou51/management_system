@@ -1,0 +1,86 @@
+{extend name="common/co/default" /}
+
+{block name="search"}
+	<form action="" class="layui-form" id="sform" method="get">
+		<div class="layui-inline">
+			<label>{$langHtml.common.search}</label>
+		</div>
+		<div class="layui-inline">
+			<select name="zt_val" id="zt_val" lay-filter="zt_val">
+				<option value="">{$langHtml.common.allState}</option>
+				<option value="pass2" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'pass2'"}selected{/if}>{$langHtml.common.shield}</option>
+				<option value="pass1" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'pass1'"}selected{/if}>{$langHtml.common.unshielded}</option>
+			</select>
+		</div>
+		<div class="layui-inline">
+			<input type="text" class="layui-input" lay-affix="clear" name="keyword" value="{$searchItem.keyword??''}">
+		</div>
+		<div class="layui-inline">
+			<div class="layui-inline" id="searchDate">
+				<div class="layui-input-inline" >
+					<input type="text" autocomplete="off" name="startDate" id="start-date" class="layui-input" placeholder="开始日期" value="{$searchItem.startDate ?? ''}">
+				</div>
+				<div class="layui-form-mid">-</div>
+				<div class="layui-input-inline"> 
+					<input type="text" autocomplete="off" name="endDate" id="end-date" class="layui-input" placeholder="结束日期" value="{$searchItem.endDate ?? ''}">
+				</div>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<button class="layui-btn layui-bg-color">{$langHtml.common.search}</button>
+		</div>
+	</form>
+{/block}
+
+{block name="toolbar"}
+	<script type="text/html" id="toolbarDemo">
+		<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="add" ><i class="layui-icon layui-icon-add-1"></i>{$langHtml.common.add}</button>
+		<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="recycle">
+			<i class="layui-icon layui-icon-delete"></i>{$langHtml.common.recycle}
+		</button>
+		<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="del" >{$langHtml.common.deleteSelected}</button>
+		<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="pass1" >{$langHtml.common.selectedShield}
+		</button>
+		<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="pass2" >{$langHtml.common.cancelShield}
+		</button>
+	</script>
+{/block}
+
+{block name="state"}
+	<script type="text/html" id="state">
+		<input type="checkbox" name="pass" value="{{d.id}}" lay-skin="switch" lay-text="{$langHtml.common.shield}|{$langHtml.common.unshielded}" lay-filter="pass" {{# if(d.pass==0){ }} checked {{# } }}>
+	</script>
+{/block}
+
+{block name="operate"}
+	{include file="common/co/operate" /}
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+	layui.use(function(){
+		var table = layui.table; 
+		var langText = {:json_encode($langHtml.common)};
+
+		var colsInit = [{field: 'title', title: langText.title}];
+
+		var initData = {
+			url: '{$Request.root}/{$route}/',
+			table: table,
+			elem: 'dataTable',
+			data: {:json_encode($lists)},
+			langText: langText,
+			colsInit : colsInit,
+			colsType: true,
+			isTitle: false,
+			recycleType:false
+		}
+		tableInit(initData);
+
+		allState(initData.url + 'default','lm');
+		allState(initData.url + 'default','zt_val');
+
+		state(initData.url + 'make','pass','id');
+	});
+</script>
+{/block}

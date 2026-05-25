@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head"}
+	<script src="/static/index/js/cart.js"></script>
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header"}
+			<!-- main -->
+			<div class="person">
+				<div class="container">
+					<div class="person_con">
+						{include file="person/left"}
+						<div class="person_right">
+							<div class="person_rtop">
+								<div class="person_rt">
+									<div class="person_rtl">
+										<div class="person_rtli">
+											<img src="{$userInfo.img_sl??'/static/index/images/per_05.png'}">
+										</div>
+										<div class="person_rtlt">
+											<h2>{$userInfo.rename}</h2>
+											<p>安全等级</p>
+											<div class="person_rtlts">
+												<span style="background-color:#007dba;width: 100%;"></span>
+											</div>
+										</div>
+									</div>
+									<div class="person_rtr">
+										<ul class="flex">
+											<li>
+												<a href="/person/collect/">
+													<div class="person_rtri">
+														<img src="/static/index/images/per_11.png">
+													</div>
+													<div class="person_rtrt">
+														收藏  <span>{$collectCount}</span>
+													</div>
+												</a>
+											</li>
+											<li>
+												<a href="/cart/">
+													<div class="person_rtri">
+														<img src="/static/index/images/top06.png">
+													</div>
+													<div class="person_rtrt">
+														购物车  <span>{$cartCount}</span>
+													</div>
+												</a>
+											</li>
+											<li>
+												<a href="/person/message/">
+													<div class="person_rtri">
+														<img src="/static/index/images/per_06.png">
+													</div>
+													<div class="person_rtrt">
+														消息  <span>{$infoCount}</span>
+													</div>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+								<div class="person_rc">
+									<div class="person_rct">
+										<h3>交易提醒</h3>
+										<a href="/person/order/">查看更多订单</a>
+									</div>
+									<div class="person_rcl">
+										<ul class="flex">
+											<li>
+												<a href="/person/order/?status=1">
+													<div class="person_rclb">
+														<div class="person_rclbi">
+															<img src="/static/index/images/per_07.png">
+														</div>
+														<div class="person_rclbt">
+															待付款 <span>{$count.pay}</span>
+														</div>
+													</div>
+												</a>
+											</li>
+											<li>
+												<a href="/person/order/?status=2">
+													<div class="person_rclb">
+														<div class="person_rclbi">
+															<img src="/static/index/images/per_08.png">
+														</div>
+														<div class="person_rclbt">
+															待发货 <span>{$count.deliver}</span>
+														</div>
+													</div>
+												</a>
+											</li>
+											<li>
+												<a href="/person/order/?status=3">
+													<div class="person_rclb">
+														<div class="person_rclbi">
+															<img src="/static/index/images/per_09.png">
+														</div>
+														<div class="person_rclbt">
+															待收货 <span>{$count.receive}</span>
+														</div>
+													</div>
+												</a>
+											</li>
+											<li>
+												<a href="/person/order/?status=4">
+													<div class="person_rclb">
+														<div class="person_rclbi">
+															<img src="/static/index/images/per_10.png">
+														</div>
+														<div class="person_rclbt">
+															申请退款 <span>{$count.refund}</span>
+														</div>
+													</div>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div class="person_rbottom">
+								<div class="person_rbt">
+									<h3>猜你喜欢</h3>
+								</div>
+								<div class="person_rbtable">
+									<table border="0" cellspacing="0" cellpadding="0">
+										<tr>
+											<td>商品型号</td>
+											<td>商品信息</td>
+											<td>库存量</td>
+											<td>操作</td>
+										</tr>
+										{volist name="productList" id="proVal"}
+										<tr>
+											<td>
+												<p>{$proVal.title}</p>
+											</td>
+											<td>
+												<p>
+												{volist name="proVal.paramList" id="paramVal"}
+												{$paramVal.title}：{$paramVal.param_name} 
+												{/volist}
+												</p>
+											</td>
+											<td>
+												<p>库存量:{$proVal.stock}</p>
+											</td>
+											<td>
+												<a href="javascript:;" data-id="{$proVal.id}" onclick="buyNow(this)">立即购买</a>
+											</td>
+										</tr>
+										{/volist}
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer"}
+		</div>
+	</body>
+</html>

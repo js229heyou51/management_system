@@ -1,0 +1,117 @@
+	<!-- footer -->
+			<div class="footer">
+				<div class="footer-top">
+					<div class="container">
+						<div class="foot-tcon">
+							<div class="foot-ttop">
+								<ul class="flex flexbetween">
+									<li>
+										<div class="foot-tbox flex flexalign">
+											<div class="img"><img src="/static/index/images/foot01.png"></div>
+											<p>海量现货</p>
+										</div>
+									</li>
+									<li>
+										<div class="foot-tbox flex flexalign">
+											<div class="img"><img src="/static/index/images/foot02.png"></div>
+											<p>急速直发</p>
+										</div>
+									</li>
+									<li>
+										<div class="foot-tbox flex flexalign">
+											<div class="img"><img src="/static/index/images/foot03.png"></div>
+											<p>价格公正</p>
+										</div>
+									</li>
+									<li>
+										<div class="foot-tbox flex flexalign">
+											<div class="img"><img src="/static/index/images/foot04.png"></div>
+											<p>品质保证</p>
+										</div>
+									</li>
+								</ul>
+							</div>
+							<div class="foot-tcenter flex flexbetween">
+								<div class="foot-tcleft">
+									<div class="foot-tcnav flex flexbetween">
+										<div class="foot-tcbox">
+											<h2>关于我们</h2>
+											<ul>
+												{volist name="footer.about" id="av"}
+												<li><a href="{if(!empty($av.link_url))}{$av.link_url}{else}/about/{$av.id}{/if}">{$av.title}</a></li>
+												{/volist}
+											</ul>
+										</div>
+										<div class="foot-tcbox">
+											<h2>购物指南</h2>
+											<ul>
+												{volist name="footer.guide" id="gv"}
+												<li><a href="{if(!empty($gv.link_url))}{$gv.link_url}{else}/about/{$gv.id}{/if}">{$gv.title}</a></li>
+												{/volist}
+											</ul>
+										</div>
+										<div class="foot-tcbox">
+											<h2>特色服务</h2>
+											<ul>
+												<li><a href="/bom/">BOM配单</a></li>
+												<li><a href="/bom/upload/">批量导入</a></li>
+											</ul>
+										</div>
+										<div class="foot-tcbox">
+											<h2>支付&配送</h2>
+											<ul>
+												{volist name="footer.pay" id="pv"}
+												<li><a href="{if(!empty($pv.link_url))}{$pv.link_url}{else}/about/{$pv.id}{/if}">{$pv.title}</a></li>
+												{/volist}
+											</ul>
+										</div>
+										<div class="foot-tcbox">
+											<h2>售后服务</h2>
+											<ul>
+												{volist name="footer.sale" id="sv"}
+												<li><a href="{if(!empty($sv.link_url))}{$sv.link_url}{else}/about/{$sv.id}{/if}">{$sv.title}</a></li>
+												{/volist}
+											</ul>
+										</div>
+									</div>
+								</div>
+								<div class="foot-tcright">
+									<div class="foot-tcrcon">
+										<div class="img">
+											<img src="/static/index/images/foot05.png">
+										</div>
+										<div class="text">
+											<p>联系我们：0755-21082640</p>
+											<p>地址：深圳市龙华新区民宝路淘景大厦12楼</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="footer-center">
+					<div class="container">
+						<div class="footer-link">
+							<h3>友情链接</h3>
+							{volist name="link" id="linkVal"}
+							<a href="{$linkVal['link_url'.$cong['lang']]}" target="_blank">{$linkVal.title}</a>
+							{/volist}
+						</div>
+					</div>
+				</div>
+				<div class="footer-bottom">
+					<div class="container">
+						<div class="copyright">
+							{:$cong.ym_bot??''}  <p><a href="http://www.heyou51.com/" target="_blank">网站建设</a>：<a href="http://heyou51.com/" target="_blank">合优网络</a></p>
+						</div>
+						<div class="footer-bottom-list">
+							<a href=""><img src="/static/index/images/foot06.jpg"></a>
+							<a href=""><img src="/static/index/images/foot07.jpg"></a>
+							<a href=""><img src="/static/index/images/foot08.jpg"></a>
+							<a href=""><img src="/static/index/images/foot09.jpg"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- footer -->

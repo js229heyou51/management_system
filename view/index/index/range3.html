@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网易外贸通 AI尊享版 - 外贸全链路营销解决方案</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        /* 头部样式 */
+        header {
+            background: linear-gradient(135deg, #165DFF 0%, #4080FF 100%);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        /* 英雄区 */
+        .hero {
+            background: linear-gradient(135deg, #165DFF 0%, #4080FF 100%);
+            color: white;
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            opacity: 0.95;
+        }
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #165DFF;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        /* 价格套餐区 */
+        .price-section {
+            padding: 4rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: #165DFF;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: #165DFF;
+            border-radius: 2px;
+        }
+        .price-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .price-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .price-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(22, 93, 255, 0.15);
+            border-color: #165DFF;
+        }
+        .price-card.highlight {
+            border-color: #165DFF;
+            background: linear-gradient(135deg, #f0f5ff 0%, #ffffff 100%);
+        }
+        .card-title {
+            font-size: 1.5rem;
+            color: #165DFF;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+        .price {
+            font-size: 2.2rem;
+            color: #333;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        .price-unit {
+            font-size: 1rem;
+            color: #666;
+        }
+        .card-features {
+            list-style: none;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+        .card-features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .card-features li:last-child {
+            border-bottom: none;
+        }
+        .card-button {
+            display: inline-block;
+            background: #165DFF;
+            color: white;
+            padding: 0.7rem 1.8rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        .card-button:hover {
+            background: #0f4cd1;
+        }
+        /* 功能概览区 */
+        .features-section {
+            padding: 4rem 1rem;
+            background: white;
+        }
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .feature-item {
+            background: #f8faff;
+            padding: 2rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .feature-item:hover {
+            background: #eaf1ff;
+            transform: translateY(-3px);
+        }
+        .feature-title {
+            font-size: 1.3rem;
+            color: #165DFF;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+        .feature-list {
+            list-style: none;
+        }
+        .feature-list li {
+            padding: 0.4rem 0;
+            color: #555;
+        }
+        /* 页脚 */
+        footer {
+            background: #165DFF;
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+        }
+        footer p {
+            opacity: 0.9;
+        }
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .section-title {
+                font-size: 1.6rem;
+            }
+            .price-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">网易外贸通</div>
+        <div class="subtitle">AI驱动的外贸全链路营销解决方案</div>
+    </header>
+
+    <section class="hero">
+        <h1>AI尊享版 重磅来袭</h1>
+        <p>一站式外贸获客、客户开发、智能营销平台，助力外贸企业高效拓客、业绩倍增</p>
+        <a href="#price" class="cta-button">立即咨询优惠</a>
+    </section>
+
+    <section class="price-section" id="price">
+        <h2 class="section-title">价格套餐</h2>
+        <div class="price-cards">
+            <!-- 基础年卡 -->
+            <div class="price-card">
+                <div class="card-title">AI尊享版 年卡</div>
+                <div class="price">19990<span class="price-unit">元/年</span></div>
+                <ul class="card-features">
+                    <li>✅ 全功能AI尊享版权限</li>
+                    <li>✅ 客户发现/开发/管理全链路</li>
+                    <li>✅ AI智能营销/建站/社媒运营</li>
+                    <li>✅ 专业客服技术支持</li>
+                </ul>
+                <a href="#" class="card-button">立即购买</a>
+            </div>
+
+            <!-- 2年送半年（主推） -->
+            <div class="price-card highlight">
+                <div class="card-title">买2年送半年</div>
+                <div class="price">39980<span class="price-unit">元</span></div>
+                <ul class="card-features">
+                    <li>✅ 2年AI尊享版权限 + 赠送6个月</li>
+                    <li>✅ 全功能无限制使用</li>
+                    <li>✅ 高性价比专属优惠</li>
+                    <li>✅ 优先技术支持服务</li>
+                </ul>
+                <a href="#" class="card-button">立即抢购</a>
+            </div>
+
+            <!-- 3年送1年 -->
+            <div class="price-card">
+                <div class="card-title">买3年送1年</div>
+                <div class="price">59970<span class="price-unit">元</span></div>
+                <ul class="card-features">
+                    <li>✅ 3年AI尊享版权限 + 赠送1年</li>
+                    <li>✅ 全功能长期使用权限</li>
+                    <li>✅ 最大优惠力度</li>
+                    <li>✅ 专属客户经理1v1服务</li>
+                </ul>
+                <a href="#" class="card-button">立即咨询</a>
+            </div>
+
+            <!-- 邮件营销增值包 -->
+            <div class="price-card">
+                <div class="card-title">邮件营销增值包</div>
+                <div class="price">21000<span class="price-unit">元/100万封</span></div>
+                <ul class="card-features">
+                    <li>✅ 100万封邮件营销额度</li>
+                    <li>✅ 智能模板/发送策略优化</li>
+                    <li>✅ 邮件追踪/效果数据分析</li>
+                    <li>✅ 高送达率技术保障</li>
+                </ul>
+                <a href="#" class="card-button">了解详情</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="features-container">
+            <h2 class="section-title">核心功能概览</h2>
+            <div class="features-grid">
+                <!-- 客户发现 -->
+                <div class="feature-item">
+                    <div class="feature-title">🔍 多渠道客户发现</div>
+                    <ul class="feature-list">
+                        <li>全球产品/公司/域名多维度搜索</li>
+                        <li>海关数据、采购商信息精准查询</li>
+                        <li>社媒/展会/地图多渠道拓客</li>
+                        <li>AI智能推荐高潜力潜在客户</li>
+                    </ul>
+                </div>
+
+                <!-- 客户开发 -->
+                <div class="feature-item">
+                    <div class="feature-title">📤 智能客户开发</div>
+                    <ul class="feature-list">
+                        <li>全自动/手动邮件营销开发</li>
+                        <li>AI写信、多版本内容智能优化</li>
+                        <li>WhatsApp多账号群发运营</li>
+                        <li>邮件追踪、二次营销、效果分析</li>
+                    </ul>
+                </div>
+
+                <!-- 客户管理 -->
+                <div class="feature-item">
+                    <div class="feature-title">👥 全周期客户管理</div>
+                    <ul class="feature-list">
+                        <li>客户/线索全生命周期管理</li>
+                        <li>多维度跟进记录、标签体系</li>
+                        <li>商机跟进、业务数据洞察</li>
+                        <li>交易/商品/供应商一体化管理</li>
+                    </ul>
+                </div>
+
+                <!-- AI智能团队 -->
+                <div class="feature-item">
+                    <div class="feature-title">🤖 AI智能营销团队</div>
+                    <ul class="feature-list">
+                        <li>AI营销专家：智能获客、营销规划</li>
+                        <li>AI建站专家：一键搭建外贸官网</li>
+                        <li>AI社媒专家：多平台社媒运营</li>
+                        <li>AI运营专家：客户分层、沉睡激活</li>
+                    </ul>
+                </div>
+
+                <!-- 品牌建设 -->
+                <div class="feature-item">
+                    <div class="feature-title">🏢 品牌建站与推广</div>
+                    <ul class="feature-list">
+                        <li>智能SEO优化、站点全链路管理</li>
+                        <li>AI自动生成营销内容、SEO文章</li>
+                        <li>海外社媒统一管理、数据汇总</li>
+                        <li>访客识别、行为分析、转化追踪</li>
+                    </ul>
+                </div>
+
+                <!-- 协同办公 -->
+                <div class="feature-item">
+                    <div class="feature-title">💼 一站式协同办公</div>
+                    <ul class="feature-list">
+                        <li>邮箱统一管理、多账号聚合</li>
+                        <li>WhatsApp管理助手、消息同步</li>
+                        <li>日历日程、云文档多人协作</li>
+                        <li>工作台一站式办公、数据看板</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 网易外贸通 版权所有 | 具体功能请以最新版本为准，详情可咨询客户经理</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">买2年送6个月、买3年送1年优惠活动限时生效，最终解释权归网易所有</p>
+    </footer>
+</body>
+</html>

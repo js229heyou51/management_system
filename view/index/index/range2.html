@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网易外贸通AI尊享版 - 智能外贸营销解决方案</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f8ff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 顶部导航/头部 */
+        header {
+            background: linear-gradient(135deg, #4c6aff, #436fea);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 82, 217, 0.2);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* 核心内容区 */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+
+        /* 产品亮点 */
+        .features {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .features h2 {
+            color: #4c6aff;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            border-left: 4px solid #4c6aff;
+            padding-left: 15px;
+        }
+
+        .features ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .features li {
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .features li::before {
+            content: "✓";
+            color: #4c6aff;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        /* 价格套餐 */
+        .pricing {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .pricing h2 {
+            color: #4c6aff;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            border-left: 4px solid #4c6aff;
+            padding-left: 15px;
+        }
+
+        .price-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .price-card {
+            border: 2px solid #e8f0ff;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .price-card:hover {
+            border-color: #4c6aff;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 82, 217, 0.1);
+        }
+
+        .price-card h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .price-card .price {
+            font-size: 2rem;
+            color: #4c6aff;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .price-card .price span {
+            font-size: 1rem;
+            color: #666;
+            font-weight: normal;
+        }
+
+        .price-card .desc {
+            color: #666;
+            margin: 10px 0 20px;
+            font-size: 0.95rem;
+        }
+
+        .price-card .highlight {
+            color: #e63946;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #4c6aff;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #0040b8C0;
+        }
+
+        /* 额外说明 */
+        .extra-info {
+            background: #e8f0ff;
+            padding: 20px;
+            border-radius: 8px;
+            color: #333;
+            font-size: 0.95rem;
+            margin-top: 20px;
+        }
+
+        /* 页脚 */
+        footer {
+            background: #4c6aff;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .features ul {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header>
+        <div class="header-container">
+            <h1>网易外贸通AI尊享版</h1>
+            <p>一站式智能外贸获客与营销解决方案</p>
+        </div>
+    </header>
+
+    <!-- 核心内容 -->
+    <div class="container">
+        <!-- 产品核心亮点 -->
+        <section class="features">
+            <h2>核心功能亮点</h2>
+            <ul>
+                <li>多维度客户发现：全球搜索、海关数据、场景获客等</li>
+                <li>全自动化客户开发：AI写信润色、精准发送、效果分析</li>
+                <li>智能品牌建设：SEO优化、海外社媒运营、访客识别</li>
+                <li>AI营销专家：大数据挖掘、营销规划、客户特征分析</li>
+                <li>全流程客户管理：线索管理、智能跟进、数据洞察</li>
+                <li>多渠道触达：WhatsApp群发、社媒运营等核心能力</li>
+            </ul>
+        </section>
+
+        <!-- 价格套餐 -->
+        <section class="pricing">
+            <h2>AI尊享版价格套餐</h2>
+            <div class="price-cards">
+                <!-- 年付套餐 -->
+                <div class="price-card">
+                    <h3>年付套餐</h3>
+                    <div class="price">¥19,990 <span>/ 年</span></div>
+                    <p class="desc">套餐不含邮件营销，邮件发送100万封起购（100万封价值2.1万）</p>
+                    <p class="highlight">基础套餐 · 灵活选择</p>
+                    <a href="#" class="btn">立即咨询</a>
+                </div>
+
+                <!-- 两年套餐 -->
+                <div class="price-card">
+                    <h3>两年套餐（送半年）</h3>
+                    <div class="price">¥39,980 <span>/ 2.5年</span></div>
+                    <p class="desc">折合仅¥15,992/年，套餐不含邮件营销，邮件100万封起购</p>
+                    <p class="highlight">爆款推荐 · 性价比之选</p>
+                    <a href="#" class="btn">立即咨询</a>
+                </div>
+
+                <!-- 三年套餐 -->
+                <div class="price-card">
+                    <h3>三年套餐（送一年）</h3>
+                    <div class="price">¥59,970 <span>/ 4年</span></div>
+                    <p class="desc">折合仅¥14,992/年，套餐不含邮件营销，邮件100万封起购</p>
+                    <p class="highlight">超值特惠 · 长期首选</p>
+                    <a href="#" class="btn">立即咨询</a>
+                </div>
+            </div>
+
+            <!-- 额外说明 -->
+            <div class="extra-info">
+                <p>★ 说明：以上价格为网易外贸通AI尊享版基础年费，不含邮件营销功能；邮件发送额度100万封起购，100万封邮件发送额度单独计价价值2.1万元；最终权益以官方沟通为准。</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2025 网易外贸通 版权所有 | 智能外贸 · 高效获客</p>
+    </footer>
+</body>
+</html>

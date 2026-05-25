@@ -1,0 +1,33 @@
+<script type="text/html" id="toolbarDemo">
+	{if (isset($conf.co.add_xx) && $conf.co.add_xx == true)}
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="add" ><i class="layui-icon layui-icon-add-1"></i>{$langHtml.common.add}</button>
+	{/if}
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="recycle">
+		<i class="layui-icon layui-icon-delete"></i>{$langHtml.common.recycle}
+	</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="del" >{$langHtml.common.deleteSelected}</button>
+	{if (isset($conf.co.ding) && $conf.co.ding == true)}
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="ding1">{$langHtml.common.selectedTopUp}
+	</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="ding2">{$langHtml.common.cancelTopUp}
+	</button>
+	{/if}
+	{if(isset($conf.co.tuijian) && $conf.co.tuijian == true)}
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="tj1" >{$langHtml.common.selectedRecommended}
+	</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="tj2">{$langHtml.common.cancelRecommended}
+	</button>
+	{/if}
+	{if(isset($conf.co.hot) && $conf.co.hot == true)}
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="hot1" >{$langHtml.common.selectedPopular}
+	</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="hot2" >{$langHtml.common.cancelPopular}
+	</button>
+	{/if}
+	{if(isset($conf.co.pass) && $conf.co.pass == true)}
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="pass1" >{$langHtml.common.selectedShield}
+	</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="pass2" >{$langHtml.common.cancelShield}
+	</button>
+	{/if}
+</script>

@@ -1,0 +1,36 @@
+{extend name="common/co/edit" /}
+
+{block name="header"}
+	{include file="common/co/header" /}
+{/block}
+{block name="content"}
+	{include file="common/co/information" /}
+	{if ($conf.co.info == true)}
+	{include file="common/co/info" /}
+	{/if}
+	{if ($conf.co.file == true)}
+	{include file="common/co/file" /}
+	{/if}
+	{if ($conf.co.seo == true)}
+	{include file="common/co/seo" /}
+	{/if}
+{/block}
+{block name="script"}
+<script>
+	layui.use(function(){
+		var util = layui.util;
+		util.on('lay-on',{
+			'layui-copy': async function(obj){
+				var elem = obj[0];
+				var text = elem.innerText || elem.textContent
+				try {
+					await navigator.clipboard.writeText(text);
+					layer.msg('复制成功:' + text,{icon:1});
+				} catch (err) {
+					layer.msg('复制失败:'+ err,{icon:2});
+				}
+			}
+		})
+	})
+</script>
+{/block}

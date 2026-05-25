@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head"}
+	<script src="/static/index/js/cart.js"></script>
+	<script src="/static/index/js/distpicker.data.js"></script>
+	<script src="/static/index/js/distpicker.min.js"></script>
+	<script src="/static/index/js/address.js"></script>
+	<script src="/static/index/js/invoice.js"></script>
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header"}
+			<!-- main -->
+			<div class="cart">
+				<div class="cart-nav">
+					<div class="container">
+						<div class="cart-navcon flex">
+							<div class="cart-nleft">
+								<h2><img src="/static/index/images/cart_03.png"> 填写订单及核实</h2>
+							</div>
+							<div class="cart-nright">
+								<ul class="flex">
+									<li class="active cur">
+										<div class="cart-y1">
+											<div class="cart-y2">
+												01
+											</div>
+										</div>
+										<p>我的购物车</p>
+									</li>
+									<li class="active">
+										<div class="cart-y1">
+											<div class="cart-y2">
+												02
+											</div>
+										</div>
+										<p>填写订单及核实</p>
+									</li>
+									<li>
+										<div class="cart-y1">
+											<div class="cart-y2">
+												03
+											</div>
+										</div>
+										<p>提交订单</p>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="cartConfirm">
+					<div class="container">
+						<div class="cartConfirm-c">
+							<div class="confirm-box">
+								<div class="confirm-tit">
+									<h2>收货人信息</h2>
+								</div>
+								<div class="confirm-con" >
+									<div class="address-wrapper">
+										<div class="address-content">
+											<ul class="clearfix" id="addressBox">
+												{if(!empty($addressList))}
+												{volist name="addressList" id="addVal"}
+												<li index="{$key}" class="address-item" onclick="selectAddress({$addVal.id})">
+													<div class="name line1">{$addVal.rename}</div> 
+													<div class="phone">{$addVal.phone}</div> 
+													<div class="text line4">{$addVal.province}{$addVal.city}{$addVal.district}{$addVal.address}</div> 
+													<div class="edit-box">
+														<span onclick='editAddress({$addVal.id},"ajax")'>修改</span>
+														<span onclick="delAddress({$addVal.id},'ajax')">删除</span>
+													</div>
+													{if($addVal.type ==1)}<div class="moren">默认</div>{/if}
+													<div class="iconfont icon-xuanzhong4 font-color"></div>
+												</li>
+												{/volist}
+												{/if}
+												<li class="addbox" onclick="addAddress('ajax')"><div class="box"><img src="/static/index/images/add.02a167a.png" alt=""> <p>添加新地址</p></div></li>
+											</ul>
+										</div>
+									</div>
+									
+								</div>
+							</div>
+							<div class="confirm-box">
+								<div class="confirm-tit">
+									<h2>确认订单信息</h2>
+								</div>
+								<div class="confirm-info">
+									<div class="confirm-table">
+										<table cellpadding="0" cellspacing="0" border="0">
+											<tr>
+												<td>商品</td>
+												<td>商品信息</td>
+												<td>数量</td>
+												<td>单价</td>
+												<td>金额</td>
+											</tr>
+											{volist name="cartList" id="cartVal"}
+											<tr>
+												<td>
+													<div class="confirm-prolist">
+														<div class="confirm-proimg">
+															<img src="{$cartVal.product.img_sl}">
+														</div>
+														<div class="confirm-protit">
+															<p>{$cartVal.product.title}</p>
+														</div>
+													</div>
+												</td>
+												<td>
+													<div class="confirm-procan">
+														<p>
+															{volist name="cartVal.paramLists" id="paramVal"}
+															<span>{$paramVal.title}：{$paramVal.param_name}</span>
+															{/volist}
+														</p>
+													</div>
+												</td>
+												<td>
+													<div class="confrim-num">
+														<p>{$cartVal.num}</p>
+													</div>
+												</td>
+												<td>
+													<div class="confrim-price">
+														<p>￥{$cartVal.price}</p>
+													</div>
+												</td>
+												<td>
+													<div class="confrim-allprice">
+														<p>￥{$cartVal.total}</p>
+													</div>
+												</td>
+											</tr>
+											{/volist}
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="confirm-box">
+								<div class="confirm-tit">
+									<h2>订单备注</h2>
+								</div>
+								<div class="confirm-textarea">
+									<textarea name="order_remarks" id="remarks" placeholder="请先和商家协商一致" maxlength="500" ></textarea>
+								</div>
+								<div class="confirm-bottom">
+									<div class="confirm-bkd">
+									</div>
+									<div class="confirm-bright">
+										<div class="confirm-brcon">
+											<div class="confirm-brnum">
+												<p><span>{$totalNum}</span> 件商品</p>
+											</div>
+											<div class="confirm-brprice">
+												<table cellspacing="0" cellpadding="0" border="0">
+													<tr>
+														<td>商品金额：</td>
+														<td>￥{$totalPrice}</td>
+													</tr>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<br>
+							</div>
+							<div class="confirm-submit">
+								<div class="confirm-subcon">
+									<div class="confirm-subleft">
+										<a href="/cart/">返回购物车</a>
+									</div>
+									<form action="" id="orderForm">
+										<div class="confirm-subright">
+											<input type="hidden" name="cartIdStr" id="cartIdStr" value="{$cartIdStr}">
+											<input type="hidden" name="pid" id="pid" value="{$pid??''}">
+											<input type="hidden" name="addressId" id="addressId" value="{:empty($addressList[0]['id']) ? '' : $addressList[0]['id'] }">
+											<input type="hidden" name="totalPrice" id="totalPrice" value="{$totalPrice}">
+											<input type="hidden" name="allPrice" id="allPrice" value="{$allPrice}">
+											<div class="confirm-srcon">
+												<div class="confirm-subprice">
+													<div class="confirm-subap">
+														<p>应付金额：<span>￥</span><span id="allPriceText">{$allPrice}</span></p>
+													</div>
+													<div class="confirm-subadd" id="confirmAddress">
+														{if(!empty($addressList))}
+														{volist name="addressList" id="addVal"}
+														{if($key == 0)}
+														<p>寄送至： {$addVal.province??''}{$addVal.city??''}{$addVal.district??''}{$addVal.address}     收货人：{$addVal.rename} {$addVal.phone}</p>
+														{/if}
+														{/volist}
+														{/if}
+														
+													</div>
+												</div>
+												<div class="confirm-srbtn">
+													<a href="javascript:;" onclick="submitOrder()">提交订单</a>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer"}
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	layui.use(['form'],function(){
+		var form = layui.form;
+		$ = layui.jquery;
+	})
+</script>

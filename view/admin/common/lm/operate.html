@@ -1,0 +1,4 @@
+<script type="text/html" id="operateDemo">
+	<button class="layui-btn layui-btn-primary layui-btn-xs layui-border" lay-event="edit" {{# if(d.con_att == 1 || d.con_att == 2){ }}onclick="edit('{$Request.root}/{$route}/edit?id_lm={{d.id_lm}}','{$langHtml.common.edit}')"{{# } }}><i class="layui-icon layui-icon-edit"></i>{$langHtml.common.edit}</button>
+	<button class="layui-btn layui-btn-danger layui-btn-xs layui-bg-red" onclick="del('{$Request.root}/{$route}/del?id_lm={{d.id_lm}}','{$langHtml.common.delete}')" lay-event="remove"><i class="layui-icon layui-icon-delete"></i>{$langHtml.common.delete}</button>
+</script>

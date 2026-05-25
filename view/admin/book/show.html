@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$conf.sy.name} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;" id="book">
+		<div class="layui-wrap">
+			<div class="layui-step">
+				<form class="layui-form">
+					<input type="hidden" name="id" value="{$find.id}">
+					<table class="layui-table">
+						<thead>
+							{if($conf.co.title == true)}
+								<tr>
+									<th width="100px" style="width: 100px;text-align: center;">{$langHtml.common.title}</th>
+									<th><span>{$find.title}</span></th>
+								</tr>
+							{/if}
+						</thead>
+						<tbody>
+							{if($conf.co.num == true)}
+							<tr>
+								<td align="center">{$langHtml.common.num}</td>
+								<td><span>{$find.num}</span></td>
+							</tr>
+							{/if}
+							{if($conf.co.rename == true)}
+							<tr>
+								<td align="center">{$langHtml.common.name}</td>
+								<td><span>{$find.rename}</span></td>
+							</tr>
+							{/if}
+							{if($conf.co.sex == true)}
+							<tr>
+								<td align="center">{$langHtml.common.sex}</td>
+								<td><span>{if($find.sex == '1')}{$langHtml.common.male}{else}{$langHtml.common.female}{/if}</span></td>
+							</tr>
+							{/if}
+							{if($conf.co.phone == true)}
+							<tr>
+								<td align="center">{$langHtml.common.phone}</td>
+								<td><span>{$find.phone}</span></td>
+							</tr>
+							{/if}
+							{if($conf.co.fax == true)}
+							<tr>
+								<td align="center">{$langHtml.common.fax}</td>
+								<td><span>{$find.fax}</span></td>
+							</tr>
+							{/if}
+							{if($conf.co.email == true)}
+							<tr>
+								<td align="center">{$langHtml.common.email}</td>
+								<td><span>{$find.email}</span></td>
+							</tr>
+							{/if}
+							{if($conf.co.qq == true)}
+							<tr>
+								<td align="center">{$langHtml.common.qq}</td>
+								<td><span>{$find.qq}</span></td>
+							</tr>
+							{/if}
+							{if($conf.co.wx == true)}
+							<tr>
+								<td align="center">{$langHtml.common.wechat}</td>
+								<td><span>{$find.wx}</span></td>
+							</tr>
+							{/if}
+							{if($conf.co.compname == true)}
+							<tr>
+								<td align="center">{$langHtml.common.company}</td>
+								<td><span>{$find.compname}</span></td>
+							</tr>
+							{/if}
+							{if($conf.co.address == true)}
+							<tr>
+								<td align="center">{$langHtml.common.address}</td>
+								<td><span>{$find.address}</span></td>
+							</tr>
+							{/if}
+							{if($conf.co.post == true)}
+							<tr>
+								<td align="center">{$langHtml.common.post}</td>
+								<td><span>{$find.post}</span></td>
+							</tr>
+							{/if}
+							<tr>
+								<td align="center">{$langHtml.common.IP}</td>
+								<td><span>{$find.ip}</span></td>
+							</tr>
+							<tr>
+								<td align="center">{$langHtml.common.time}</td>
+								<td><span>{$find.wtime}</span></td>
+							</tr>
+							<tr>
+								<td align="center">{$langHtml.common.notes}</td>
+								<td><textarea name="z_body" class="layui-textarea">{if(!empty($find.z_body))}{$find.z_body}{/if}</textarea></td>
+							</tr>
+							{if($conf.sy.huifu == true)}
+							<tr>
+								<td align="center">{$langHtml.common.reply}{$langHtml.common.time}</td>
+								<td><span>{if(!empty($reply))}{$reply.htime}{/if}</span></td>
+							</tr>
+							<tr>
+								<td align="center">{$langHtml.common.reply}{$langHtml.common.content}</td>
+								<td><textarea name="h_body" class="layui-textarea">{if(!empty($reply))}{$reply.h_body}{/if}</textarea></td>
+							</tr>
+							{/if}
+						</tbody>
+					</table>
+				</form>
+				<div class="layui-form-item" style="margin-top:10px;">
+					<div class="layui-input-block">
+						{if($conf.sy.huifu == true)}
+						<button type="button" class="layui-btn layui-bg-color" onclick="save()">{$langHtml.common.save}</button>
+						{/if}
+						<button type="button" class="layui-btn layui-bg-color" onclick="backList()">{$langHtml.common.back}</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	function backList(){
+		setTimeout(function(){parent.window.location.reload();},500);
+	}
+</script>
+{include file="public/footer" /}

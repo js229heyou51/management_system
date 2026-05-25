@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>数据批量导入</title>
+		{include file="public/head" /}
+	</head>
+	
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div id="layui-setting">
+				<form class="layui-form" id="settingForm">
+					<div class="layui-form-item">
+						<label class="layui-form-label">使用分类</label>
+						<div class="layui-input-block">
+							<input type="radio" name="need_lm" lay-filter="need_lm" {if condition="!empty($plConf.importConf.need_lm) && $plConf.importConf.need_lm == true"}checked{/if}  value="true" title="使用">
+							<input type="radio" name="need_lm" lay-filter="need_lm" {if condition="!empty($plConf.importConf.need_lm) && $plConf.importConf.need_lm == false"}checked{/if} value="false" title="不使用">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">权限前缀</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="pre" id="pre" placeholder="" value="{$plConf.importConf.pre??''}">
+						</div>
+						<div class="layui-form-mid layui-word-aux">每个系统的权限前缀标识  例如：新闻系统的权限前缀为news</div>
+					</div>
+					{if (!empty($plConf.importConf.need_lm) && $plConf.importConf.need_lm == true)}
+					<div class="layui-form-item" id="tableLm">
+						<label class="layui-form-label">分类表名</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="table_lm" id="table_lm" placeholder="" value="{$plConf.importConf.table_lm??''}">
+						</div>
+					</div>
+					{else}
+					<div class="layui-form-item" id="tableLm">
+						<label class="layui-form-label">分类表名</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="table_lm" id="table_lm" placeholder="" value="">
+						</div>
+					</div>
+					{/if}
+					<div class="layui-form-item">
+						<label class="layui-form-label">信息表名</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="table_co" id="table_co" placeholder="" value="{$plConf.importConf.table_co??''}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">导入的字段</label>
+						<div class="layui-inline-box">
+							<div class="layui-input-block">
+								<input type="checkbox" class="layui-input" name="s_email_all" lay-skin="primary" id="s_email_all" lay-filter="s_email_all" title="全选">
+							</div>
+							<div class="layui-input-block" id="fieldsBox">
+								{if(!empty($fields))}
+								{volist name="fields" id="fv"}
+								<div class="layui-inline layui-col-xs1">
+									<input type="checkbox" class="layui-input" name="fields[]" lay-skin="primary" {if condition="!empty($plConf.importConf.fields) && strpos(','.$plConf.importConf.fields.',',','.$fv.',') !== false"}checked{/if} title="{$fv??''}" value="{$fv??''}">
+								</div>
+								{/volist}
+								{/if}
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">表必填<br>默认值字段</label>
+						<div class="layui-input-block">
+							{if(!empty($find.lists.mr_fields))}
+							{volist name="find.lists.mr_fields" id="mv" key="k"}
+							<div class="layui-inline layui-col-xs12">
+								<label class="layui-form-label">字段名</label>
+								<div class="layui-input-inline layui-input-inline-sm">
+									<input type="text" class="layui-input" name="fname[]" value="{$key}">
+								</div>
+								<label class="layui-form-label">默认值</label>
+								<div class="layui-input-inline layui-input-inline-sm">
+									<select name="ftype[]">
+										<option value="str" {if condition="$find.lists.mr_fields_type[$key] == 'str'"}selected{/if}>值</option>
+										<option value="fun" {if condition="$find.lists.mr_fields_type[$key] == 'fun'"}selected{/if}>函数</option>
+									</select>
+								</div>
+								<div class="layui-input-inline layui-input-inline-sm">
+									<input type="text" class="layui-input" name="fvalue[]" value="{$mv}">
+								</div>
+								<div class="layui-input-inline">
+									{if($k==1)}
+									<button type="button" class="layui-btn" onclick="addLang(this)"><i class="layui-icon layui-icon-add-circle"></i></button>
+									{else}
+									<button type="button" class="layui-btn" onclick="removeLang(this)"><i class="layui-icon layui-icon-reduce-circle"></i></button>
+									{/if}
+								</div>
+							</div>
+							{/volist}
+							{else}
+							<div class="layui-inline layui-col-xs12">
+								<label class="layui-form-label">字段名</label>
+								<div class="layui-input-inline layui-input-inline-sm">
+									<input type="text" class="layui-input" name="fname[]" value="">
+								</div>
+								<label class="layui-form-label">默认值</label>
+								<div class="layui-input-inline layui-input-inline-sm">
+									<select name="ftype[]">
+										<option value="str">值</option>
+										<option value="fun">函数</option>
+									</select>
+								</div>
+								<div class="layui-input-inline layui-input-inline-sm">
+									<input type="text" class="layui-input" name="fvalue[]" value="">
+								</div>
+								<div class="layui-input-inline">
+									<button type="button" class="layui-btn" onclick="addLang(this)"><i class="layui-icon layui-icon-add-circle"></i></button>
+								</div>
+							</div>
+							{/if}
+						</div>
+					</div>
+				</form>
+				<div class="layui-form-item" style="margin-top:10px;">
+					<div class="layui-input-block ">
+						<button type="button" class="layui-btn" onclick="save('{$Request.root}/{$route}/importSettings',1)">保存</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="layui-form">
+			<div id="langBox" style="display: none;">
+				<div class="layui-inline layui-col-xs12">
+					<label class="layui-form-label">字段名</label>
+					<div class="layui-input-inline layui-input-inline-sm">
+						<input type="text" class="layui-input" name="fname[]" value="">
+					</div>
+					<label class="layui-form-label">默认值</label>
+					<div class="layui-input-inline layui-input-inline-sm">
+						<select name="ftype[]">
+							<option value="str">值</option>
+							<option value="fun">函数</option>
+						</select>
+					</div>
+					<div class="layui-input-inline layui-input-inline-sm">
+						<input type="text" class="layui-input" name="fvalue[]" value="">
+					</div>
+					<div class="layui-input-inline">
+						<button type="button" class="layui-btn" onclick="removeLang(this)"><i class="layui-icon layui-icon-reduce-circle"></i></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	layui.use(['layer','form'],function(){
+		var form = layui.form;
+		layer = layui.layer;
+		$ = layui.jquery;
+		form.on('checkbox(s_email_all)', function(data){
+			$('input[name="fields[]"]').each(function(index,item){
+				if(data.elem.checked){
+					item.checked = true;
+				}else{
+					item.checked = false;
+				}
+			})
+			form.render();
+		});
+		form.on('radio(need_lm)', function(data){
+			if(data.value == 'true'){
+				$('#tableLm').show();
+			}else{
+				$('#tableLm').hide();
+			}
+		});
+		$('#table_co').on('change',function(){
+			var table = $(this).val();
+			$.post("{$Request.root}/{$route}/changeTable",{'table':table},function(res){
+				if(res.code==200){
+					html = '';
+					for(var i=0; i < res.fields.length ; i++){
+						html += '<div class="layui-inline layui-col-xs1"><input type="checkbox" class="layui-input" name="fields[]" lay-skin="primary"  title="'+res.fields[i]+'" value="'+res.fields[i]+'"></div>';
+					}
+					$('#fieldsBox').html(html);
+					form.render();
+				}else{
+					layer.msg(res.msg,{'icon':2});
+				}
+			},'json');
+		})
+	});
+	function addLang(self){
+		var html = $('#langBox').html();
+		var that = $(self);
+		that.parent().parent().parent().append(html);
+		form.render();
+	}
+	function removeLang(self){
+		$(self).parent().parent().remove();
+		form.render();
+	}
+</script>
+{include file="public/footer" /}

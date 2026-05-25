@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head"}
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header"}
+			<!-- main -->
+			<div class="cart">
+				<div class="cart-nav">
+					<div class="container">
+						<div class="cart-navcon flex">
+							<div class="cart-nleft">
+								<h2><img src="/static/index/images/cart_03.png"> 提交订单</h2>
+							</div>
+							<div class="cart-nright">
+								<ul class="flex">
+									<li class="active cur">
+										<div class="cart-y1">
+											<div class="cart-y2">
+												01
+											</div>
+										</div>
+										<p>我的购物车</p>
+									</li>
+									<li class="active cur">
+										<div class="cart-y1">
+											<div class="cart-y2">
+												02
+											</div>
+										</div>
+										<p>填写订单及核实</p>
+									</li>
+									<li class="active">
+										<div class="cart-y1">
+											<div class="cart-y2">
+												03
+											</div>
+										</div>
+										<p>提交订单</p>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="cartConfirm payment">
+					<div class="container">
+						<div class="ny-content ny4-content" style='padding:30px 0;'>
+							<div class="orderTip">
+								<div>订单提交成功！去付款咯~</div> 
+								<div class="times acea-row row-middle">
+									<div>剩余时间：</div> 
+									<div class="time acea-row row-middle">
+										<!-- <span class="red"> </span> 
+										<span class="timeTxt "> </span> 
+										<span class="styleAll">00</span> 
+										<span class="timeTxt "> 小时 </span> 
+										<span class="styleAll">58</span> 
+										<span class="timeTxt "> 分钟 </span> 
+										<span class="styleAll">11</span> 
+										<span class="timeTxt ">秒 </span> -->
+										<div><span id="hours">00</span><span>时</span></div>
+										<div><span id="minutes">00</span><span>分</span></div>
+										<div><span id="seconds">00</span><span>秒</span></div>
+									</div>
+								</div>
+							</div>
+
+							<div class="detail">
+								<div class="item">订单编号：{$orderInfo.order_sn??''}</div>
+								<div class="item">
+									订单价格：<span>{:round($orderInfo.pay_amount,2)}元</span>
+								</div> 
+								<div class="item line1">
+									收货信息：{$address.name} {$address.phone} {$address.province} {$address.city} {$address.district} {$address.address}
+								</div>
+								<div class="item line1">
+									{$orderInfo.title??''}
+								</div>
+							</div>
+							<div class="payType">
+								<div class="title">选择以下支付方式</div>
+								<div class="type acea-row row-middle">
+									<div class="item acea-row row-center-wrapper on">
+										<div class="iconfont icon-yue"></div>
+										<div>
+											<div class="name">余额支付</div>
+											<div class="yue">余额：{$userInfo.balance??'0.00'}</div>
+										</div>
+										<div class="iconfont icon-xuanzhong4 font-color"></div>
+									</div>
+									<div class="item acea-row row-center-wrapper">
+										<div class="iconfont icon-weixinzhifu1"></div>
+										<div>
+											<div class="name">微信支付</div>
+										</div>
+									</div>
+									<div class="item acea-row row-center-wrapper">
+										<div class="iconfont icon-zhifubao"></div>
+										<div>
+											<div class="name">支付宝支付</div>
+										</div>
+									</div>
+								</div>
+								<div class="goPay acea-row row-right">
+									<div class="bnt bg-color">去支付</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer"}
+		</div>
+	</body>
+</html>
+<script>
+	$(document).ready(function() {
+		var targetTime = new Date({$startTime * 1000});
+
+		function updateCountdown() {
+			var now = new Date();
+			var timeDiff = targetTime - now;
+			
+			if (timeDiff <= 0) {
+				// 倒计时结束
+				$("#hours").text("00");
+				$("#minutes").text("00");
+				$("#seconds").text("00");
+				clearInterval(countdownInterval);
+				window.location.href='/person/order';
+				return;
+			}
+			
+			// 计算天、时、分、秒
+			var hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+			var minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+			var seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+			
+			// 更新显示
+			$("#hours").text(hours.toString().padStart(2, '0'));
+			$("#minutes").text(minutes.toString().padStart(2, '0'));
+			$("#seconds").text(seconds.toString().padStart(2, '0'));
+		}
+		updateCountdown();
+		var countdownInterval = setInterval(updateCountdown, 1000);
+	})
+
+</script>

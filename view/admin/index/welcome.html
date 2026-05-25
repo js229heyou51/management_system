@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<blockquote class="layui-elem-quote">
+			{$langHtml.common.welcome}
+		</blockquote>
+		<fieldset class="layui-elem-field layui-field-title site-title">
+			<legend><a name="default">{$langHtml.common.statistics}</a></legend>
+		</fieldset>
+		<div class="layui-wrap">
+			<div class="layui-bg-gray" style="padding: 16px;">
+				<div class="layui-row layui-col-space15">
+					<div class="layui-col-md3">
+						<div class="layui-card top-card">
+							<div class="layui-card-header">{$langHtml.common.todayRelease}</div>
+							<div class="layui-card-body">
+								<div class="layui-row layui-col-space5">
+									<div class="layui-col-md8 top-card-number">
+										{$statistics.article.today ?? '0'}
+									</div>
+									<div class="layui-col-md4 top-card-tips">
+										<i class="layui-icon layui-icon-release"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md3">
+						<div class="layui-card top-card">
+							<div class="layui-card-header">{$langHtml.common.todayVisit}</div>
+							<div class="layui-card-body">
+								<div class="layui-row layui-col-space5">
+									<div class="layui-col-md8 top-card-number">
+										{$statistics.visit.today ?? '0'}
+									</div>
+									<div class="layui-col-md4 top-card-tips">
+										<i class="layui-icon layui-icon-notice"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md3">
+						<div class="layui-card top-card">
+							<div class="layui-card-header">{$langHtml.common.articleTotal}</div>
+							<div class="layui-card-body">
+								<div class="layui-row layui-col-space5">
+									<div class="layui-col-md8 top-card-number">
+										{$statistics.article.all ?? '0'}
+									</div>
+									<div class="layui-col-md4 top-card-tips">
+										<i class="layui-icon layui-icon-read"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md3">
+						<div class="layui-card top-card">
+							<div class="layui-card-header">{$langHtml.common.productTotal}</div>
+							<div class="layui-card-body">
+								<div class="layui-row layui-col-space5">
+									<div class="layui-col-md8 top-card-number">
+										{$statistics.product.all ?? '0'}
+									</div>
+									<div class="layui-col-md4 top-card-tips">
+										<i class="layui-icon layui-icon-app"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="layui-row layui-col-space15">
+					<div class="layui-col-md5">
+						<div class="layui-card">
+							<div class="layui-card-header">{$langHtml.common.systemInformation}</div>
+							<div class="layui-card-body">
+								<table class="layui-table">
+									<tbody>
+										<tr>
+											<td>{$langHtml.common.operatingSystem}</td>
+											<td>{$serverInfo.os??''}</td>
+										</tr>
+										<tr>
+											<td>{$langHtml.common.remainingSpace}</td>
+											<td>{$serverInfo.space??''}</td>
+										</tr>
+										<tr>
+											<td>{$langHtml.common.serverAddress} </td>
+											<td>{$serverInfo.addr??''}</td>
+										</tr>
+										<tr>
+											<td>{$langHtml.common.runtimeEnvironment} </td>
+											<td>{$serverInfo.run??''}</td>
+										</tr>
+										<tr>
+											<td>{$langHtml.common.PHPVersion} </td>
+											<td>{$serverInfo.php??''}</td>
+										</tr>
+										<tr>
+											<td>{$langHtml.common.PHPRuntimeMode} </td>
+											<td>{$serverInfo.php_run??''}</td>
+										</tr>
+										<tr>
+											<td>{$langHtml.common.MYSQLVersion} </td>
+											<td>{$serverInfo.mysql??''}</td>
+										</tr>
+										<tr>
+											<td>{$langHtml.common.THINKPHPVersion} </td>
+											<td>{$serverInfo.think??''}</td>
+										</tr>
+										<tr>
+											<td>{$langHtml.common.uploadRestrictions} </td>
+											<td>{$serverInfo.upload??''}</td>
+										</tr>
+										<tr>
+											<td>{$langHtml.common.executionTimeLimit} </td>
+											<td>{$serverInfo.max??''}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md7">
+						<div class="layui-card">
+							<div class="layui-card-header">{$langHtml.common.monthlyTraffic}</div>
+							<div class="layui-card-body">
+								<div id="main" style="width: 100%;height: 400px;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	layui.use(['layer','form', 'laydate'],function(){
+		var form = layui.form;
+		layer = layui.layer;
+		$ = layui.jquery;
+		laydate = layui.laydate;
+		goforit();
+	});
+	function goforit(){
+		setInterval('getDate()',1000);
+	}
+	function getDate(){
+		var mydate=new Date();
+		// var year = mydate.getYear();
+		$('#clock').text(mydate);
+	}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/6.0.0/echarts.common.min.js" integrity="sha512-aQ2y7xCpFa/w34flxY9jGFgJP2MdtzZTZiqCDlBTu1d0GcgzvPEkqrPbG24jwy5M2FyiJZZNbz6lC4K4NoqxEw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript">
+	var myChart = echarts.init(document.getElementById('main'));
+	window.addEventListener('resize', function() {
+		myChart.resize();
+	});
+	var option = {
+		xAxis: {
+			type: 'category',
+			data: {:json_encode($statistics['monthArr']??[])}
+		},
+		yAxis: {
+			type: 'value'
+		},
+		series: [{
+			data: {:json_encode($statistics['countArr']??[])},
+			type: 'line',
+			label: {
+				show: true,
+				position: 'top'
+			},
+		}]
+	};
+	myChart.setOption(option);
+</script>

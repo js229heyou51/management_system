@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo(3,$find??'')}
+	{include file="public/head"}
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header"}
+			<!-- main -->
+			<div class="ny1">
+				<div class="nydao">
+					<div class="container">
+						<a href="/">首页</a> 
+						<a>></a> 
+						<a href="/product/">商品目录</a>
+						<a>></a> 
+						<a href="/product/category/{$find.id_lm}" class="cur">{$find.title_lm}</a>
+					</div>
+				</div>
+				<div class="ny1-con">
+					<div class="container">
+						<div class="ny1-nav-con">
+							<ul class="flex">
+								<li><a href="/product/">全部分类</a></li>
+								{volist name="category" id="cateVal"}
+								<li {if($cateVal.id_lm == $find.id_lm)}class="cur"{/if}><a href="/product/category/{$cateVal.id_lm}">{$cateVal.title_lm}</a></li>
+								{/volist}
+							</ul>
+						</div>
+						<div class="ny1-nav-list">
+							<h1>{$find.title_lm}（{$find.count??'0'}）</h1>
+							<ul class="flex">
+								{volist name="find.children" id="val"}
+								<li><a href="/product/list/{$val.id_lm}">{$val.title_lm}（{$val.count??'0'}）</a></li>
+								{/volist}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer"}
+		</div>
+	</body>
+</html>

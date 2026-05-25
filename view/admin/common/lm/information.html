@@ -1,0 +1,102 @@
+<div class="layui-step" id="layui-information">
+	<form class="layui-form">
+		<input type="hidden" name="id_lm" value="{$find.id_lm??''}">
+		{if ($conf.sy.need_lm == true)}
+		<div class="layui-form-item">
+			<label class="layui-form-label">{$langHtml.common.category}</label>
+			<div class="layui-input-block">
+				<select name="fid" id="fid">
+					<option value=0></option>
+					{:categoryTree($category,0,'',$find.fid??'')}
+				</select>
+			</div>
+		</div>
+		{/if}<div class="layui-form-item">
+			<label class="layui-form-label">{$langHtml.common.categoryName}</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" name="title_lm" placeholder="{$langHtml.common.enter}{$langHtml.common.categoryName}" value="{$find.title_lm??''}">
+			</div>
+		</div>
+		{if ($conf.lm.apname_lm == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.apname}</label>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" name="apname_lm" placeholder="{$langHtml.common.enter}{$langHtml.common.apname}" value="{$find.apname_lm??''}">
+				</div>
+				<div class="layui-form-mid layui-word-aux">{$langHtml.common.apnameTip}</div>
+			</div>
+			{/if}{if ($conf.lm.url_lm == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.link}</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" name="url_lm" placeholder="{$langHtml.common.enter}{$langHtml.common.link}" value="{$find.url_lm??''}">
+				</div>
+			</div>
+			{/if}{if ($conf.lm.img_sl_lm == true)}
+		<div class="layui-form-item">
+			<label class="layui-form-label">{$langHtml.common.picture}</label>
+			<div class="layui-input-block">
+				<div class="upload-list" id="img_sl_list">
+					{if(!empty($find.imgList))}
+					{volist name="find.imgList" id="item"}
+					<div class="upload_pic_li" data-id="{$item.id}"><span onclick="delImg(this,'img_sl_lm')"></span><img src="{$item.path}" alt="" class="layui-upload-img"></div>
+					{/volist}
+					{/if}
+				</div><div class="layui-inline">
+					<div class="layui-upload-drag" onclick="uploadTool({elem:'img_sl_lm',url:'{$Request.root}/Gallery/index',type:'image',title:'图片上传'})">
+						<i class="layui-icon layui-icon-picture"></i> 
+					</div>
+				</div>
+				<input type="hidden" name="img_sl_lm" id="img_sl_lm" value="{:json_encode($find.img_sl_lm??'')}">
+			</div>
+		</div>
+		{/if}{if ($conf.lm.f_body_lm == true)}
+		<div class="layui-form-item">
+			<label class="layui-form-label">{$langHtml.common.desc}</label>
+			<div class="layui-input-block">
+				<textarea class="layui-textarea" id="f_body_lm" name="f_body_lm" placeholder="{$langHtml.common.desc}">{$find.f_body_lm??''}</textarea>
+			</div>
+		</div>
+		{/if}{if ($conf.lm.z_body_lm == true)}
+		<div class="layui-form-item">
+			<label class="layui-form-label">{$langHtml.common.det}</label>
+			<div class="layui-input-block">
+				<textarea id="z_body_lm" name="z_body_lm" style="width:100%;height:250px;">{$find.z_body_lm??''}</textarea>
+			</div>
+			<script>
+				tinymceEditor('z_body_lm');
+			</script>
+		</div>
+		{/if}{if ($conf.lm.con_att_lm == true)}
+		<div class="layui-form-item">
+			<label class="layui-form-label">{$langHtml.common.attribute}</label>
+			<div class="layui-input-block">
+				<input type="radio" name="add_xx" value="yes" {if condition="!empty($find.add_xx) && $find.add_xx == 'yes'"}checked{/if} title="{$langHtml.common.canAddInfo}">
+				<input type="radio" name="add_xx" value="no" {if condition="!empty($find.add_xx) && $find.add_xx == 'no'"}checked{/if} title="{$langHtml.common.cannotAddInfo}">
+				<br>
+				<input type="radio" name="add_xia" value="yes" {if condition="!empty($find.add_xia) && $find.add_xia == 'yes'"}checked{/if} title="{$langHtml.common.canAddCategory}">
+				<input type="radio" name="add_xia" value="no" {if condition="!empty($find.add_xia) && $find.add_xia == 'no'"}checked{/if} title="{$langHtml.common.cannotAddCategory}">
+				<br>
+				<input type="radio" name="con_att" value="1" {if condition="!empty($find.con_att) && $find.con_att == 1"}checked{/if} title="{$langHtml.common.fullControl}">
+				<input type="radio" name="con_att" value="2" {if condition="!empty($find.con_att) && $find.con_att == 2"}checked{/if} title="{$langHtml.common.canOnlyReadAndModify}">
+				<input type="radio" name="con_att" value="3" {if condition="!empty($find.con_att) && $find.con_att == 3"}checked{/if} title="{$langHtml.common.canOnlyRead}">
+				<br>
+			</div>
+		</div>
+		{/if}
+		<div class="layui-form-item">
+			<label class="layui-form-label">{$langHtml.common.sort}</label>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" name="px" placeholder="{$langHtml.common.sort}" value="{$find.px??'100'}" >
+			</div>
+		</div>
+
+
+	</form>
+	<div class="layui-form-item" style="margin-top:10px;">
+		<div class="layui-input-block">
+			<button type="button" class="layui-btn layui-btn-primary layui-border" onclick="step('next')">{$langHtml.common.nextStep}</button>
+			<button type="button" class="layui-btn layui-bg-color" onclick="save()">{$langHtml.common.save}</button>
+		</div>
+	</div>
+</div>

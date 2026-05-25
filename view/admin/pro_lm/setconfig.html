@@ -1,0 +1,36 @@
+{extend name="common/lm/setconfig/setconfig" /}
+
+{block name="header"}
+{include file="common/lm/setconfig/header" /}
+{/block}
+
+{block name="setup"}
+{include file="common/lm/setconfig/setup" /}
+{/block}
+
+{block name="category"}
+{include file="common/lm/setconfig/category" /}
+{/block}
+
+{block name="information"}
+{php}
+	// 根据条件决定内容
+	$hasExtraContent = true;
+	$extraContent = '';
+	$extraContent .= '<div class="layui-form-item"><label class="layui-form-label layui-form-label-large">';
+		$extraContent .= lang('common')['use'].lang('common')['param_one'];
+		$extraContent .= '</label>';
+		$extraContent .= '<div class="layui-input-block layui-input-block-large">';
+		$extraContent .= '<input type="radio" name="co[param_one]" value="true" '.(isset($conf['co']['param_one']) && $conf['co']['param_one'] == true ? 'checked' : '').' title="'.lang('common')['use'].'">';
+		$extraContent .= '<input type="radio" name="co[param_one]" value="false" '.(isset($conf['co']['param_one']) && $conf['co']['param_one'] == false ? 'checked' : '').'  title="'.lang('common')['notUse'].'">';
+	$extraContent .= '</div></div>';
+	$extraContent .= '<div class="layui-form-item"><label class="layui-form-label layui-form-label-large">';
+		$extraContent .= lang('common')['use'].lang('common')['price'];
+		$extraContent .= '</label>';
+		$extraContent .= '<div class="layui-input-block layui-input-block-large">';
+		$extraContent .= '<input type="radio" name="co[price]" value="true" '.(isset($conf['co']['price']) && $conf['co']['price'] == true ? 'checked' : '').' title="'.lang('common')['use'].'">';
+		$extraContent .= '<input type="radio" name="co[price]" value="false" '.(isset($conf['co']['price']) && $conf['co']['price'] == false ? 'checked' : '').'  title="'.lang('common')['notUse'].'">';
+	$extraContent .= '</div></div>';
+{/php}
+{include file="common/lm/setconfig/information" /}
+{/block}

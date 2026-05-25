@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head"}
+	<script src="/static/index/js/distpicker.data.js"></script>
+	<script src="/static/index/js/distpicker.min.js"></script>
+	<script src="/static/index/js/address.js"></script>
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header"}
+			<!-- main -->
+			<div class="person">
+				<div class="container">
+					<div class="person_con">
+						{include file="person/left"}
+						<div class="person_right">
+							<br>
+							<div>
+								<div class="person_rbt">
+									<h3>修改密码</h3>
+								</div>
+								<br>
+								<div class="layui-form-box layui-col-xs5 layui-col-md-offset3">
+									<form action="" class="layui-form" id="pform">
+										<div class="layui-form-item">
+											<label class="layui-form-label">当前密码</label>
+											<div class="layui-input-block">
+												<input type="password" name="y_password" class="layui-input">
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">新密码</label>
+											<div class="layui-input-block">
+												<input type="password" name="password" class="layui-input">
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">确认密码</label>
+											<div class="layui-input-block">
+												<input type="password" name="conformpassword" class="layui-input">
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label"></label>
+											<div class="layui-input-block">
+												<button type="button" class="layui-btn layui-btn-normal" onclick="savePassword()">保存</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+							<br>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer"}
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	layui.use(['layer'],function(){
+		$ = layui.jquery;
+
+		savePassword = function(){
+			var data = $('#pform').serialize();
+			$.post('/Person/safe',data,function(res){
+				if(res.code>0){
+					layer.msg(res.msg,{icon:2})
+				}else{
+					layer.msg(res.msg,{icon:1})
+					setTimeout(function(){window.location.reload();},500);
+				}
+			},'json');
+		}
+	})
+</script>

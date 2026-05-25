@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.copy} {$langHtml.common.limit} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	
+	<body style="padding:10px; box-sizing: border-box;">
+		<form class="layui-form">
+			<input type="hidden" name="act" value="{$act}">
+			{if($act == 1)}
+				<div class="layui-form-item">
+					<label class="layui-form-label">{$langHtml.common.group}</label>
+					<div class="layui-input-inline">
+						<select name="fid" id="fid">
+							{if !empty($nav)}
+								{foreach $nav as $nv}
+									<option value="{$nv.id}" {:$find.id == $nv.id ? 'selected' : '';}>{$nv.title}</option>
+								{/foreach}
+							{/if}
+						</select>
+					</div>
+				</div>
+				{if (!empty($list))}
+					{foreach $list as $lv}
+					<input type="hidden" name="id[]" value="{$lv.id}">
+					<div class="layui-form-item">
+						<label class="layui-form-label">{$langHtml.common.limitName}</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="title[]" placeholder="{$langHtml.common.enter}{$langHtml.common.limitName}" value="{$lv.title}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">{$langHtml.common.limitValue}</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="title_val[]" placeholder="{$langHtml.common.enter}{$langHtml.common.limitValue}" value="{$lv.title_val}">
+						</div>
+						<div class="layui-form-mid layui-word-aux">{$langHtml.common.limitValueTip}</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">{$langHtml.common.limitState}</label>
+						<div class="layui-input-block">
+							<input type="radio" name="pass{$lv.id}" {:$lv.pass == '1' ? 'checked' : '';} value="1" title="{$langHtml.common.use}">
+							<input type="radio" name="pass{$lv.id}" {:$lv.pass == '0' ? 'checked' : '';} value="0" title="{$langHtml.common.stop}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">{$langHtml.common.order}</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="px[]" placeholder="{$langHtml.common.order}" value="{$lv.px}" >
+						</div>
+						<div class="layui-form-mid layui-word-aux" style="color: red;">({$langHtml.common.smallToLarge})</div>
+					</div>
+					{/foreach}
+				{/if}
+			{/if}
+			{if($act == 2)}
+				<div class="layui-form-item">
+					<label class="layui-form-label">{$langHtml.common.group}</label>
+					<div class="layui-input-block">
+						<select name="fid" id="fid" lay-filter="fid">
+							{if !empty($nav)}
+								{foreach $nav as $nv}
+									<option value="{$nv.id}" {:$find.fid == $nv.id ? 'selected' : '';}>{$nv.title}</option>
+								{/foreach}
+							{/if}
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">{$langHtml.common.limitName}</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" name="title" placeholder="{$langHtml.common.enter}{$langHtml.common.limitName}" value="{$find.title}">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">{$langHtml.common.limitValue}</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" name="title_val" placeholder="{$langHtml.common.enter}{$langHtml.common.limitValue}" value="{$find.title_val}">
+					</div>
+					<div class="layui-form-mid layui-word-aux">{$langHtml.common.limitValueTip}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">{$langHtml.common.limitState}</label>
+					<div class="layui-input-block">
+						<input type="radio" name="pass" {:$find.pass == '1' ? 'checked' : '';} value="1" title="{$langHtml.common.use}">
+						<input type="radio" name="pass" {:$find.pass == '0' ? 'checked' : '';} value="0" title="{$langHtml.common.stop}">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">{$langHtml.common.order}</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" name="px" placeholder="{$langHtml.common.order}" value="{$find.px}" >
+					</div>
+				</div>
+			{/if}
+		</form>
+		<div class="layui-form-item" style="margin-top:10px;">
+			<div class="layui-input-block">
+				<button type="button" class="layui-btn layui-bg-color" onclick="save('{$Request.root}/{$route}/limitCopy')">{$langHtml.common.save}</button>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	layui.use(['layer','form', 'jquery'],function(){
+		var form = layui.form;
+		layer = layui.layer;
+		$ = layui.jquery;
+	});
+</script>
+{include file="public/footer" /}

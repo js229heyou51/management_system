@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>数据库管理 - 后台管理系统</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<a href="{$Request.root}/config/" ><span>网站配置</span></a>
+			<a href="{$Request.root}/config/navigation"><span >导航管理</span></a>
+			<a href="{$Request.root}/config/limit"><span>权限项管理</span></a>
+			<a href="{$Request.root}/config/mysql"><span class="this">数据库管理</span></a>
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div id="layui-setup">
+				<form class="layui-form " id="addForm">
+					<div class="layui-form-item mb0">
+						<label class="layui-form-label"><b>增加字段</b></label>
+						<div class="layui-input-block">
+							<label class="layui-form-label layui-form-label-auto pl0">在</label>
+							<div class="layui-input-inline layui-input-inline-sm">
+								<input type="text" class="layui-input" name="lang_y" value="">
+							</div>
+							<label class="layui-form-label layui-form-label-auto pl0">后面增加</label>
+							<div class="layui-input-inline layui-input-inline-sm">
+								<input type="text" class="layui-input" name="lang_x" value="">
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item mb0">
+						<div class="layui-input-block">
+							<div class="layui-form-mid">例如：在title_en 后面增加 title_ch 只需要填写在 _en 后面增加 _ch</div>
+						</div>
+					</div>
+					<div class="layui-form-item mb0">
+						<div class="layui-input-block">
+							<div class="layui-form-mid">例如：在title 后面增加 title_en 前面为空，后面填写 _en</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button type="button" class="layui-btn" onclick="makeMySql('add')">提交</button>
+						</div>
+					</div>
+				</form>
+				<hr>
+				<form class="layui-form " id="editForm">
+					<div class="layui-form-item mb0">
+						<label class="layui-form-label"><b>修改字段</b></label>
+						<div class="layui-input-block">
+							<label class="layui-form-label layui-form-label-auto pl0">把</label>
+							<div class="layui-input-inline layui-input-inline-sm">
+								<input type="text" class="layui-input" name="lang_y" value="">
+							</div>
+							<label class="layui-form-label layui-form-label-auto pl0">修改为</label>
+							<div class="layui-input-inline layui-input-inline-sm">
+								<input type="text" class="layui-input" name="lang_x" value="">
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item mb0">
+						<div class="layui-input-block">
+							<div class="layui-form-mid">例如：把title_en 后面增加 title_ch 只需要填写把 _en 修改为 _ch</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button type="button" class="layui-btn" onclick="makeMySql('edit')">提交</button>
+						</div>
+					</div>
+				</form>
+				<hr>
+				<form class="layui-form " id="delForm">
+					<div class="layui-form-item mb0">
+						<label class="layui-form-label"><b>删除字段</b></label>
+						<div class="layui-input-block">
+							<div class="layui-input-inline layui-input-inline-sm">
+								<input type="text" class="layui-input" name="lang" value="">
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item mb0">
+						<div class="layui-input-block">
+							<div class="layui-form-mid">例如：删除 title_ch 字段 只需要填写 _ch</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button type="button" class="layui-btn" onclick="makeMySql('del')">提交</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<script type="text/javascript">
+			layui.use(['form','layer','jquery'],function(){
+				form = layui.form;
+				$ = layui.jquery;
+			});
+			function makeMySql(ac){
+				$.ajax({
+					type:'post',//可选get
+					url:'{$Request.root}/{$route}/mysql?ac='+ac,//这里是接收数据的PHP程序
+					dataType:'json',//服务器返回的数据类型 可选XML ,Json jsonp script html text等
+					data:$('#'+ac+'Form').serialize(),
+					success:function(res){
+						if(res.code==200){
+							layer.msg(res.msg,{'icon':1});
+							setTimeout(function(){window.location.reload();},100);
+						}else{
+							layer.msg(res.msg,{'icon':2});
+						}
+					}
+				});
+			}
+		</script>
+	</body>
+</html>
+{include file="public/footer" /}

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo(3,$find??'')}
+	{include file="public/head"}
+	<script src="/static/index/js/cart.js"></script>
+	<input type="hidden" name="lm" value="{$find.id_lm??''}" id="lm">
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header"}
+			<!-- main -->
+			<div class="ny2">
+				<div class="nydao">
+					<div class="container">
+						<a href="">首页</a> 
+						<a>></a> 
+						<a href="">商品目录</a>
+						<a>></a> 
+						<div class="nydao-con">
+							<div class="nydao-nav">
+								<a href="/product/category/{$proCate.id_lm??''}">{$proCate.title_lm??''}</a>
+								<div class="nydao-box">
+									<ul class="flex">
+										{volist name="category" id="cateVal"}
+										<li {if($cateVal.id_lm == $find.id_lm)}class="cur"{/if}><a href="/product/category/{$cateVal.id_lm??''}">{$cateVal.title_lm}</a></li>
+										{/volist}
+									</ul>
+								</div>
+							</div>
+						</div>
+						<a>></a> 
+						<div class="nydao-con">
+							<div class="nydao-nav">
+								<a href="">{$find.title_lm??''}</a>
+								<div class="nydao-box">
+									<ul class="flex">
+										{volist name="find.children" id="val"}
+										<li {if($cateVal.id_lm == $find.id_lm)}class="cur"{/if}><a href="/product/list/{$val.id_lm}">{$val.title_lm}</a></li>
+										{/volist}
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="ny1-con">
+					<div class="container">
+						<div class="ny1-nav-list">
+							<h1>{$find.title_lm}（{$find.count??'0'}）</h1>
+							<ul class="flex">
+								{volist name="find.children" id="val"}
+								<li><a href="/product/list/{$val.id_lm}">{$val.title_lm}（{$val.count??'0'}）</a></li>
+								{/volist}
+							</ul>
+						</div>
+						<div class="ny2-result">
+							<h2>过滤结果（<span id="resultCount">{$count??'0'}</span>）</h2>
+						</div>
+						<div class="ny2-sxcon">
+							<div class="ny2-sxlist flex" style="width: calc({$paramCount??'0'}*170)px;">
+								{volist name="paramLists" id="val"}
+								<div class="ny2-sxbox ny2-sxbox2">
+									<div class="ny2-sxtit">
+										<h4>{$val.title}</h4>
+									</div>
+									<div class="ny2-sxcontent">
+										<div class="ny2-sxsearch">
+											<input type="text" placeholder="请输入{$val.title}">
+										</div>
+										{if(!empty($val.children))}
+										<div class="ny2-sxl">
+											<ul>
+												{volist name="val.children" id="cval"}
+												<li data-name="param_{$val.value}" data-id="{$cval.id}">{$cval.title}</li>
+												{/volist}
+											</ul>
+										</div>
+										{/if}
+									</div>
+								</div>
+								{/volist}
+							</div>
+						</div>
+						<div class="ny2-listtit">
+							<ul class="flex">
+								<li>商品信息</li>
+								<li>价格梯度  单价（含税）</li>
+								<li>数量</li>
+								<li>购买</li>
+							</ul>
+						</div>
+						<div class="ny2-list-con" id="proResultList">
+							{volist name="productList" id="pv"}
+							<form action="">
+								<ul>
+									<li>
+										<div class="ny2-list-box flex">
+											<div class="ny2-list-img">
+												<a href="/product/show/{$pv.id}"><img src="{$pv.gallery_list.0.path??''}"></a>
+											</div>
+											<div class="ny2-list-text">
+												<a href="/product/show/{$pv.id}"><h2>{$pv.title}</h2></a>
+												<p>
+													{volist name="pv.paramList" id="paramVal"}
+													<span>{$paramVal.profile.title_lm??''}{$paramVal.profile.title_lm?':':''}{$paramVal.title??''}</span>
+													{/volist}
+												</p>
+												{if(!empty($pv.fil_sl))}
+												<div class="ny2-list-pdf">
+													<a href="{$pv.fil_sl}"><img src="/static/index/images/ny2_03.png"> 数据手册</a>
+												</div>
+												{/if}
+											</div>
+										</div>
+									</li>
+									<li>
+										<div class="ny2-list-price">
+												<input type="hidden" name="pid" value="{$pv.id}">
+												<input type="hidden" name="price_lists" value="{$pv.priceJSON}">
+											{volist name="pv.priceList" id="priceVal"}
+											<p>{$priceVal.num}+：￥{:empty($priceVal.price) ? '' : $priceVal.price}</p>
+											{/volist}
+											<p>2000+： <a href="javascript:;" data-title="{$pv.title}" class="js-bj">报价</a></p>
+										</div>
+									</li>
+									<li>
+										<div class="ny2-list-num">
+											<button type="button" class="num-less" onclick="less(this)">-</button>
+											<input type="text" name="num" placeholder="01" value="1">
+											<button type="button" class="num-plus" onclick="plus(this)">+</button>
+										</div>
+										<div class="ny2-list-stock">
+											<p>库存量:{$pv.stock??'0'}</p>
+										</div>
+									</li>
+									<li>
+										<div class="ny2-list-buy">
+											<a href="javascript:;" data-id="{$pv.id}" onclick="buyNow(this)">立即购买</a>
+											<a href="javascript:;" onclick="addCartList(this)">加入购物车</a>
+										</div>
+									</li>
+								</ul>
+							</form>
+							{/volist}
+						</div>
+						<div class="pages" id="proResultPages">
+							{$page | raw}
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer"}
+		</div>
+
+		<div class="ny2-tcbjbg"></div>
+		<div class="ny2-tcbj">
+			<div class="ny2-tcbj-tit">
+				<h3>申请报价</h3>
+				<div class="ny2-tcbj-close">
+					<img src="/static/index/images/ny2_close.png">
+				</div>
+			</div>
+			<form action="">
+				<input type="hidden" name="pro_title" id="pro_title" value="">
+				<div class="ny2-tcbj-con">
+					<div class="ny2-tcbj-ctop flex">
+						<div class="ny2-tcbj-ctbox">
+							<label><span>*</span> 期望价格：</label>
+							<div class="ny2-tcbj-ctinp">
+								<span>￥</span><input type="text" name="price">
+							</div> 
+							<p>&nbsp;/ PCS</p>
+						</div>
+						<div class="ny2-tcbj-ctbox">
+							<label><span>*</span> 需求数量：</label>
+							<div class="ny2-tcbj-ctinp">
+								<input type="text" name="price">
+							</div>
+							<div class="ny2-tcbj-ctsel">
+								<select>
+									<option>个</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="ny2-tcbj-btm">
+						<div class="ny2-tcbj-ctbox ny2-tcbj-cbbox">
+							<label><span>*</span> 行业：</label>
+							<div class="ny2-tcbj-cbsel">
+								<select>
+									<option value="请选择行业">请选择行业</option>
+									{volist name="industry" id="indVal"}
+									<option value="{$indVal['title'.$cong['lang']]}">{$indVal['title'.$cong['lang']]}</option>
+									{/volist}
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="ny2-tcbj-btn">
+						<button type="button" onclick="quotation()">提交报价</button>
+					</div>
+					<div class="ny2-tcbj-text">
+						<h4>说明:</h4>
+						<p>1.期望价格提交后，商品将自动加入购物车，报价过程中该商品不能提交订单；</p>
+						<p>2.商品将于2分钟内，根据您的报价更新合适的价格，晚上8点至次日早上8点不更新报价；</p>
+						<p>3.商城更新后的报价，2小时内有效，请及时提交订单！</p>
+					</div>
+				</div>
+			</form>
+		</div>
+	</body>
+</html>
+<script>
+	layui.use(['layer'],function(){
+		$ = layui.jquery;
+		$('.ny2-sxsearch input').on("keyup", function(){ 
+			var val=$(this).val().trim();
+			if (val=='') {
+				val=" ";
+				$(this).parent().siblings('.ny2-sxl').find('ul').find("li").show();
+			}else{
+				$(this).parent().siblings('.ny2-sxl').find('ul').find("li:contains("+val+")").show();
+				$(this).parent().siblings('.ny2-sxl').find('ul').find("li:not(:contains("+val+"))").hide();
+			}
+		})
+	})
+
+</script>

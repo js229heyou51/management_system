@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head"}
+	<script type="text/javascript" src="/static/index/js/cart.js"></script>
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header"}
+			<!-- main -->
+			<div class="person">
+				<div class="container">
+					<div class="person_con">
+						{include file="person/left"}
+						<div class="person_right">
+							<div class="person_rbottom" style="margin-top: 0;">
+								<div class="person_rbt">
+									<h3>我的消息</h3>
+								</div>
+								<div class="layui-form">
+									<table border="0" cellspacing="0" cellpadding="0" class="layui-table">
+										<colgroup>
+											<col width="150">
+											<col>
+											<col width="200">
+											<col width="100">
+										</colgroup>
+										<thead>
+											<tr>
+												<th>标题</th>
+												<th>内容</th>
+												<th>时间</th>
+												<th>操作</th>
+											</tr>
+										</thead>
+										<tbody>
+											{volist name="infoList" id="infoVal" }
+											<tr data-id="">
+												<td>
+													<p>{$infoVal.title}{if($infoVal.check == 0)} <i class="layui-icon layui-icon-circle-dot" style="color: red;font-size: 12px;"></i>{/if}</p>
+												</td>
+												<td>
+													<p class="line_1">
+														{$infoVal.content}
+													</p>
+												</td>
+												<td>
+													<p>{$infoVal.wtime}</p>
+												</td>
+												<td>
+													<a href="javascript:;" onclick="showMessage({$infoVal.id})">查看</a>
+												</td>
+											</tr>
+											{/volist}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer"}
+		</div>
+	</body>
+</html>
+<script>
+	layui.use(['layer'],function(){
+		$ = layui.jquery;
+		showMessage = function(id){
+			layer.open({
+				type: 2,
+				title: '查看消息',
+				shade: 0.3,
+				area: ['30%','30%'],
+				content: "/person/showMessage?id="+id,
+				end :function(){
+					window.location.reload();
+				}
+			});
+		}
+	})
+</script>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>seo - </title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<!-- <span style="background-color: #999;">详细信息</span> -->
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div>
+				<form class="layui-form">
+					<input type="hidden" name="sy_id" value="{$find.sy_id??''}">
+					<div class="layui-form-item">
+						<label class="layui-form-label">{$langHtml.common.pageTitle}</label>
+						<div class="layui-input-block">
+							<textarea class="layui-textarea" id="ym_tit" name="ym_tit" placeholder="{$langHtml.common.pageTitle}">{$find.ym_tit??''}</textarea>
+							<div class="layui-form-mid layui-word-aux">{$langHtml.common.pageTitleTip}</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">{$langHtml.common.pageKeyword}</label>
+						<div class="layui-input-block">
+							<textarea class="layui-textarea" id="ym_key" name="ym_key" placeholder="{$langHtml.common.pageKeyword}">{$find.ym_key??''}</textarea>
+							<div class="layui-form-mid layui-word-aux">{$langHtml.common.pageKeywordTip}</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">{$langHtml.common.pageDesc}</label>
+						<div class="layui-input-block">
+							<textarea class="layui-textarea" id="ym_des" name="ym_des" placeholder="{$langHtml.common.pageDesc}">{$find.ym_des??''}</textarea>
+							<div class="layui-form-mid layui-word-aux">{$langHtml.common.pageDescTip}</div>
+						</div>
+					</div>
+				</form>
+				
+				<div class="layui-form-item" style="margin-top:10px;">
+					<div class="layui-input-block">
+						<button type="button" class="layui-btn layui-bg-color" onclick="save('{$Request.root}/{$route}/edit',1)">{$langHtml.common.save}</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

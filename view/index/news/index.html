@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head" /}
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header" /}
+			<!-- main -->
+			<div class="person about">
+				<div class="container">
+					<div class="person_con">
+						<div class="person_left">
+							<div class="person_lt">
+								<img src="/static/index/images/per_01.png"> <h2>新闻中心</h2>
+							</div>
+							<div class="person_ll">
+								<div class="person_lb">
+									<div class="person_lbt">
+										<img src="/static/index/images/per_02.png">
+										<h3>新闻中心</h3>
+									</div>
+									<ul>
+										{volist name="newsCategory" id="nv"}
+										<li {if($nv.id_lm == ($lm??''))}class="cur"{/if}><a href="/news/category/{$nv.id_lm}">{$nv['title_lm']}</a></li>
+										{/volist}
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="person_right about_right">
+							<div class="part4-lrlist">
+								<ul>
+									{volist name="newsList" id="nv"}
+									<li style="border-bottom: 1px solid #ededed;">
+										<a href="/news/show/{$nv.id}">
+											<span>{$nv['title']}</span>
+											<span class="fr">{$nv.wtime | date="Y-m-d"}</span>
+										</a>
+									</li>
+									{/volist}
+								</ul>
+							</div>
+							<div class="pages">
+								{$page | raw}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer" /}
+		</div>
+	</body>
+</html>

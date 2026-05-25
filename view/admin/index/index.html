@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{$langHtml.common.systemTitle}</title>
+	{include file="public/head" /}
+	<link rel="stylesheet" type="text/css" href="/static/admin/css/index.css" media="all">
+	<style>
+		.layadmin-side-shrink .layui-layout-admin .layui-logo {
+			width: 60px;
+			background-image:url("{$web_icon??''}");
+		}
+	</style>
+</head>
+<body layadmin-themealias="default" class="layui-layout-body">
+	<div id="LAY_app" class="layadmin-tabspage-none">
+		<div class="layui-layout layui-layout-admin">
+			<div class="layui-header">
+				<!-- 头部区域 -->
+				<ul class="layui-nav layui-layout-left">
+					<li class="layui-nav-item layadmin-flexible" lay-unselect onclick="shrink()">
+						<a href="javascript:;" layadmin-event="flexible" title="{$langHtml.common.flexible}">
+							<i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
+						</a>
+					</li>
+				</ul>
+				<ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
+					<li class="layui-nav-item">
+						<a href="/" target="_blank">{$langHtml.common.viewWeb}</a>
+					</li>
+					<li class="layui-nav-item layui-hide-xs" lay-unselect title="{$langHtml.common.fullScreen}" onclick="fullScreen()">
+						<a href="javascript:;" layadmin-event="fullscreen">
+							<i class="layui-icon layui-icon-screen-full"></i>
+						</a>
+					</li>
+					<li class="layui-nav-item" >
+						<a href="javascript:;">{$langHtml.common.lang_text} </a>
+						<dl class="layui-nav-child">
+							{volist name="langList" id="v"}
+							<dd style="text-align:center;"><a href="?lang={$v.lang}">{$v.name}</a></dd>
+							{/volist}
+						</dl>
+					</li>
+					<li class="layui-nav-item" lay-unselect>
+						<a href="javascript:;">
+							<cite>{$admin.username??''}</cite>
+						</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a href="javascript:;" onclick="clearCache()">{$langHtml.common.clearCache}</a>
+							</dd>
+							<dd><a lay-href="" onclick="addTab('{$langHtml.common.changePassword}','{$Request.root}/{$route}/changePassword',999)">{$langHtml.common.changePassword}</a></dd>
+							<!-- <hr> -->
+							<dd layadmin-event="logout" style="text-align:center;" onclick="logout()">
+								<a>{$langHtml.common.exit}</a>
+							</dd>
+						</dl>
+					</li>
+					<li class="layui-nav-item setting" layadmin-event="theme" lay-on="layui-setting">
+						<a href="javascript:;" class="layui-icon layui-icon-theme"></a>
+					</li>
+				</ul>
+			</div>
+			<!-- 侧边菜单 -->
+			<div class="layui-side layui-side-menu dark-theme">
+				<div class="layui-side-scroll">
+					<div class="layui-logo" lay-href="">
+						<span>{$langHtml.common.systemTitle}</span>
+					</div>
+					<ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+						{foreach $menuTree as $mv}
+						{if (!empty($mv.title))}
+						<li data-name="" data-jump="" class="layui-nav-item" lay-id="{$mv.id}">
+							<a href="javascript:;" lay-tips="{$mv.title}">
+								<i class="layui-icon layui-icons {:empty($mv.icon) ? 'layui-icon-set' : $mv.icon}"></i>
+								<cite>{$mv.title??''}</cite>
+							</a>
+							<dl class="layui-nav-child">
+								{if (!empty($mv.children))}
+								{foreach $mv.children as $cv}
+								<dd data-name="" data-jump="/" lay-id="{$cv.id}">
+									<a href="javascript:;" onclick="addTab('{$cv.title??''}','{$cv.link_url??''}',{$cv.id??''})">
+										{:empty($cv.icon) ? '' : '<i class="layui-icon layui-icons '.$cv.icon.'"></i>'}
+										{$cv.title??''}
+									</a>
+								</dd>
+								{/foreach}
+								{/if}
+							</dl>
+						</li>
+						{/if}
+						{/foreach}
+					</ul>
+				</div>
+			</div>
+			<!-- 主体内容 -->
+			<div class="layui-body" id="LAY_app_body">
+				<div class="layadmin-tabsbody-item layui-show">
+					<div class="layui-fluid">
+						<div class="layui-card">
+							<div class="layui-tab-brief think-tab layui-tabs" lay-allowclose="true" lay-filter="nav" id="nav" style="height: 100%;overflow: hidden;" lay-options="{closable: true, headerMode:'scroll'}">
+								<ul class="layui-tabs-header">
+									<li lay-id="0" lay-closable="false" class="layui-this">{$langHtml.common.home}</li>
+								</ul>
+								<div class="layui-tabs-body" style="height: 100%;">
+									<div class="layui-tab-item layui-tabs-item layui-show">
+										<iframe src="{$Request.root}/{$route}/welcome/" style="width:100%;height:100%;" frameborder="0" scrolling="0"></iframe>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 辅助元素，一般用于移动设备下遮罩 -->
+			<div class="layadmin-body-shade" layadmin-event="shade" onclick="shrink()"></div>
+		</div>
+	</div>
+	<!-- 辅助元素，一般用于移动设备下遮罩 -->
+	<div class="layadmin-body-shade" layadmin-event="shade"></div>
+	</div></div>
+	<script type="text/javascript">
+		layui.use( function(){
+			element = layui.element;
+			$ = layui.jquery;
+			layer = layui.layer;
+			var tabs = layui.tabs;
+			setter = layui.setter;
+			var dropdown = layui.dropdown;
+
+			resetMainHeight($(".layui-tab")); 
+
+			// .layadmin-side-shrink 
+			$(document).on('mouseover','.layadmin-side-shrink .layui-nav-tree .layui-nav-item',function(){
+				var title = $(this).find('a').attr('lay-tips')
+				layer.tips(title,this)
+			}).on('mouseout', '.layadmin-side-shrink .layui-nav-tree .layui-nav-item', function(){
+				layer.closeAll('tips');
+			});
+
+			$(document).on('click','.layadmin-side-shrink .layui-nav-tree .layui-nav-item',function(){
+				shrink()
+				layer.closeAll('tips');
+			})
+
+			var html = '<i class="layui-icon layui-icon-down" id="demo-dropdown" lay-filter="down"></i>';
+			$('.layui-tabs-bar').append(html);
+
+			dropdown.render({
+				elem: '#demo-dropdown',
+				trigger: 'hover',
+				data: [
+					{title: '{$langHtml.common.closeThis}',id: 100,templet: '<a href="javascript:;" onclick="closeThis(this)">{{=d.title}}</a>'},
+					{title: '{$langHtml.common.closeOther}',id: 110,templet: '<a href="javascript:;" onclick="closeOther(this)">{{=d.title}}</a>'},
+					{title: '{$langHtml.common.closeAll}',id: 120,templet: '<a href="javascript:;" onclick="closeAll(this)">{{=d.title}}</a>'},
+				],
+				align: 'right'
+			})
+
+
+			$(document).on('click','.layui-tabs-header li',function(){
+				var layId = $(this).attr('lay-id');
+				$('.layui-nav-tree .layui-nav-child dd').each(function(){
+					if(layId === $(this).attr('lay-id')){
+						$(this).parents('.layui-nav-item').siblings().removeClass('layui-nav-itemed');
+						$(this).parents('.layui-nav-item').addClass('layui-nav-itemed');
+						$(this).siblings().removeClass('layui-this');
+						$(this).addClass('layui-this');
+					}
+				})
+			})
+
+			tabs.on('afterClose(nav)', function(data){
+				let curId = '';
+				$('.layui-tabs-header li').each(function(){
+					var index = $(this).index()
+					if(data.index == index){
+						var layId = $(this).attr('lay-id');
+						curId = layId;
+						$('.layui-nav-tree .layui-nav-child dd').each(function(){
+							if(layId === $(this).attr('lay-id')){
+								$(this).parents('.layui-nav-item').siblings().removeClass('layui-nav-itemed');
+								$(this).parents('.layui-nav-item').addClass('layui-nav-itemed');
+								$(this).siblings().removeClass('layui-this');
+								$(this).addClass('layui-this');
+							}else{
+								$(this).removeClass('layui-this');
+								if(!$(this).siblings().hasClass('layui-this')){
+									$(this).parents('.layui-nav-item').removeClass('layui-nav-itemed');
+								}
+							}
+						})
+					}
+				})
+			})
+
+			$('.layui-tab-tool').hover(function(){
+				$(this).find('.layui-nav-child').toggleClass('layui-show');
+			})
+			closeThis = function(self){
+				let curId = '';
+				$('.layui-tabs-header li').each(function(){
+					layId = $(this).attr('lay-id');
+					if(layId > 0 && $(this).hasClass('layui-this')){
+						curId = layId;
+						tabs.close('nav',layId);
+					}
+				})
+				$('.layui-nav-child dd').each(function(){
+					var navId = $(this).attr('lay-id');
+					if(navId === curId){
+						$(this).removeClass('layui-this');
+						$(this).parents('.layui-nav-item').removeClass('layui-nav-itemed')
+					}
+				})
+			}
+			closeOther = function(){
+				let curId = '';
+				$('.layui-tabs-header li').each(function(){
+					layId = $(this).attr('lay-id');
+					if($(this).hasClass('layui-this')){
+						curId = layId;
+					}
+					if(layId > 0 && !$(this).hasClass('layui-this')){
+						tabs.close('nav',layId);
+					}
+				})
+				$('.layui-nav-child dd').each(function(){
+					var navId = $(this).attr('lay-id');
+					if(navId !== curId){
+						$(this).removeClass('layui-this');
+						$(this).parents('.layui-nav-item').removeClass('layui-nav-itemed')
+					}else{
+						$(this).parents('.layui-nav-item').addClass('layui-nav-itemed')
+					}
+				})
+			}
+			closeAll = function(){
+				$('.layui-tabs-header li').each(function(){
+					layId = $(this).attr('lay-id');
+					if(layId > 0){
+						tabs.close('nav',layId);
+					}
+				})
+				$('.layui-nav-item').removeClass('layui-nav-itemed');
+				$('.layui-nav-child dd').removeClass('layui-this');
+			}
+			$('body').on('click','.setting',function(){
+				colorsItem = '<span class="select-color-item" color="2d8cf0" style="background-color:#2d8cf0;"></span>';
+				colorsItem += '<span class="select-color-item layui-icon layui-icon-ok" color="36b368" style="background-color:#36b368;"></span>';
+				colorsItem += '<span class="select-color-item" color="f6ad55" style="background-color:#f6ad55;"></span>';
+				colorsItem += '<span class="select-color-item" color="f56c6c" style="background-color:#f56c6c;"></span>';
+				colorsItem += '<span class="select-color-item" color="3963bc" style="background-color:#3963bc;"></span>';
+				colorsItem += '<span class="select-color-item" color="009688" style="background-color:#009688;"></span>';
+				colorsItem += '<span class="select-color-item" color="007aff" style="background-color:#007aff;"></span>';
+				// colorsItem += '<input type="color" class="layui-input">';
+				colorHtml = "<div class='select-color'><div class='select-color-title'>{$langHtml.common.theme}</div><div class='select-color-content'>" +
+						colorsItem + "</div></div>\<script\>$(\'.select-color-item\').each(function(){var color = localStorage.getItem(\'theme-color\');if($(this).attr(\'color\') == color){$(\'.select-color-item\').removeClass(\'layui-icon\').removeClass(\'layui-icon-ok\');$(this).addClass(\'layui-icon\').addClass(\'layui-icon-ok\');}})<\/script>";
+				layer.open({
+					type: 1,
+					offset: 'r',
+					area: ['320px', '100%'],
+					title: false,
+					shade: 0.1,
+					closeBtn: 0,
+					shadeClose: true,
+					anim: -1,
+					skin: 'layer-anim-right',
+					move: false,
+					content: colorHtml,
+					success: function(layero, index) {
+					}
+				})
+			})
+			$('body').on('click','.select-color-item',function(){
+				$(".select-color-item").removeClass("layui-icon").removeClass("layui-icon-ok");
+				$(this).addClass("layui-icon").addClass("layui-icon-ok");
+				var color = $(".select-color-item.layui-icon-ok").attr("color");
+				localStorage.setItem("theme-color", color);
+				changeTheme();
+			})
+		});
+		function changeTheme(){
+			var color = localStorage.getItem("theme-color");
+			if(color == ''){
+				color = '009688';
+			}
+			$.post('Base/theme',{color:color},function(res){
+				if(res.code==200){
+					localStorage.setItem("theme-color", color);
+					setTimeout(function(){window.location.reload();},1000);
+				}
+			},'json');
+		}
+		//增加tab  
+		function addTab(title, url,id){  
+			$('.layui-tabs-header li').each( function(){
+				if($(this).attr('lay-id') == id){
+					layui.tabs.close('nav', $(this).attr('lay-id'));
+					var layId = $(this).attr('lay-id');
+					$('.layui-nav-tree .layui-nav-child dd').each(function(){
+						if(layId === $(this).attr('lay-id')){
+							$(this).parents('.layui-nav-item').siblings().removeClass('layui-nav-itemed');
+							$(this).parents('.layui-nav-item').addClass('layui-nav-itemed');
+							$(this).siblings().removeClass('layui-this');
+							$(this).addClass('layui-this');
+						}
+					})
+				}
+			})
+			layui.tabs.add('nav',{
+				title: title,  
+				content: '<iframe src="'+url+'" frameborder="0" scrolling="auto" style="width:100%;height:100%;"></iframe>',  
+				id: id //防止重复
+			})
+
+			var width = screen();
+			if(width < 2){
+				shrink();
+			}
+		}    
+		// 重新设置主操作页面高度
+		function resetMainHeight(obj){
+			var height = parent.document.documentElement.clientHeight - 80;
+			$(obj).parent('div').height(height);
+		}
+		// 菜单点击
+		function menuFire(obj){
+			$('iframe').attr('src',obj);
+			var width = screen();
+			if(width < 2){
+				shrink();
+			}
+		}
+		function logout(){
+			layer.confirm('确认要退出吗？',{
+				icon:3,
+				btn: ['确定','取消']
+			},function(){
+				$.get('Login/logout',function(res){
+					if(res.code==200){
+						layer.msg(res.msg,{'icon':1});
+						setTimeout(function(){window.location.href="login";},100);
+					}else{
+						layer.msg(res.msg,{'icon':2});
+					}
+				},'json')
+			})
+		}
+		function clearCache(){
+			$.post('{$Request.root}/{$route}/clear',{},function(res){
+				if(res.code==200){
+					layer.msg(res.msg,{'icon':1});
+					setTimeout(function(){window.location.reload();},100);
+				}else{
+					layer.msg(res.msg,{'icon':2});
+				}
+			})
+		}
+	</script>
+</body>
+</html>
+{include file="public/footer" /}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.recycle} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div>
+				<form action="" class="layui-form" id="sform">
+					<div class="layui-inline">
+						<label>{$langHtml.common.search}</label>
+					</div>
+					<div class="layui-inline">
+						<input type="text" class="layui-input" name="keyword" value="{$searchItem.keyword??''}">
+					</div>
+					<div class="layui-inline">
+						<button class="layui-btn layui-bg-color">{$langHtml.common.search}</button>
+					</div>
+				</form>
+				<br>
+				<button type="button" class="layui-btn layui-bg-color" {if(!empty($lists))}onclick="batchRecovery('{$Request.root}/{$route}/recycle_makeRecord?act=recovery')"{/if}>
+					<i class="layui-icon layui-icon-refresh"></i> {$langHtml.common.restoreData} 
+				</button>
+				<button type="button" class="layui-btn layui-bg-red" {if(!empty($lists))}onclick="batchRemove('{$Request.root}/{$route}/recycle_makeRecord?act=remove')"{/if}>
+					<i class="layui-icon layui-icon-delete"></i> {$langHtml.common.completelyDelete} 
+				</button>
+				<br>
+				<form action="" class="layui-form" id="listForm" method="post">
+					<table class="layui-table">
+						<thead>
+							<tr>
+								<th style="text-align: center;" width="30">{$langHtml.common.selected}</th>
+								<th style="text-align: center;" width="50">{$langHtml.common.sort}</th>
+								<th style="text-align: center;" width="30">{$langHtml.common.id}</th>
+								<th style="text-align: center;" width="100">任务名</th>
+								<th>投喂账号</th>
+								<th style="text-align: center;" width="100">文章分类</th>
+								<th>文章标题</th>
+								{if($zt == true)}<th width="100" style="text-align: center;">{$langHtml.common.state}</th>{/if}
+								<th width="60" style="text-align: center;">{$langHtml.common.operate}</th>
+							</tr>
+						</thead>
+						<tbody>
+							{foreach $lists as $item}
+							<tr>
+								<input type="hidden" name="id[{$item.id}]" value="{$item.id}">
+								<td align="center">
+									<div class="layui-input-inline">
+										<input type="checkbox" class="layui-input" name="checkbox[{$item.id}]" lay-skin="primary">
+									</div>
+								</td>
+								<td><div class="layui-input-inline"><input type="text" class="layui-input" name="px[{$item.id}]" value="{$item.px}"></div></td>
+								<td align="center"><span>{$item.id}</span></td>
+								<td align="center"><a href="javascript:;"><span>{$item.title}</span></a> <span>{if(!empty($item.img_sl))}<i class="layui-icon layui-icon-picture" onmouseover="show_img(this)" onmouseleave="hide_img()" src="{$item.img_sl}"></i>{/if}</span></td>
+								<td>{$item.account}</td>
+								<td align="center">{$item.title_lm}</td>
+								<td>{$item.name}</td>
+								{if($zt == true)}
+								<td align="center">
+									{if(isset($conf.co.pass) && $conf.co.pass == true)}
+									<span class="layui-badge {$item.pass == 1 ? 'layui-bg-blue' : 'layui-bg-gray'}">{$item.pass == 1 ? '完成' : '失败'}</span>{/if}
+								</td>
+								{/if}
+								<td align="center">
+									
+								</td>
+							</tr>
+							{/foreach}
+						</tbody>
+					</table>
+				</form>
+				<div class="">
+					<div class="layui-inline">
+					<button type="button" class="layui-btn layui-btn-sm layui-bg-color" onclick="checkAll()">{$langHtml.common.selectAll}
+					</button>
+					</div>
+					<div class="layui-inline">
+					<button type="button" class="layui-btn layui-btn-sm layui-bg-color" onclick="checkOther()">{$langHtml.common.invert}
+					</button>
+					</div>
+				</div>
+				<div class="layui-pages">
+					<div id="pages"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	layui.use(['layer','form','laypage'],function(){
+		layer = layui.layer;
+		$ = layui.jquery;
+		var form = layui.form; 
+		laypage = layui.laypage; 
+
+		//总页数大于页码总数
+		laypage.render({
+			elem: 'pages'
+			,count: {$pageItem.count} //数据总数
+			,limit: {$pageItem.limit}
+			,curr: {$pageItem.curr}
+			,prev: '{$langHtml.common.prev}'
+			,next: '{$langHtml.common.next}'
+			{if($lang == 'zh-cn')}
+			,layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
+			{else}
+			,layout: [ 'prev', 'page', 'next']
+			{/if}
+			,jump: function(obj,first){
+				if(!first){
+					location.href = "?curr=" + obj.curr+"&limit=" + obj.limit+"&keyword={$searchItem.keyword??''}";
+				}
+			}
+		});
+	});
+</script>

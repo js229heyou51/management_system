@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo(1)}
+	{include file="public/head"}
+</head>
+	<body>
+		<div class="wrap">
+			<!-- main -->
+			<div class="main">
+				<div class="login">
+					<div class="container">
+						<div class="login-header">
+							<div class="login-top flex">
+								<div class="login-logo">
+									<img src="/static/index/images/logo.png">
+								</div>
+								<div class="login-tit">
+									<h2>会员登录</h2>
+								</div>
+							</div>
+							<div class="login-tright">
+								<a href="/">商城首页</a>
+							</div>
+						</div>
+						<div class="login-con">
+							<div class="login-content">
+								<div class="login-box">
+									<div class="login-nav">
+										<ul class="flex">
+											<li class="cur"><a href="javascript:;">账号登录</a></li>
+											<li><a href="javascript:;">免密码登录</a></li>
+										</ul>
+									</div>
+									<form action="" id="pform">
+										<input type="hidden" name="url" value="{$url??''}">
+										<div class="login-inp">
+											<div class="login-inpbox">
+												<div class="login-inpimg"><img src="/static/index/images/login_01.png"></div>
+												<input type="text" name="username" required="true" error-msg="手机号/用户名不能为空" placeholder="手机号/用户名">
+											</div>
+											<div class="login-inpbox">
+												<div class="login-inpimg"><img src="/static/index/images/login_02.png"></div>
+												<input type="password" name="password" required="true" error-msg="登录密码不能为空" placeholder="登录密码">
+											</div>
+											<div class="login-btn">
+												<button type="button" onclick="login()">登录</button>
+											</div>
+											<div class="login-mr flex">
+												<div class="login-mj"><a href="/login/forget">忘记密码？</a></div>
+												<div class="login-reg"><p>没有账户？ <a href="/register">注册</a></p></div>
+											</div>
+										</div>
+									</form>
+								</div>
+								<div class="login-bottom">
+									<ul class="flex">
+										<li>
+											<a href="#"><img src="/static/index/images/login_03.png"> QQ登录</a>
+										</li>
+										<li>
+											<a href="#"><img src="/static/index/images/login_04.png"> 微信登录</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer"}
+		</div>
+	</body>
+</html>

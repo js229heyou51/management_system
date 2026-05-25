@@ -1,0 +1,34 @@
+{extend name="common/co/default" /}
+
+{block name="search"}
+	{include file="common/co/search" /}
+{/block}
+
+{block name="toolbar"}
+	{include file="common/co/toolbar" /}
+{/block}
+
+{block name="state"}
+	{include file="common/co/state" /}
+{/block}
+
+{block name="operate"}
+	{include file="common/co/operate" /}
+{/block}
+
+{block name="script"}
+	<script type="text/javascript">
+		window.extraOptions = {
+			colsInit: [
+				{field:'fil_sl',title: '图标',align: 'center', width: 100, templet: function(d){
+					var html = '';
+					if(d.type == 2){
+						html += '<i class="layui-icon ' + d.keyword + '">';
+					}
+					return html
+				}}
+			]
+		}
+	</script>
+	{include file="common/co/script" /}
+{/block}

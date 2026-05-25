@@ -1,0 +1,29 @@
+{extend name="common/co/default" /}
+
+{block name="search"}
+	{include file="common/co/search" /}
+{/block}
+
+{block name="toolbar"}
+{/block}
+
+{block name="state"}
+{/block}
+
+{block name="operate"}
+{/block}
+
+{block name="script"}
+	<script type="text/javascript">
+		window.extraOptions = {
+			colsInit: [
+				{field: 'create_at', title: '{$langHtml.common.time}', width:200},
+				{field: 'ip', title: '{$langHtml.common.IP}', width: 100, align: 'center'},
+				{field: 'username', title: '{$langHtml.common.username}', width: 150,align: 'center'},
+				{field: 'z_body', title: '{$langHtml.common.operate}'}
+			],
+			colsType: false,
+		}
+	</script>
+	{include file="common/co/script" /}
+{/block}

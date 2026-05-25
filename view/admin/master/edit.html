@@ -1,0 +1,82 @@
+{extend name="common/co/edit" /}
+
+{block name="header"}
+
+{/block}
+{block name="content"}
+	<div>
+		<form class="layui-form">
+			<input type="hidden" name="id" value="{$find.id??''}">
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.username??''}</label>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" name="username" placeholder="{$langHtml.common.username??''}" {if(!empty($find))}readonly{/if} value="{$find.username??''}">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.password??''}</label>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" name="password" placeholder="{$langHtml.common.password??''}">
+				</div>
+				<div class="layui-form-mid layui-word-aux">{$langHtml.common.editPwdTip??''}</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.name??''}</label>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" name="rename" placeholder="{$langHtml.common.name??''}" value="{$find.rename??''}">
+				</div>
+				<div class="layui-form-mid layui-word-aux"></div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.permissions??''}</label>
+				<div class="layui-input-block">
+					{foreach $lists as $lk => $lv}
+					{if(!empty($lv.id))}
+					<div class="layui-inline">
+						<b><input type="checkbox" name="menu_list[]" lay-skin="primary" title="{$lv.title}" {if(!empty($find.menu_list))}{$find.menu_list == 'all' || in_array($lv.id,$find.menu_list) ? 'checked' : ''}{/if} value="{$lv.id}" lay-filter="menu_list"></b>
+						{if(!empty($lv.children))}
+						{foreach $lv.children as $ck => $cv}
+						<input type="checkbox" name="action_list[]" lay-skin="primary" title="{$cv.title}" {if(!empty($find.action_list))}{$find.action_list == 'all' || in_array($cv.title_val,$find.action_list) ? 'checked' : ''}{/if} value="{$cv.title_val}" lay-filter="action_list">
+						{/foreach}
+						{/if}
+					</div>
+					<hr>
+					{/if}
+					{/foreach}
+				</div>
+			</div>
+		</form>
+		<div class="layui-form-item" style="margin-top:10px;">
+			<div class="layui-input-block">
+				<button type="button" class="layui-btn layui-bg-color" onclick="save()">{$langHtml.common.save??''}</button>
+			</div>
+		</div>
+	</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+	layui.use(['layer','form'],function(){
+		var form = layui.form;
+		layer = layui.layer;
+		$ = layui.jquery;
+		form.on('checkbox(menu_list)', function(data){
+			$(data.elem).parent().siblings('input[lay-filter="action_list"]').each(function(){
+				this.checked = data.elem.checked;  
+			})
+			form.render('checkbox');  
+		}); 
+		form.on('checkbox(action_list)', function(data){
+			var allChecked = true;  
+			$(data.elem).siblings('input[lay-filter="action_list"]').each(function(){
+				if (!this.checked) {  
+					allChecked = true;  
+					return false; // 终止循环  
+				}  
+			})
+			$(data.elem).siblings('b').find('input[lay-filter="menu_list"]').prop('checked', allChecked);
+			form.render('checkbox');
+		});
+	});
+</script>
+{/block}

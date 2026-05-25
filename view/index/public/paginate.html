@@ -1,0 +1,30 @@
+{if condition="$pager->hasPages()"}  
+							<ul>
+								{if condition="$pager->currentPage() gt 1"}
+								<li><a href="{$pager->getUrl($pager->currentPage() - 1)}">上一页</a></li>
+								{else}
+								<li class="disabled"><span>上一页</span></li>
+								{/if}
+
+								<!-- 页码链接 -->
+								{volist name="pager->getPages()" id="page"}
+								<li class="{eq name='$pager->currentPage()' value='$page'}active{/eq}">
+									<a href="{$pager->getUrl($page)}">{$page}</a>
+								</li>
+								{/volist}
+
+								{if condition="$pager->currentPage() lt $pager->lastPage()"}
+								<li><a href="{$pager->getUrl($pager->currentPage() + 1)}">下一页</a></li>
+								{else}
+								<li class="disabled"><span>下一页</span></li>
+								{/if}
+								<li class="pages-go">
+									<form>
+										<span>跳转</span>
+										<input type="text" name="page" >
+										<span>页</span>
+										<button>确定</button>
+									</form>
+								</li>
+							</ul>
+						{/if}

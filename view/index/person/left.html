@@ -1,0 +1,40 @@
+<div class="person_left">
+							<div class="person_lt">
+								<img src="/static/index/images/per_01.png"> <h2>会员中心</h2>
+							</div>
+							<div class="person_ll">
+								<div class="person_lb">
+									<div class="person_lbt">
+										<img src="/static/index/images/per_02.png">
+										<h3>关于我的</h3>
+									</div>
+									<ul>
+										<li {if(!empty($ny) && $ny == 'index')}class="cur"{/if}><a href="/person/">我的首页</a></li>
+										<li {if(!empty($ny) && $ny == 'message')}class="cur"{/if}><a href="/person/message/">我的消息</a></li>
+										<li {if(!empty($ny) && $ny == 'collect')}class="cur"{/if}><a href="/person/collect/">我的收藏</a></li>
+										<li><a href="/cart/">我的购物车</a></li>
+									</ul>
+								</div>
+								<div class="person_lb">
+									<div class="person_lbt">
+										<img src="/static/index/images/per_03.png">
+										<h3>订单中心</h3>
+									</div>
+									<ul>
+										<li {if(!empty($ny) && $ny == 'order')}class="cur"{/if}><a href="/person/order/">我的订单</a></li>
+										<li><a href="">售后服务</a></li>
+									</ul>
+								</div>
+								<div class="person_lb">
+									<div class="person_lbt">
+										<img src="/static/index/images/per_04.png">
+										<h3>账号管理</h3>
+									</div>
+									<ul>
+										<li {if(!empty($ny) && $ny == 'information')}class="cur"{/if}><a href="/person/information/">个人信息</a></li>
+										<li {if(!empty($ny) && $ny == 'address')}class="cur"{/if}><a href="/person/address/">收货地址</a></li>
+										<li {if(!empty($ny) && $ny == 'safe')}class="cur"{/if}><a href="/person/safe/">账户安全</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$conf.sy.name??''} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header layui-step-header" style="margin-bottom:20px;">
+			{block name="header"}header{/block}
+		</div>
+		<div class="layui-wrap">
+			{block name="content"}content{/block}
+		</div>
+	</body>
+</html>
+{block name="script"}script{/block}

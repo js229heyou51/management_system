@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head"}
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header"}
+			<!-- main -->
+			<div class="order-detail">
+				<div class="container">
+					<div class="header bag-f"><a href="/" class="nuxt-link-active">首页&gt;</a> <a href="/person/" class="">个人中心&gt;</a> <span>订单详情</span></div>
+					<div class="section process bag-f">
+						<div class="section-hd">
+							订单状态：{$find.order_status.statusText??''}
+						</div>
+						<div class="section-bd">
+							<ul>
+								<li class="">
+									<div class="line"></div>
+									<div class="iconfont icon-xuanzhong11"></div>
+									<div class="iconfont icon-fukuan"><div class="arrow"></div></div>
+									<div class="info">
+										<div>待付款</div>
+										<div>{:date('Y-m-d',strtotime($find.wtime))}</div>
+									</div>
+								</li>
+								<li class="">
+									<div class="line"></div>
+									<div class="iconfont icon-weixuan"></div>
+									<div class="iconfont icon-peihuo"><div class="arrow"></div></div>
+									<div class="info">
+										<div>待发货</div>
+										<div></div>
+									</div>
+								</li>
+								<li class="">
+									<div class="line"></div>
+									<div class="iconfont icon-weixuan"></div>
+									<div class="iconfont icon-fahuo"><div class="arrow"></div></div>
+									<div class="info">
+										<div>待收货</div>
+										<div></div>
+									</div>
+								</li>
+								<li class="">
+									<div class="line"></div>
+									<div class="iconfont icon-weixuan"></div>
+									<div class="iconfont icon-pingjia1"><div class="arrow"></div></div>
+									<div class="info">
+										<div>待评价</div>
+										<div></div>
+									</div>
+								</li>
+								<li class="">
+									<div class="iconfont icon-weixuan"></div>
+									<div class="iconfont icon-wancheng"></div>
+									<div class="info">
+										<div>已完成</div>
+										<div></div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="section bag-f">
+						<div class="section-hd">订单信息</div>
+						<div class="section-bd">
+							<ul>
+								<li class="acea-row row-middle">
+									<div>订单编号：</div>
+									<div>{$find.order_sn??''}</div>
+								</li>
+								<li class="acea-row row-middle">
+									<div>订单日期：</div>
+									<div>{:date('Y-m-d',strtotime($find.wtime))}</div>
+								</li>
+								<li class="acea-row row-middle">
+									<div>支付状态：</div>
+									<div>{$find.order_status.statusText??''}</div>
+								</li>
+								<li class="acea-row row-middle">
+									<div>支付方式：</div>
+									<div>{$find.pay_type??''}</div>
+								</li>
+								<li class="acea-row row-middle">
+									<div>订单金额：</div>
+									<div class="money">￥{$find.pay_amount??''}</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="section bag-f">
+						<div class="section-hd">收货信息</div>
+						<div class="section-bd">
+							<ul>
+								<li class="acea-row row-middle">
+									<div>收货人：</div>
+									<div>{$find.address.name??''}</div>
+								</li>
+								<li class="acea-row row-middle">
+									<div>联系电话：</div>
+									<div>{$find.address.phone??''}</div>
+								</li>
+								<li class="acea-row">
+									<div>收货地址：</div>
+									<div>{$find.address.province??''} {$find.address.city??''} {$find.address.district??''} {$find.address.address??''}</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="section bag-f">
+						<div class="section-hd">商品信息</div>
+						<div class="section-bd">
+							<ul class="goods">
+								{if(!empty($find.orderItem))}
+								{volist name="find.orderItem" id="item"}
+								<li class="acea-row row-middle">
+									<div><img src="{$item.goods_image}" alt=""></div>
+									<div>
+										<div>{$item.goods_name}</div>
+										<div class="info">{$item.specifications}<span class="cart-num">x1</span></div>
+										<div class="pice">
+											<div>
+												<span class="money">￥265.00</span>
+												<del>￥265.00</del>
+											</div>
+											<div class="pice-btn">
+												<div class="split_btn"></div>
+												<div class="refund">1 件退款中</div>
+											</div>
+										</div>
+									</div>
+								</li>
+								{/volist}
+								{/if}
+							</ul>
+							<ul>
+								<li class="acea-row row-middle">
+									<div>运费：</div>
+									<div>包邮</div>
+								</li>
+							</ul>
+							<ul class="total">
+								<li class="acea-row row-middle row-between">
+									<div>共3件商品，订单总金额为：
+										<span class="money">￥<b>12571.00</b></span>
+									</div>
+									<div class="footerState acea-row row-middle">
+										<a href="/refund?orderId=cp528962521550290944" class="orderBnt">批量退款</a>
+										<div class="orderBnt">联系客服</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer"}
+		</div>
+	</body>
+</html>

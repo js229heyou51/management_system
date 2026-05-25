@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head"}
+	<script src="/static/index/js/distpicker.data.js"></script>
+	<script src="/static/index/js/distpicker.min.js"></script>
+	<script src="/static/index/js/address.js"></script>
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header"}
+			<!-- main -->
+			<div class="person">
+				<div class="container">
+					<div class="person_con">
+						{include file="person/left"}
+						<div class="person_right">
+							<br>
+							<div class="cartConfirm-c">
+								<div class="confirm-box" style="border-bottom: 1px solid #e6e6e6;">
+									<div class="confirm-tit">
+										<h2>收货人信息</h2>
+									</div>
+									<div class="confirm-con" >
+										<div class="address-wrapper">
+											<div class="address-content">
+												<ul class="clearfix" id="addressBox">
+													{if(!empty($addressList))}
+													{volist name="addressList" id="addVal"}
+													<li index="{$key}">
+														<div class="name line1">{$addVal.rename}</div> 
+														<div class="phone">{$addVal.phone}</div> 
+														<div class="text line4">{$addVal.province}{$addVal.city}{$addVal.district}{$addVal.address}</div> 
+														<div class="edit-box">
+															<span onclick='editAddress({$addVal.id})'>修改</span>
+															<span onclick="delAddress({$addVal.id})">删除</span>
+														</div>
+														{if($addVal.type ==1)}<div class="moren">默认</div>{/if}
+													</li>
+													{/volist}
+													{/if}
+													<li class="addbox" onclick="addAddress()"><div class="box"><img src="/static/index/images/add.02a167a.png" alt=""> <p>添加新地址</p></div></li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer"}
+		</div>
+	</body>
+</html>

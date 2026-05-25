@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.config}-{$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div id="layui-setup">
+				<form class="layui-form">
+					<div class="layui-form-item">
+						<fieldset class="layui-elem-field layui-field-title site-title">
+							<legend><a name="default">{$langHtml.common.system}{$langHtml.common.settings}</a></legend>
+						</fieldset>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use}{$langHtml.common.needMenu}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="sy[menu]" value="true" title="{$langHtml.common.use}">
+							<input type="radio" name="sy[menu]" value="false" checked title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use}{$langHtml.common.needTable}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="sy[sheet]" value="true" title="{$langHtml.common.use}">
+							<input type="radio" name="sy[sheet]" value="false" checked title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.systemID}</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="sy[id]" id="id" placeholder="">
+						</div>
+						<div class="layui-form-mid layui-word-aux">{$langHtml.common.systemIDTip} 
+							<font color="red">
+								已使用的ID
+								{volist name="lists" id="v"}
+								,{$v.sy_id}
+								{/volist}
+							</font>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.systemName}</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="sy[name]" id="name" placeholder="" value="">
+						</div>
+						<div class="layui-form-mid layui-word-aux">{$langHtml.common.systemNameTip}</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.systemPre}</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="sy[pre]" id="pre" placeholder="" value="">
+						</div>
+						<div class="layui-form-mid layui-word-aux">{$langHtml.common.systemPreTip}</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.needCategory}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="sy[need_lm]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="sy[need_lm]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.maxCategory}</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="sy[level_lm]" id="level_lm" placeholder="" value="0">
+						</div>
+						<div class="layui-form-mid layui-word-aux">{$langHtml.common.maxCategoryTip}</div>
+					</div>
+				</form>
+				<div class="layui-form-item">
+					<div class="layui-input-block layui-input-block-large">
+						<button type="button" class="layui-btn layui-bg-color" onclick="tab(this,'layui-category')">{$langHtml.common.nextStep}</button>
+					</div>
+				</div>
+			</div>
+			<div class="layui-box" id="layui-category" style="display: none;">
+				<form class="layui-form">
+					<div class="layui-form-item">
+						<fieldset class="layui-elem-field layui-field-title site-title">
+							<legend><a name="default">{$langHtml.common.category}{$langHtml.common.settings}</a></legend>
+						</fieldset>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.seo}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="lm[seo_lm]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="lm[seo_lm]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use}{$langHtml.common.add}{$langHtml.common.category}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="lm[add_lm]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="lm[add_lm]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use}{$langHtml.common.apname}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="lm[apname_lm]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="lm[apname_lm]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.link}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="lm[url_lm]" value="true" checked  title="{$langHtml.common.use}">
+							<input type="radio" name="lm[url_lm]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.desc}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="lm[f_body_lm]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="lm[f_body_lm]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.det}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="lm[z_body_lm]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="lm[z_body_lm]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.picture}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="lm[img_sl_lm]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="lm[img_sl_lm]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.attribute}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="lm[con_att_lm]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="lm[con_att_lm]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.recommended}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="lm[tuijian_lm]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="lm[tuijian_lm]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.popular}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="lm[hot_lm]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="lm[hot_lm]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.shield}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="lm[pass_lm]" value="true" checked  title="{$langHtml.common.use}">
+							<input type="radio" name="lm[pass_lm]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+				</form>
+				
+				<div class="layui-form-item">
+					<div class="layui-input-block layui-input-block-large">
+						<button type="button" class="layui-btn layui-bg-color" onclick="tab(this,'layui-setup')">{$langHtml.common.prevStep}</button>
+						<button type="button" class="layui-btn layui-bg-color" onclick="tab(this,'layui-information')">{$langHtml.common.nextStep}</button>
+					</div>
+				</div>
+			</div>
+			<div class="layui-box" id="layui-information" style="display: none;">
+				<form class="layui-form">
+					<div class="layui-form-item">
+						<fieldset class="layui-elem-field layui-field-title site-title">
+							<legend><a name="default">{$langHtml.common.information}{$langHtml.common.settings}</a></legend>
+						</fieldset>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.seo}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[seo]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[seo]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.add} {$langHtml.common.information}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[add_xx]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[add_xx]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.apname}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[apname]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[apname]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.keyword}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[keyword]" value="true"  checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[keyword]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.link}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[link_url]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[link_url]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.desc}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[f_body]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[f_body]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.det}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[z_body]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[z_body]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.picture}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[img_sl]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[img_sl]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.picture} 2</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[pic_sl]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[pic_sl]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.file}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[fil_sl]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[fil_sl]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.video}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[vid_sl]" value="true"  checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[vid_sl]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.relatedInformation}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[info]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[info]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.relatedFile}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[file]" value="true"  checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[file]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.releaseTime}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[wtime]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[wtime]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.topUp}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[ding]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[ding]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.recommended}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[tuijian]" value="true"  checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[tuijian]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.popular}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[hot]" value="true"  checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[hot]" value="false" title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.shield}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[pass]" value="true" checked title="{$langHtml.common.use}">
+							<input type="radio" name="co[pass]" value="false"  title="{$langHtml.common.notUse}">
+						</div>
+					</div>
+				</form>
+				<div class="layui-form-item">
+					<div class="layui-input-block layui-input-block-large">
+						<button type="button" class="layui-btn layui-bg-color" onclick="tab(this,'layui-category')">{$langHtml.common.prevStep}</button>
+						<button type="button" class="layui-btn layui-bg-color" onclick="crud('{$Request.root}/SetupGl/crud')">{$langHtml.common.generateCrud}</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	layui.use(['layer','form'],function(){
+		layer = layui.layer;
+		$ = layui.jquery;
+		var form = layui.form;  
+	});
+	function crud(url){
+		$.post(url,$('form').serialize(),function(res){
+			if(res.code==200){
+				layer.msg(res.msg,{'icon':1});
+				setTimeout(function(){window.location.reload();},500);
+			}else{
+				layer.msg(res.msg,{'icon':2});
+			}
+		},'json');
+	}
+</script>
+{include file="public/footer" /}

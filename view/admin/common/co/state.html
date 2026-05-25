@@ -1,0 +1,14 @@
+<script type="text/html" id="state">
+	{if(isset($conf.co.ding) && $conf.co.ding == true)}
+	<input type="checkbox" name="ding" value="{{d.id}}" lay-skin="switch" lay-text="{$langHtml.common.ding}|{$langHtml.common.ding}" lay-filter="ding" {{# if(d.ding==1){ }} checked {{# } }}>
+	{/if}
+	{if(isset($conf.co.tuijian) && $conf.co.tuijian == true)}
+	<input type="checkbox" name="tuijian" value="{{d.id}}" lay-skin="switch" lay-text="{$langHtml.common.recommend}|{$langHtml.common.recommend}" lay-filter="tuijian" {{# if(d.tuijian==1){ }} checked {{# } }}>
+	{/if}
+	{if(isset($conf.co.hot) && $conf.co.hot == true)}
+	<input type="checkbox" name="tuijian" value="{{d.id}}" lay-skin="switch" lay-text="{$langHtml.common.hot}|{$langHtml.common.hot}" lay-filter="hot" {{# if(d.hot==1){ }} checked {{# } }}>
+	{/if}
+	{if(isset($conf.co.pass) && $conf.co.pass == true)}
+	<input type="checkbox" name="pass" value="{{d.id}}" lay-skin="switch" lay-text="{$langHtml.common.shield}|{$langHtml.common.unshielded}" lay-filter="pass" {{# if(d.pass==0){ }} checked {{# } }}>
+	{/if}
+</script>

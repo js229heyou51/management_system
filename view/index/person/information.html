@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head"}
+	<link rel="stylesheet" type="text/css" href="/static/index/css/amazeui.cropper.css">
+	<link rel="stylesheet" type="text/css" href="/static/index/css/amazeui.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/index/css/custom_up_img.css">
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header"}
+			<!-- main -->
+			<div class="person">
+				<div class="container">
+					<div class="person_con">
+						{include file="person/left"}
+						<div class="person_right">
+							<div class="person_rtop">
+								<span class="company-title">个人资料</span>
+								<div class="vip-r-top clearfix" style="width: 16%;margin:20px auto;">
+									<div class="pic fl">
+										<div class="pic-img" id="up-img-touch">
+											<a href="javascript:;"><img src="{if(!empty($userInfo.img_sl))}{$userInfo.img_sl}{else}/static/index/images/per_05.png{/if}" data-am-popover="{content: '更换头像', trigger: 'hover focus'}"></a>
+										<a href="javascript:;" class="edit_img">修改头像</a>
+									</div>
+									</div>
+								</div>
+								<form action="" method="post" id="iform" name="frm"  style="padding:0px; margin:0px;" class="layui-form">
+									<div class="per-info-wrap">
+										<input type="hidden" name="id" value="{$userInfo.id}">
+										<div class="per-info-item layui-form-item">
+											<span>称谓</span>
+											<div class="per-info-bar clearfix">
+												<em class="per-info-sex {$userInfo.sex == 2 ? 'cur' : ''}" data-val="2">
+													<span class="per-head-sex female"></span> 女士
+												</em>
+												<em class="per-info-sex {$userInfo.sex == 1 ? 'cur' : ''}" data-val="1">
+													<span class="per-head-sex male"></span> 先生
+												</em>
+												<em class="per-info-sex {$userInfo.sex == '0' ? 'cur' : ''}" data-val="0">
+													<span class="per-head-sex male "></span> 保密
+												</em>
+												<!-- <em class="per-info-star"><i class="fa fa-asterisk"></i></em> -->
+												<input type="hidden" name="sex" id="sex" value="{$userInfo.sex}">
+												<script>
+												$(function(){
+													$('.per-info-sex').click(function(){
+														id = $(this).data('val');
+														$(this).siblings().removeClass('cur');
+														$(this).addClass('cur');
+														$('#sex').val(id);
+													})	
+												})
+												</script>
+											</div>
+										</div>
+										<div class="per-info-item layui-form-item">
+											<span>姓名</span>
+											<div class="per-info-bar clearfix">
+												<input name="rename" id="rename" type="text" class="per-info-inp layui-input" maxlength="50" placeholder="请填写姓名" value="{$userInfo.rename}">
+												<em class="per-info-star"><i class="fa fa-asterisk"></i></em>
+											</div>
+										</div>
+										<div class="per-info-item layui-form-item">
+											<span>手机号码</span>
+											<div class="per-info-bar clearfix">
+												<input name="phone" id="phone" type="text" class="per-info-inp layui-input" maxlength="50" placeholder="请填写手机号码" value="{$userInfo.phone}"  >
+												<em class="per-info-star"><i class="fa fa-asterisk"></i></em>
+											</div>
+										</div>
+										<div class="per-info-item layui-form-item">
+											<span>电子邮箱</span>
+											<div class="per-info-bar clearfix">
+												<input name="email" id="email" type="text" class="per-info-inp layui-input" maxlength="50" placeholder="请填写电子邮箱" value="{$userInfo.email}">
+												<em class="per-info-star"><i class="fa fa-asterisk"></i></em>
+											</div>
+										</div>
+										<div class="per-info-item layui-form-item">
+											<span>联系地址</span>
+											<div class="per-info-bar clearfix">
+												<input name="address" id="address" type="text" class="per-info-inp layui-input" maxlength="250" placeholder="请填写联系地址" value="{$userInfo.address}">
+											</div>
+										</div>
+										<div class="per-info-item layui-form-item">
+											<span>个人签名</span>
+											<div class="per-info-bar clearfix">
+												<textarea name="z_body" id="z_body" class="per-info-area layui-textarea" rows="5" maxlength="100" placeholder="50字以内">{$userInfo.z_body}</textarea>
+											</div>
+										</div>
+										<div class="per-info-btn">
+											<button type="button" onclick="saveInfo()">保 存</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="person/avatar"}
+			{include file="public/footer"}
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	layui.use(['layer'],function(){
+		$ = layui.jquery;
+
+		saveInfo = function(){
+			var data = $('#iform').serialize();
+			$.post('/Person/saveInfo',data,function(res){
+				if(res.code==200){
+					layer.msg(res.msg,{icon:1})
+					setTimeout(function(){window.location.reload();},500);
+				}else{
+					layer.msg(res.msg,{icon:2})
+				}
+			},'json');
+		}
+	})
+</script>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>图片批量导入</title>
+		{include file="public/head" /}
+		<script type="text/javascript" src="/static/plupload/plupload.full.min.js"></script>
+	</head>
+	
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<a href="javascript:;" onclick="tab(this,'layui-info')"><span class="this">批量上传</span></a>
+			<a href="javascript:;" onclick="setup()"><span>上传设置</span></a>
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div id="layui-info">
+				<form class="layui-form" id="formp">
+					{if(!empty($plConf.imgUploadConf) && $plConf.imgUploadConf.sy.need_lm == 'true')}
+					<div class="layui-form-item">
+						<label class="layui-form-label ">分类</label>
+						<div class="layui-inline layui-col-xs3">
+							<select name="lm" id="lm">
+								<option value=''>请选择分类</option>
+								{:categoryTree($category)}
+							</select>
+						</div>
+					</div>
+					{/if}
+					<div class="layui-form-item">
+						<label class="layui-form-label"></label>
+						<div class="layui-input-block">
+							<span id="errlist" style="color:#FF0000;"></span>
+							<div id="container">
+								<div class="pl_header" style="margin-bottom:20px;">
+									<button class="layui-btn" type="button" id="pickfiles">选择图片</button>
+									<button class="layui-btn" type="button" id="clearfiles">删除选择</button>
+									<em>{if(!empty($plConf.imgUploadConf) && $plConf.imgUploadConf.up.text == 'true')}{$plConf.imgUploadConf.up.text}{/if}</em>
+								</div>
+							</div>
+
+							<!--总的进度条-->
+							<div id="up_zong" style="width:200px; border:1px solid #ccc; height:10px; display:none;"><div id="up_pro" style="background-color:#0000FF;height:10px;"></div></div>
+							<!--文件阅览列表-->
+							<span id="filelist" class="filelist"></span>
+						</div>
+					</div>
+				</form>
+				<div class="layui-form-item" style="margin-top:10px;">
+					<div class="layui-input-block ">
+						<button type="button" class="layui-btn" id="uploadfiles" >上传</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	layui.use(['layer','form'],function(){
+		var form = layui.form;
+		layer = layui.layer;
+		$ = layui.jquery;
+	});
+	function addd(){
+		$.post("{$Request.root}/{$route}/pl_imru_tool",$('form').serialize(),function(res){
+			if(res.code==200){
+				layer.msg(res.msg,{'icon':1});
+				setTimeout(function(){window.location.reload();},1000);
+			}else{
+				layer.msg(res.msg,{'icon':2});
+			}
+		},'json');
+	}
+	function setup(){
+		layer.full(layer.open({
+			type: 2,
+			title: '批量上传设置',
+			shade: 0.3,
+			area: ['100%','100%'],
+			fixed: false, //不固定
+			maxmin: true,
+			content: "{$Request.root}/{$route}/imgUploadSettings"
+		}));
+	}
+</script>
+{include file="public/footer" /}
+<script type="text/javascript">
+//基本配置
+var uploader = new plupload.Uploader({
+	runtimes : 'html5,flash,silverlight,html4',
+	browse_button : 'pickfiles', // you can pass in id...
+	container: document.getElementById('container'), // ... or DOM Element itself
+	url : '{$Request.root}/{$route}/pl_upload',
+	flash_swf_url : '/static/plupload/Moxie.swf',
+	silverlight_xap_url : '/static/plupload/Moxie.xap',
+	file_data_name:'file_up',
+	filters : {
+		max_file_size : '{if(!empty($plConf.imgUploadConf.up.maxsize))}{$plConf.imgUploadConf.up.maxsize}{/if}',
+		prevent_duplicates : true, //不允许队列中存在重复文件
+		mime_types: [
+			{title : "Image files", extensions : "{if(!empty($plConf.imgUploadConf.up.allowext))}{$plConf.imgUploadConf.up.allowext}{/if}"}
+		]
+	},
+	
+	init: {
+		//安装后触发
+		PostInit: function() {
+			//点击上传按钮触发
+			document.getElementById('uploadfiles').onclick = function() {
+				//document.getElementById("up_zong").style.display="";
+				//document.getElementById("up_pro").style.width="0px";
+				uploader.start(); //上传开始，等全部上传完毕自动提交表单
+			};
+			//点击清除所有触发
+			document.getElementById('clearfiles').onclick = function() {
+				var files=uploader.files;
+				var len = files.length;
+				//清除阅览的图片
+				for(var i = 0; i<len; i++){
+					document.getElementById("filelist").removeChild(document.getElementById(files[i].id));
+				};
+				//清除图片对象
+				uploader.splice(0,len);
+			};
+		},
+		//选好要上传的文件后触发
+		FilesAdded: function(up, files) {
+			console.log(uploader.files.length)
+			// if (uploader.files.length>0){
+			// 	uploader.splice(uploader.files.length-files.length,files.length);
+			// 	return false
+			// }
+			var yli=document.getElementById('filelist').getElementsByTagName('li').length;
+			
+			
+			for(var i = 0, len = files.length; i<len; i++){
+				var file_name = files[i].name;
+				var inhtml='';
+				//b标签放进度条 div放删除按钮 p放阅览图片 一个隐藏的文本框放文件路径 一个文本框放文件标题(默认读取文件名称作为文件标题，如要取消请删除赋值/即可)
+				inhtml+='<li id="' + files[i].id +'">';
+				inhtml+='<b></b><div class="del_btn" onclick=del("'+files[i].id+'")></div><p></p>';
+				inhtml+='<div class="img_row"><label class="layui-form-label">标题</label><div class="layui-input-inline"><input name="title[]" id="title_'+files[i].id+'" type="text" class="layui-input" value='+files[i].name.substr(0,files[i].name.lastIndexOf("."))+'></div></div>';
+				inhtml+='<div class="img_row"><label class="layui-form-label">排序</label><div class="layui-input-inline"><input name="px[]" id="px_'+files[i].id+'" type="text" class="layui-input" value="100"><input name="img_sl[]" type="text" class="layui-input" style="display:none;" id="img_sl_'+files[i].id +'"></div></div>';
+				inhtml+='</li>';
+				document.getElementById('filelist').innerHTML+=inhtml;
+				!function(i){
+					previewImage(files[i],function(imgsrc){
+						document.getElementById(files[i].id).getElementsByTagName('p')[0].innerHTML='<img src="'+ imgsrc +'" />';
+					})
+				}(i);
+			}
+		},
+		//上传队列中每一个文件开始上传后触发
+		UploadFile:function (up,files){
+
+		},
+		//在文件上传过程中不断触发，可以用此事件来显示上传进度
+		UploadProgress: function(up, file) {
+			//document.getElementById("up_pro").style.width=(up.total.percent/100)*200+"px"
+			document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span style="width:'+((file.percent/100)*80)+'px;height:5px;display:block;background-color:#0000FF;">&nbsp;</span>';
+		},
+		//上传队列中每一个文件上传完成后触发
+		FileUploaded:function(up,file,respon){
+			//每个文件上传完了以后把服务器返回的值赋给每张图片的文本框
+			if (respon.response!=""){
+				document.getElementById("img_sl_"+file.id).value=(respon.response);
+			}
+		},
+		//上传队列中所有文件都上传完成后触发
+		UploadComplete:function(up,files){
+			addd();
+			//document.getElementById("up_zong").style.display="none";
+			// document.getElementById("formp").submit();
+		},
+		//上传队列中每一个文件上传出错后触发
+		Error: function(up, err) {
+			str="";
+			//提示超文件大小
+			if (err.code=='-600'){
+				str=" 超过{if(!empty($plConf.imgUploadConf.up.maxsize))}{$plConf.imgUploadConf.up.maxsize/1000}{/if}KB";
+			//提示文件格式错误
+			}else if (err.code=='-601'){
+				str=" 文件格式不正确";
+			//其他都显示“出错”
+			}else{
+				str=" 出错";
+			}
+			if (err.code=='-602'){
+				str="";
+			}else{
+				str=err.file.name+str+"<br/>";
+			}
+			document.getElementById('errlist').innerHTML+=str;
+		}
+	}
+});
+
+uploader.init();
+
+//阅览图片
+function previewImage(file,callback){
+	if(!file || !(/image\//.test(file.type))) {return;}
+
+	if(file.type=='image/gif'){
+		var fr = new mOxie.FileReader();
+		fr.onload = function(){
+			callback(fr.result);
+			fr.destroy();
+			fr = null;
+		}
+		fr.readAsDataURL(file.getSource());
+	}else{
+		var preloader = new mOxie.Image();
+		preloader.onload = function() {
+			preloader.downsize( 300, 300 );//先压缩一下要预览的图片,宽300，高300
+			var imgsrc = preloader.type=='image/jpeg' ? preloader.getAsDataURL('image/jpeg',80) : preloader.getAsDataURL(); //得到图片src,实质为一个base64编码的数据
+			callback && callback(imgsrc); //callback传入的参数为预览图片的url
+			preloader.destroy();
+			preloader = null;
+		};
+		preloader.load( file.getSource() );
+	}	
+}
+//删除单个图片
+function del(id){ 
+	uploader.removeFile(id); 
+	document.getElementById("filelist").removeChild(document.getElementById(id));
+}
+</script>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.navigation} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	
+	<body style="padding:10px; box-sizing: border-box;">
+		<form class="layui-form">
+			<input type="hidden" name="act" value="{$act}">
+			{if($act == 1)}
+				<div class="layui-form-item">
+					<label class="layui-form-label">{$langHtml.common.superiorNavigation}</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" name="ftitle" placeholder="{$langHtml.common.superiorNavigation}" value="{$find.title}">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">{$langHtml.common.navState}</label>
+					<div class="layui-input-block">
+						<input type="radio" name="fpass" {:$find.pass == '1' ? 'checked' : '';} value="1" title="{$langHtml.common.use}">
+						<input type="radio" name="fpass" {:$find.pass == '0' ? 'checked' : '';} value="0" title="{$langHtml.common.stop}">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">{$langHtml.common.sort}</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" name="fpx" placeholder="{$langHtml.common.sort}" value="{$find.px}" >
+					</div>
+				</div>
+				{if (!empty($list))}
+					{foreach $list as $lv}
+					<input type="hidden" name="id[]" value="{$lv.id}">
+					<div class="layui-form-item">
+						<label class="layui-form-label">{$langHtml.common.navType}</label>
+						<div class="layui-input-block">
+							<input type="radio" name="ty{$lv.id}" value="1" {:$lv.ty == '1' ? 'checked' : '';} title="{$langHtml.common.NormalNavigation}">
+							<input type="radio" name="ty{$lv.id}" value="2" {:$lv.ty == '2' ? 'checked' : '';} title="{$langHtml.common.SettingNavigation}">
+							<input type="radio" name="ty{$lv.id}" value="3" {:$lv.ty == '3' ? 'checked' : '';} title="{$langHtml.common.SEONavigation}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<span>
+							<label class="layui-form-label">{$langHtml.common.navName}</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input" name="title[]" placeholder="{$langHtml.common.enter}{$langHtml.common.navName}" value="{$lv.title}">
+							</div>
+						</span>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">{$langHtml.common.navLink}</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="link_url[]" placeholder="{$langHtml.common.enter}{$langHtml.common.navLink}" value="{$lv.link_url}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">{$langHtml.common.navState}</label>
+						<div class="layui-input-block">
+							<input type="radio" name="pass{$lv.id}" {:$lv.pass == '1' ? 'checked' : '';} value="1" title="{$langHtml.common.use}">
+							<input type="radio" name="pass{$lv.id}" {:$lv.pass == '0' ? 'checked' : '';} value="0" title="{$langHtml.common.stop}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">{$langHtml.common.sort}</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="px[]" placeholder="{$langHtml.common.sort}" value="{$lv.px}" >
+						</div>
+					</div>
+					{/foreach}
+				{/if}
+			{/if}
+			{if($act == 2)}
+				<div class="layui-form-item">
+					<label class="layui-form-label">{$langHtml.common.superiorNavigation}</label>
+					<div class="layui-input-block">
+						<select name="fid" id="fid" lay-filter="fid">
+							<option value=0>{$langHtml.common.primaryNavigation}</option>
+							{if !empty($nav)}
+								{foreach $nav as $nv}
+									<option value="{$nv.id}" {:$find.fid == $nv.id ? 'selected' : '';}>{$nv.title}</option>
+								{/foreach}
+							{/if}
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item" >
+					<label class="layui-form-label">{$langHtml.common.navType}</label>
+					<div class="layui-input-block">
+						<input type="radio" name="ty" value="1" {:$find.ty == '1' ? 'checked' : '';} title="{$langHtml.common.NormalNavigation}">
+						<input type="radio" name="ty" value="2" {:$find.ty == '2' ? 'checked' : '';} title="{$langHtml.common.SettingNavigation}">
+						<input type="radio" name="ty" value="3" {:$find.ty == '3' ? 'checked' : '';} title="{$langHtml.common.SEONavigation}">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<span>
+						<label class="layui-form-label">{$langHtml.common.navName}</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="title" placeholder="{$langHtml.common.enter}{$langHtml.common.navName}" value="{$find.title}">
+						</div>
+					</span>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">{$langHtml.common.navLink}</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" name="link_url" placeholder="{$langHtml.common.enter}{$langHtml.common.navLink}" value="{$find.link_url}">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">{$langHtml.common.navState}</label>
+					<div class="layui-input-block">
+						<input type="radio" name="pass" value="1" {:$find.pass == '1' ? 'checked' : '';} title="{$langHtml.common.use}">
+						<input type="radio" name="pass" value="0" {:$find.pass == '0' ? 'checked' : '';} title="{$langHtml.common.stop}">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">{$langHtml.common.sort}</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" name="px" placeholder="{$langHtml.common.sort}" value="{$find.px}" >
+					</div>
+				</div>
+			{/if}
+		</form>
+		<div class="layui-form-item" style="margin-top:10px;">
+			<div class="layui-input-block">
+				<button type="button" class="layui-btn" onclick="save('{$Request.root}/{$route}/navCopy')">{$langHtml.common.save}</button>
+			</div>
+		</div>
+	</body>
+</html>
+{include file="public/footer" /}

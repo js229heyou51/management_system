@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.relatedInformation} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+		<script type="text/javascript" src="/static/admin/js/pl.js"></script>
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<form class="layui-form">
+			<input type="hidden" name="pl_id" value="{$confInfo.pl_id??''}">
+			<input type="hidden" name="sy_id" value="{$confInfo.sy_id??''}">
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.title}</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" name="title" placeholder="{$langHtml.common.enter}{$langHtml.common.title}" >
+				</div>
+			</div>
+			{if ($confInfo.link_url == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.link}</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" name="link_url" placeholder="{$langHtml.common.enter}{$langHtml.common.link}" >
+				</div>
+			</div>
+			{/if}
+			{if ($confInfo.img_sl == true)}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.picture}</label>
+				<div class="layui-input-block">
+					<div class="layui-inline">
+						<button type="button" class="layui-btn" id="img_sl">{$langHtml.common.uploadImg}</button>
+					</div>
+					<div class="layui-inline">
+						<div class="layui-upload-list" id="add_img_sl">
+							
+						</div>
+					</div>
+				</div>
+			</div>
+			<script type="text/javascript">
+				imgUpload('img_sl','{$Request.root}/{$route}/upload_img');
+			</script>
+			{/if}
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.det}</label>
+				<div class="layui-input-block">
+					<textarea id="z_body" name="z_body" style="width:100%;height:250px;"></textarea>
+				</div>
+				<script>
+					tinymceEditor('z_body');
+				</script>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.releaseTime}</label>
+				<div class="layui-input-block">
+					<input type="text" name="wtime" id="wtime" lay-verify="datetime" placeholder="yyyy-MM-dd HH:mm:ss" value="{if(!empty($find.wtime))}{$find.wtime | date='Y-m-d H:i:s'}{else}{:date('Y-m-d H:i:s')}{/if}" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.sort}</label>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" name="px" placeholder="{$langHtml.common.sort}" value="100" >
+				</div>
+			</div>
+
+
+		</form>
+		<div class="layui-form-item" style="margin-top:10px;">
+			<div class="layui-input-block">
+				<button type="button" class="layui-btn layui-bg-color" onclick="pl_save('{$Request.root}/{$route}/pl_info_add','plinfo')">{$langHtml.common.save}</button>
+			</div>
+		</div>
+	</body>
+</html>
+{include file="public/footer" /}

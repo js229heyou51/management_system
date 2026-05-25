@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+	<head>
+		<title>{$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	<body style="height: 100%;padding: 16px;box-sizing: border-box;">
+		<div style="display: flex;height: 100%;" id="demoNav">
+			<ul class="layui-nav layui-nav-tree layui-bg-white">
+				<li class="layui-nav-item">
+					<a href="javascript:;" onclick="getList()">
+						<i class="layui-icon layui-icon-folder"></i>
+						<cite>全部视频</cite>
+						<i class="layui-icon layui-nav-more layui-icon-more" lay-options="{align: 'right'}" id="firstMore"></i>
+					</a>
+				</li>
+				{volist name="category" id="item"}
+				<li class="layui-nav-item">
+					<a href="javascript:;" onclick="getList({$item.id})">
+						<i class="layui-icon layui-icon-folder"></i>
+						<cite>{$item.name}</cite>
+						<i class="layui-icon layui-nav-more layui-icon-more layui-other-more" lay-options="{align: 'right'}" lay-id="{$item.id}"></i>
+					</a>
+					{if(count($item.children)>0)}
+					<dl class="layui-nav-child">
+						{volist name="item.children" id="c"}
+						<dd>
+							<a href="javascript:;" onclick="getList({$c.id})">
+								<cite>{$c.name}</cite>
+								<i class="layui-icon layui-nav-more layui-icon-more layui-other-more" lay-options="{align: 'right'}" lay-id="{$c.id}"></i>
+							</a>
+							{if(count($c.children)>0)}
+							<dl class="layui-nav-child">
+								{volist name="c.children" id="l"}
+								<dd>
+									<a href="javascript:;" onclick="getList({$l.id})">
+										<cite>{$l.name}</cite>
+										<i class="layui-icon layui-nav-more layui-icon-more layui-other-more" lay-options="{align: 'right'}" lay-id="{$l.id}"></i>
+									</a>
+								</dd>
+								{/volist}
+							</dl>
+							{/if}
+						</dd>
+						{/volist}
+					</dl>
+					{/if}
+				</li>
+				{/volist}
+			</ul>
+			<div class="gallery-box">
+				<div class="gallery-header">
+					<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-sm layui-btn-disabled layui-bg-color" id="layui-choose">使用选中视频</button>
+						<button type="button" class="layui-btn layui-btn-sm layui-bg-color" id="upload-drag" >上传视频</button>
+						<button type="button" class="layui-btn layui-btn-sm layui-btn-primary layui-btn-disabled layui-border" lay-on="layui-delSelect" id="layui-delSelect">删除视频</button>
+					</div>
+					<div class="layui-inline layui-form gallery-select">
+						<select name="category_id" id="categoryMove" lay-filter="layui-move">
+							<option value=0>视频移动至</option>
+							<option value=0>全部视频</option>
+							{volist name="options" id="item"}
+							<option value="{$key}">{$item}</option>
+							{/volist}
+						</select>
+					</div>
+					<div class="layui-inline ml10 layui-form">
+						<input type="text" class="layui-input gallery-input" lay-affix="search" placeholder="请输入视频名" lay-filter="search">
+					</div>
+				</div>
+				<div class="gallery-list flex video-list" id="gallery-result">
+					{volist name="lists" id="lv"}
+					<div class="gallery-item video-item">
+						<div class="img video" data-id="{$lv.id}">
+							<video src="{$lv.video_url}" {if(isset($lv.cover_image))}poster="{$lv.cover_image??''}"{/if} style="width: 100%; height: 100%;">您的浏览器不支持 video 标签。
+							</video>
+						</div>
+						<div class="operate-item">
+							<input type="text" class="layui-input layui-input-sm" value="{$lv.title}" lay-blur="input-blur">
+							<p>{$lv.title}</p>
+							<div class="operate-height">
+								<span class="operate" lay-on="operate-del">删除</span>
+								<span class="operate" lay-on="operate-change">改名</span>
+								<span class="operate" accessKey="{$key}" lay-on="view">查看</span>
+							</div>
+						</div>
+					</div>
+					{/volist}
+				</div>
+				<div class="gallery-pages" id="gallery-pages">
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script>
+	layui.use(function(){
+		var $ = layui.$;
+		var layer = layui.layer;
+		var dropdown = layui.dropdown;
+		var laypage = layui.laypage;
+		var util = layui.util;
+		var form = layui.form;
+
+		upload.render({
+			elem: '#upload-drag',
+			accept: 'video',
+			url: '{$Request.root}/Video/upload',
+			auto: true,
+			done: function(res){
+				if(res.code == 200){
+					setTimeout(function(){
+						window.location.reload();
+					},500)
+				}
+			}
+		})
+
+		var dropdownInst = dropdown.render({
+			elem: '#firstMore',
+			trigger: 'hover',
+			data: [{
+				title: '新增分类',
+				action: 'add',
+				mode: 'after'
+			}],
+			click: function(data, othis, event) {
+				if (data.action === 'add') {
+					layerOpen({title: '添加分类',baseUrl:'{$Request.root}/VideoCategory/create'});
+				}
+			},
+		})
+
+		var dropdownInst = dropdown.render({
+			elem: '#demoNav .layui-nav>li i.layui-other-more',
+			trigger: 'hover',
+			data: [{
+				title: '新增分类',
+				action: 'add',
+				mode: 'after'
+			},{
+				title: '编辑分类',
+				action: 'edit',
+				mode: 'after'
+			},{
+				title: '删除分类',
+				action: 'del',
+				mode: 'after'
+			}],
+			click: function(data, othis, event) {
+				var elem = this.elem[0];
+				var id = $(elem).attr('lay-id');
+				if (data.action === 'add') {
+					layerOpen({title: '添加分类',baseUrl:'{$Request.root}/VideoCategory/create'},{id:id});
+				}
+				if(data.action === 'edit'){
+					var elem = this.elem[0];
+					var id = $(elem).attr('lay-id');
+					layerOpen({title: '编辑分类',baseUrl:'{$Request.root}/VideoCategory/update'},{id:id});
+				}
+				if(data.action === 'del'){
+					var elem = this.elem[0];
+					var id = $(elem).attr('lay-id');
+					layerOpen({
+						title: '删除分类',
+						baseUrl:'{$Request.root}/VideoCategory/delete',
+						confirm: {
+							title: '删除分类',
+							method: 'DELETE',
+						}
+					},{id:id});
+				}
+			}
+		})
+		layerOpen = function(layParams = {}, urlParams = {}){
+			var fullUrl = '';
+			if(!urlParams || Object.keys(urlParams).length > 0){
+				var searchParams = new URLSearchParams();
+				// 添加参数
+				Object.keys(urlParams).forEach(function(key) {
+					searchParams.append(key, urlParams[key]);
+				});
+				var queryString = searchParams.toString();
+				fullUrl = layParams.baseUrl + (layParams.baseUrl.includes('?') ? '&' : '?') + queryString;
+			}else{
+				fullUrl = layParams.baseUrl
+			}
+			if(layParams.confirm !== undefined && Object.keys(layParams.confirm).length > 0){
+				layer.confirm(layParams.confirm?.tip ?? '确定要删除吗？', {
+					icon: layParams.confirm?.icon ?? 3,
+					title: layParams.confirm?.title ?? '',
+					btn: [
+						layParams.confirm?.confirm ?? '确定',
+						layParams.confirm?.cancle ?? '取消'
+					]
+				},function(){
+					var params = {_method: layParams.confirm?.method ?? 'post'}
+					$.ajax({
+						url: fullUrl,
+						type: layParams.confirm?.method ?? 'POST',
+						contentType: 'application/json',
+						data: urlParams ?? {},
+						dataType: layParams.confirm?.dataType ?? 'json',
+						success: function(res) {
+							if(res.code === 200){
+								layer.msg(res.msg,{icon:1})
+								setTimeout(function(){window.location.reload();},1000);
+							}else{
+								layer.msg(res.msg,{icon:2})
+							}	
+						}
+					})
+				})
+			}else{
+				layer.open({
+					title: layParams.title ?? '',
+					type: layParams.type ?? 2,
+					area: [
+						layParams.area?.width ?? '600px',
+						layParams.area?.height ?? '340px'
+					],
+					shade: layParams.shade ?? 0.3,
+					fixed: layParams.fixed ?? false, //不固定
+					maxmin: layParams.maxmin ?? true,
+					content: fullUrl ,
+				})
+			}
+		}
+
+		laypage.render({
+			elem: 'gallery-pages',
+			count: {$lists->total()??0},
+			limit: {$lists->listRows()??10},
+			curr: {$lists.current_page??1},
+			layout: ['count', 'prev', 'page', 'next'],
+			jump: function(obj, first) {
+				// 首次加载不执行
+				if (!first) {
+					currentPage = obj.curr;
+					pageSize = obj.limit;
+					getList(0,currentPage);
+				}
+			}
+		})
+
+
+		$(document).on('click','#demoNav .layui-nav-item',function(){
+			$(this).addClass('layui-nav-itemed').siblings().removeClass('layui-nav-itemed');
+			$(this).addClass('layui-this').siblings().removeClass('layui-this');
+		})
+
+
+		var idList = [];
+		window.getList = function(category_id = 0,page = 1,params = {}){
+			$.post('{$Request.root}/Video/index',{category_id:category_id,page:page,...params},function(res){
+				if(res.code == 200){
+					var html = '';
+					for (var i = 0; i < res.lists.data.length; i++) {
+						const cover = res.lists.data[i].cover_image ? 'poster="'+res.lists.data[i].cover_image+'"' : '';
+						html += '<div class="gallery-item video-item">'
+							html += '<div class="img video" data-id="'+ res.lists.data[i].id +'">'
+								html += '<video src="'+ res.lists.data[i].video_url +'" '+cover+'  style="width: 100%; height: 100%;">您的浏览器不支持 video 标签。</video>';
+							html += '</div>'
+							html += '<div class="operate-item">'
+								html += '<input type="text" class="layui-input layui-input-sm" value="'+ res.lists.data[i].title +'" lay-blur="input-blur">'
+								html += '<p>'+ res.lists.data[i].title +'</p>'
+								html += '<div class="operate-height">'
+									html += '<span class="operate operate-del" lay-on="operate-del">删除</span>'
+									html += '<span class="operate" lay-on="operate-change">改名</span>'
+									html += '<span class="operate" accessKey="'+ i +'" lay-on="view">查看</span>'
+								html += '</div>'
+							html += '</div>'
+						html += '</div>'
+					}
+					$('#gallery-result').html(html);
+					$('#gallery-result').attr('data-id',category_id);
+
+					idList = [];
+					$('#layui-choose').addClass('layui-btn-disabled');
+					$('#layui-choose').attr('lay-on','');
+					$('#layui-delSelect').addClass('layui-btn-disabled');
+					$('#layui-delSelect').attr('lay-on','');
+				
+					laypage.render({
+						elem: 'gallery-pages',
+						count: res.lists.total,
+						curr: res.lists.current_page,
+						limit: res.lists.per_page,
+						layout: ['count', 'prev', 'page', 'next'],
+						jump: function(obj, first) {
+							// 首次加载不执行
+							if (!first) {
+								currentPage = obj.curr;
+								pageSize = obj.limit;
+								getList(category_id,currentPage,params);
+							}
+						}
+					})
+				}
+			},'json');
+		}
+		$(document).on('click','.gallery-item .img',function(){
+			var that = this;
+			var id = $(that).data('id');
+			if($(that).hasClass('on')){
+				var _sup = $(that).siblings('.number').find('.badge_content').text();
+				$(that).siblings('.number').remove();
+				$(that).removeClass('on');
+				$('.gallery-item .img.on').each(function(){
+					var sup = $(this).siblings('.number').find('.badge_content').text();
+					if(sup > _sup){
+						$(this).siblings('.number').find('.badge_content').text(sup-1);
+					}
+				})
+				idList = idList.filter(item => item.id !== id);
+			}else{
+				var len = $('.gallery-item .img.on').length;
+				len += 1;
+				$(that).before('<div class="number"><div class="badge"><a href="#" class="demo-badge"></a><sup class="badge_content is-fixed">'+len+'</sup></div></div>');
+				$(that).addClass('on');
+				var src = $(that).find('video').attr('src');
+				var data = {id:id,src:src}
+				idList.push(data);
+			}
+			if($('.gallery-item .img.on').length>0){
+				$('#layui-choose').removeClass('layui-btn-disabled');
+				$('#layui-choose').attr('lay-on','layui-choose');
+				$('#layui-delSelect').removeClass('layui-btn-disabled');
+				$('#layui-delSelect').attr('lay-on','layui-delSelect');
+			}else{
+				$('#layui-choose').addClass('layui-btn-disabled');
+				$('#layui-choose').attr('lay-on','');
+				$('#layui-delSelect').addClass('layui-btn-disabled');
+				$('#layui-delSelect').attr('lay-on','');
+			}
+		})
+
+		window.specificFunction = function(category_id){
+			getList(category_id);
+		}
+
+
+		form.on('input-affix(search)', function(data){
+			var elem = data.elem;
+			var keyword = elem.value; // 输入框的值
+			var category_id = $('#gallery-result').attr('data-id');
+			getList(category_id,1,{keyword:keyword});
+		})
+		form.on('select(layui-move)', function(data){
+			if($('.gallery-item .img.on').length<=0){
+				layer.msg('请先选择视频',{code:2})
+				return false;
+			}
+			var ids = [];
+			for (let item of idList){
+				ids.push(item.id)
+			}
+			var category_id = data.elem.value;
+			$.post('{$Request.root}/Video/batchMove',{ids: ids,category_id:category_id},function(res){
+				if(res.code == 200){
+					idList = [];
+					$('#layui-choose').addClass('layui-btn-disabled');
+					$('#layui-choose').attr('lay-on','');
+					$('#layui-delSelect').addClass('layui-btn-disabled');
+					$('#layui-delSelect').attr('lay-on','');
+					getList(category_id);
+					layer.msg(res.msg,{code:1})
+				}else{
+					layer.msg(res.msg,{code:2})
+				}
+			},'json');
+		})
+
+
+		util.on('lay-on', {
+			'layui-choose': function(obj){
+				var ids = [];
+				if(window.dataFromParent?.ids){
+					ids = window.dataFromParent?.ids || []
+				}
+				if(window.dataFromParent?.isSingle){
+					var length = idList.length + ids.length
+					if(length  > 1){
+						window.dataFromParent.ids = []
+					}
+				}
+				if(window.dataFromParent?.type === 'video'){
+					if (typeof window.parentFunctionBridge === 'function') {
+						window.parentFunctionBridge({idList: idList,...window.dataFromParent});
+					}
+				}else{
+					if (typeof window.insertMediaFromGallery === 'function') {
+						var editor = window.currentActiveEditorData.editor || '';
+						if(editor){
+							window.insertMediaFromGallery(editor, idList);
+						}
+					}
+				}
+				var index = parent.layer.getFrameIndex(window.name); // 先得到当前 iframe 层的索引
+				parent.layer.close(index); // 再执行关闭
+			},
+			'operate-del': function(obj){
+				var that = obj[0];
+				var id = $(that).parents('.operate-item').siblings('.img').attr('data-id');
+				var category_id = $('#gallery-result').attr('data-id');
+				$.post('{$Request.root}/Video/delete/' + id,{_method: 'DELETE'},function(res){
+					if(res.code == 200){
+						layer.msg(res.msg,{code:1})
+						setTimeout(function(){
+							getList(category_id,1);
+						},500);
+					}else{
+						layer.msg(res.msg,{code:2})
+					}
+				},'json');
+			},
+			'operate-change': function(obj){
+				var that = obj[0];
+				$(that).parent().siblings('.layui-input-sm').show();
+				$(that).parent().siblings('p').hide();
+				$(that).parent().siblings('.layui-input-sm').focus();
+			},
+			'view': function(obj){
+				var start = obj[0].accessKey;
+			},
+			'layui-delSelect': function(){
+				var ids = [];
+				for (let item of idList){
+					ids.push(item.id)
+				}
+				var category_id = $('#gallery-result').attr('data-id');
+				$.post('{$Request.root}/Video/batchDelete',{ids: ids},function(res){
+					if(res.code == 200){
+						idList = [];
+						$('#layui-choose').addClass('layui-btn-disabled');
+						$('#layui-choose').attr('lay-on','');
+						$('#layui-delSelect').addClass('layui-btn-disabled');
+						$('#layui-delSelect').attr('lay-on','');
+						getList(category_id);
+					}else{
+						layer.msg(res.msg,{code:2})
+					}
+				},'json');
+			},
+
+		})
+		util.on('lay-blur', {
+			'input-blur': function(obj){
+				var that = obj[0];
+				var id = $(that).parent().siblings('.img').attr('data-id');
+				var _title = $(that).siblings('p').text();
+				var title = $(that).val();
+				if(_title !== title){
+					$.post('{$Request.root}/Video/edit',{id:id,title:title},function(res){
+						if(res.code == 200){
+							$(that).hide();
+							$(that).val(title);
+							$(that).siblings('p').text(title);
+							$(that).siblings('p').show();
+						}else{
+							layer.msg(res.msg,{code:2})
+						}
+					},'json');
+				}else{
+					$(that).hide();
+					$(that).siblings('p').show();
+				}
+			}
+			
+		},{
+			trigger: 'blur'
+		})
+
+	})
+</script>
+{include file="public/footer" /}

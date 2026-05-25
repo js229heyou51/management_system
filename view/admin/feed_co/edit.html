@@ -1,0 +1,72 @@
+{extend name="common/co/edit" /}
+
+{block name="header"}
+	{include file="common/co/header" /}
+{/block}
+{block name="content"}
+	{php}
+		// 根据条件决定内容
+		$hasExtraContent = true;
+		$extraContent = '';
+		$extraContent .= '<div class="layui-form-item"><label class="layui-form-label">';
+			$extraContent .= '投喂数量';
+			$extraContent .= '</label>';
+			$extraContent .= '<div class="layui-input-block">';
+			$extraContent .= '<input type="text" class="layui-input" name="num" placeholder="'.lang('common')['enter'].lang('common')['num'].'" value="'.($find['num'] ?? '').'">';
+			$extraContent .= '</div></div>';
+		$extraContent .= '<div class="layui-form-item"><label class="layui-form-label">';
+			$extraContent .= '文章';
+			$extraContent .= '</label>';
+			$extraContent .= '<div class="layui-input-block">';
+			$extraContent .= '<select name="article_str" id="article_str">';
+			$extraContent .= '<option value=0>选择分类文章</option>';
+			foreach ($articleCate as $item){
+
+				$extraContent .= '<option value="'.$item['id_lm'].'" '.(isset($find['article_str']) && $find['article_str'] == $item['id_lm'] ? 'selected' : '').'>'.$item['title_lm'].'('.$item['info_count'].')-已使用('.$item['used_count'].')</option>';
+			}
+			$extraContent .= '</select>';
+			$extraContent .= '</div></div>';
+
+		$extraContent .= '<div class="layui-form-item"><label class="layui-form-label">';
+			$extraContent .= '网站';
+			$extraContent .= '</label>';
+			$extraContent .= '<div class="layui-input-block">';
+			foreach ($webCate as $item){
+				$extraContent .= '<div class="layui-inline web_item '.(isset($find['web_str']) && strpos(','.$find['web_str'].',',','.$item['id'].',')!==false ? 'active' : '').'" data-id="'.$item['id'].'"><span>【'.$item['profile']['title_lm'].'】'.$item['title'].'</span></div>';
+			}
+			$extraContent .= '<input type="hidden" name="web_str" id="web_str" value="'.($find['web_str']??'').'">';
+			$extraContent .= '</div></div>';
+	{/php}
+	{include file="common/co/information" /}
+	
+	{if ($conf.co.info == true)}
+	{include file="common/co/info" /}
+	{/if}
+	{if ($conf.co.file == true)}
+	{include file="common/co/file" /}
+	{/if}
+	{if ($conf.co.seo == true)}
+	{include file="common/co/seo" /}
+	{/if}
+{/block}
+{block name="script"}
+<script type="text/javascript">
+	layui.use(function(){
+		$ = layui.jquery;
+		$('.web_item').click(function(){
+			$(this).toggleClass('active');
+			var webStr = '';
+			$('.web_item').each(function(){
+				var str = $(this).data('id');
+				if($(this).hasClass('active')){
+					webStr +=  str + ',' ;
+				}
+			})
+			if(webStr!=''){
+				webStr = webStr.slice(0,-1);
+			}
+			$('#web_str').val(webStr);
+		})
+	});
+</script>
+{/block}

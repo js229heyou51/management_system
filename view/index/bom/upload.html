@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head" /}
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header" /}
+			<!-- main -->
+			<div class="bom">
+				<div class="bom-banner">
+					<img src="/static/index/images/bom_01.jpg">
+				</div>
+				<div class="container">
+					<div class="bom-con">
+						<div class="bom-cnav">
+							<div class="bom-ctit"><a href="/bom/">多型号配单</a></div>
+							<div class="bom-csc active"><a href="/bom/upload/">上传BOM文件</a></div>
+						</div>
+						<div class="bom-middle" style="justify-content: center;">
+							<div class="bomleadtwo_tit" style="width:100%">
+								<div class="layui-upload-drag" id="bomUpload" style="width:100%;height: 300px;background-color: #fafafa;border-radius: 5px;">
+									<br>
+									<br>
+									<br>
+									<br>
+									<i class="layui-icon"></i>
+									<p>点击上传，或将文件拖拽到此处</p>
+								</div>
+								<div style="width: 100%;margin: auto;">
+									<br>
+									<p>备注：</p>
+									<p>1.请下载“<a href="/storage/upxls/BOM.xls" class="color-blue" rel="nofollow">BOM单模板</a>”</p>
+									<p>2.复制并粘贴BOM数据到模板中，并将文件保存为xls,xlsx或.csv格式；</p>
+									<p>3.点击“选择文件”上传保存的文件，文件大小在2M以下</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer" /}
+		</div>
+	</body>
+</html>
+<script>
+	layui.use(['layer','upload'],function(){
+		$ = layui.jquery;
+		upload = layui.upload;
+		upload.render({
+			elem: '#bomUpload'
+			,url: '/Bom/uploadFile' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+			,accept: 'file' //普通文件
+			,done: function(res){
+				if(res.code == 200){
+					layer.msg(res.msg,{icon:1});
+					// 创建一个新的form元素
+					var cform = $('<form action="/bom/search/" method="post"></form>');
+
+					// 将input添加到form中
+					// 创建一个新的隐藏输入字段并添加到表单中
+					var input = $('<input>').attr({
+						type: 'hidden',
+						name: 'file',
+						value: res.file
+					})
+					cform.append(input);
+					$('body').append(cform);
+					setTimeout(function(){cform.submit();},500);
+				}else{
+					layer.msg(res.msg,{icon:2});
+				}
+			}
+		});
+	})
+</script>

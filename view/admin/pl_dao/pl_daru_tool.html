@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>数据批量导入</title>
+		{include file="public/head" /}
+	</head>
+	
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<a href="javascript:;" onclick="tab(this,'layui-info')"><span class="this">批量导入</span></a>
+			<a href="javascript:;" onclick="setup()"><span>导入设置</span></a>
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div id="layui-info">
+				<form class="layui-form">
+					{if(!empty($plConf.importConf) && $plConf.importConf.need_lm == true)}
+					<div class="layui-form-item">
+						<label class="layui-form-label ">分类</label>
+						<div class="layui-inline layui-col-xs3">
+							<select name="lm" id="lm">
+								<option value=''>请选择分类</option>
+								{:categoryTree($category)}
+							</select>
+						</div>
+					</div>
+					{/if}
+					<div class="layui-form-item">
+						<label class="layui-form-label">文件上传</label>
+						<div class="layui-input-inline">
+							<button type="button" class="layui-btn" id="fil_sl">上传文件</button>
+						</div>
+						<div class="layui-form-mid layui-word-aux"></div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">文件链接</label>
+						<div class="layui-input-block" id="add_fil_sl">
+							<div class="upload_file_li"><input type="text" class="layui-input" name="fil_sl" value="" ><input type="hidden" name="fil_sl" value=""/></div>
+						</div>
+					</div>
+					<script type="text/javascript">
+						document.addEventListener('DOMContentLoaded', function() {  
+							imgUpload('fil_sl','{$Request.root}/{$route}/upload_img');
+						});
+					</script>
+				</form>
+				<div class="layui-form-item" style="margin-top:10px;">
+					<div class="layui-input-block ">
+						<button type="button" class="layui-btn" onclick="exportExcel()">导入</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	layui.use(['layer','form', 'laydate'],function(){
+		var form = layui.form;
+		layer = layui.layer;
+		$ = layui.jquery;
+		laydate = layui.laydate;
+		laydate.render({
+			elem: '#s_wtime',
+			type: 'datetime'
+		});
+		laydate.render({
+			elem: '#e_wtime',
+			type: 'datetime'
+		});
+	});
+	function exportExcel(){
+		$.post("{$Request.root}/{$route}/pl_daru_tool",$('form').serialize(),function(res){
+			if(res.code==200){
+				layer.msg(res.msg,{'icon':1});
+				setTimeout(function(){window.location.reload();},1000);
+			}else{
+				layer.msg(res.msg,{'icon':2});
+			}
+		},'json');
+	}
+	function deleteFile(filepath){
+		$.post("{$Request.root}/{$route}/deleteFile",{'filepath':filepath},function(res){
+			layer.msg(res.msg,{'icon':1});
+		},'json');
+	}
+	function setup(){
+		layer.full(layer.open({
+			type: 2,
+			title: '导入设置',
+			shade: 0.3,
+			area: ['100%','100%'],
+			fixed: false, //不固定
+			maxmin: true,
+			content: "{$Request.root}/{$route}/importSettings"
+		}));
+	}
+</script>
+{include file="public/footer" /}

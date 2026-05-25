@@ -1,0 +1,33 @@
+{extend name="common/co/default" /}
+
+{block name="search"}
+	{include file="common/co/search" /}
+{/block}
+
+{block name="toolbar"}
+	{include file="common/co/toolbar" /}
+{/block}
+
+{block name="state"}
+	{include file="common/co/state" /}
+{/block}
+
+{block name="operate"}
+	{include file="common/co/operate" /}
+{/block}
+
+{block name="script"}
+	<script type="text/javascript">
+		window.extraOptions = {
+			colsInit : [{field: 'num', title: '今日发布', width: 120, align: 'center',templet:'',templet: function(d){
+				var html = '<span>';
+				html += d.record_count ?? 0;
+				html += ' / ';
+				html += d.release;
+				html += '</span>';
+				return html;
+			}}],
+		}
+	</script>
+	{include file="common/co/script" /}
+{/block}

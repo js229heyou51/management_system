@@ -1,0 +1,15 @@
+<div class="layui-step" id="layui-info">
+	<form class="layui-form">
+		<div class="layui-form-item">
+			<label class="layui-form-label">{$langHtml.common.relatedInformation}</label>
+			<div class="layui-input-block" style="border: 1px solid #ccc;">
+				<iframe src="../pl_info/pl_info_default.html?pl_id={$find.id??''}&sy_id={$conf.sy.id??''}" frameborder="0" scrolling="auto" id="plinfo" class="pl-iframe"></iframe>
+			</div>
+		</div>
+	</form>
+	<div class="layui-input-block">
+		<button type="button" class="layui-btn layui-btn-primary layui-border" onclick="step('prev')">{$langHtml.common.prevStep}</button>
+		<button type="button" class="layui-btn layui-btn-primary layui-border" onclick="step('next')">{$langHtml.common.nextStep}</button>
+		<button type="button" class="layui-btn layui-bg-color" onclick="save()">{$langHtml.common.save}</button>
+	</div>
+</div>

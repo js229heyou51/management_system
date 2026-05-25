@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo(7,$find??'')}
+	{include file="public/head"}
+	<script src="/static/index/js/cart.js"></script>
+	<input type="hidden" name="lm" value="{$find.lm??''}" id="lm">
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header"}
+			<!-- main -->
+			<div class="ny2">
+				<div class="nydao">
+					<div class="container">
+						<a href="/">首页</a>
+						<a>></a> 
+						<a href="">商品目录</a>
+						<a>></a> 
+						<div class="nydao-con">
+							<div class="nydao-nav">
+								<a href="/product/category/{$find.id_lm??''}">{$proCate.0.profile.title_lm??''}</a>
+								<div class="nydao-box">
+									<ul class="flex">
+										{volist name="category" id="cateVal"}
+										<li {if($cateVal.id_lm == $find.id_lm)}class="cur"{/if}><a href="/product/category/{$cateVal.id_lm}">{$cateVal.title_lm}</a></li>
+										{/volist}
+									</ul>
+								</div>
+							</div>
+						</div>
+						<a>></a> 
+						<div class="nydao-con">
+							<div class="nydao-nav">
+								<a href="">{$find.profile.title_lm??''}</a>
+								<div class="nydao-box">
+									<ul class="flex">
+										{volist name="proCate" id="val"}
+										<li {if($cateVal.id_lm == $find.id_lm)}class="cur"{/if}><a href="/product/list/{$val.id_lm}">{$val.title_lm}</a></li>
+										{/volist}
+									</ul>
+								</div>
+							</div>
+						</div>
+						<a>></a> 
+						<a href="" class="cur">{$find.title??''}</a>
+					</div>
+				</div>
+				<div class="ny1-con">
+					<div class="container">
+						<div class="ny3-con">
+							<div class="ny3-top flex">
+								<div class="ny3-tleft">
+									<div class="ny3-tllb">
+										<div class="swiper-container gallery-thumbs">
+											<div class="swiper-wrapper">
+												{if(!empty($imageLists))}
+												{volist name="imageLists" id="imgVal"}
+												<div class="swiper-slide">
+													<img src="{$imgVal.img_sl??''}">
+												</div>
+												{/volist}
+												{else}
+												<div class="swiper-slide">
+													<img src="{$find.img_sl??''}">
+												</div>
+												{/if}
+											</div>
+										</div>
+										<div class="swiper-container gallery-top">
+											<div class="swiper-wrapper">
+												{if(!empty($imageLists))}
+												{volist name="imageLists" id="imgVal"}
+												<div class="swiper-slide">
+													<img src="{$imgVal.img_sl??''}">
+												</div>
+												{/volist}
+												{else}
+												<div class="swiper-slide">
+													<img src="{$find.img_sl??''}">
+												</div>
+												{/if}
+											</div>
+										</div>
+									</div>
+									<div class="ny3-tlshare">
+										<ul class="flex">
+											<li>
+												<a href=""><img src="/static/index/images/ny3_02.png"></a>
+											</li>
+											<li>
+												<a href=""><img src="/static/index/images/ny3_03.png"></a>
+											</li>
+											<li>
+												<a href=""><img src="/static/index/images/ny3_04.png"></a>
+											</li>
+										</ul>
+										<div class="ny3-far">
+											<a href="javascript:;">
+												<img src="/static/index/images/ny3_05.png"> 收藏
+											</a>
+										</div>
+									</div>
+								</div>
+								<div class="ny3-tmid">
+									<div class="ny3-tmtit">
+										<h1>{$find.title??''}</h1>
+									</div>
+									<div class="ny3-tmpirce">
+										<table cellpadding="0" cellspacing="0" border="0">
+											<tr>
+												<th>价格梯度</th>
+												<th>单价（含税）</th>
+											</tr>
+											{volist name="priceLists" id="priceVal"}
+											<tr>
+												<td>{$priceVal.num}+：</td>
+												<td><p>￥<span>{$priceVal.price}</span></p></td>
+											</tr>
+											{/volist}
+											<tr>
+												<td>2000+：</td>
+												<td><p><a href="javascript:;" class="js-xq-bj">报价</a></p></td>
+											</tr>
+										</table>
+									</div>
+									<form id="cartForm">
+										<div class="ny3-tmnum">
+											<div class="ny3-tmnbox">
+												<p>购买数量：</p>
+												<div class="ny3-tmninp">
+													<button type="button" class="num-less" onclick="less(this)">-</button>
+													<input type="text" name="num" id="num" value="1">
+													<button type="button" class="num-plus" onclick="plus(this)">+</button>
+												</div>
+												<p> <small>x</small> <span>￥<font id="priceText">1.8864</font></span> <small>=</small> <span>￥<font id="totalText">1.8864</font></span></p>
+											</div>
+										</div>
+										<div class="ny3-tmnum">
+											<div class="ny3-tmnbox">
+												<p>按整包装：</p>
+												<div class="ny3-tmninp">
+													<button type="button" class="num-less" onclick="packageLess(this)">-</button>
+													<input type="text" name="packagenum" value="0">
+													<button type="button" class="num-plus" onclick="packagePlus(this)">+</button>
+
+												</div>
+												<p><small>托盘（一托盘有{$find.package??0}片）</small></p>
+											</div>
+										</div>
+										<div class="ny3-tmbuy">
+											<input type="hidden" name="stock" id="stock" value="{$find.stock}">
+											<input type="hidden" name="pid" id="pid" value="{$find.id}">
+											<input type="hidden" name="price" id="price" value="{$priceLists[0]['price']??''}">
+											<input type="hidden" name="price_lists" id="priceLists" value="{$priceJSON}">
+											<input type="hidden" name="package" id="package" value="{$find.package??0}">
+											<a href="javascript:;" data-id="{$find.id}"  onclick="buyNow(this)" class="ny3-buynew">立即购买</a>
+											<a href="javascript:;" class="ny3-addcart js-addcart" onclick="addCart()"><img src="/static/index/images/ny3_06.png">加入购物车</a>
+										</div>
+									</form>
+								</div>
+								<div class="ny3-tright">
+									<div class="ny3-trimg">
+										<img src="{$find.img_sl}">
+									</div>
+									<div class="ny3-trcan">
+										{volist name="paramLists" id="paramVal"}
+										<p>{$paramVal.profile.title_lm??''}{$paramVal.profile.title_lm?':':''}{$paramVal.title??''}</p>
+										{/volist}
+									</div>
+								</div>
+							</div>
+							<div class="ny3-center">
+								<div class="ny3-cnav">
+									<div class="ny3-ctit">技术参数</div>
+									{if($find.fil_sl)}
+									<a href="{$find.fil_sl??''}" target="_blank" class="ny3-csc">数据手册</a>
+									{/if}
+								</div>
+								<div class="ny3-clist">
+									<ul class="flex">
+										{volist name="paramLists" id="paramVal"}
+										{if (!empty($paramVal.profile.title_lm))}
+										<li>
+											<div class="ny3-cl">{$paramVal.profile.title_lm??''}</div>
+											<div class="ny3-cr">{$paramVal.title??''}</div>
+										</li>
+										{/if}
+										{/volist}
+									</ul>
+								</div>
+							</div>
+							<div class="ny3-bottom">
+								<div class="ny3-btit flex flexbetween flexalign">
+									<h3>相似商品</h3>
+									<div class="part2-button">
+										<div class="swiper-button-next"></div>
+										<div class="swiper-button-prev"></div>
+									</div>
+								</div>
+								<div class="ny3-blist">
+									<div class="swiper-container">
+										<div class="swiper-wrapper">
+											{volist name="product" id="proValue"}
+											<div class="swiper-slide">
+												<a href="/product/show/{$proValue.id}">
+													<div class="img">
+														<img src="{$proValue.gallery_list.0.path??''}">
+													</div>
+													<div class="text">
+														<h4>{$proValue.title}</h4>
+														<p>price:<span>¥{$proValue.price}</span></p>
+													</div>
+												</a>
+											</div>
+											{/volist}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ny2-tcbjbg"></div>
+			<div class="ny2-tcbj">
+				<div class="ny2-tcbj-tit">
+					<h3>申请报价</h3>
+					<div class="ny2-tcbj-close">
+						<img src="/static/index/images/ny2_close.png">
+					</div>
+				</div>
+				<div class="ny2-tcbj-con">
+					<div class="ny2-tcbj-ctop flex">
+						<div class="ny2-tcbj-ctbox">
+							<label><span>*</span> 期望价格：</label>
+							<div class="ny2-tcbj-ctinp">
+								<span>￥</span><input type="text" name="price">
+							</div> 
+							<p>&nbsp;/ PCS</p>
+						</div>
+						<div class="ny2-tcbj-ctbox">
+							<label><span>*</span> 需求数量：</label>
+							<div class="ny2-tcbj-ctinp">
+								<input type="text" name="price">
+							</div>
+							<div class="ny2-tcbj-ctsel">
+								<select>
+									<option>个</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="ny2-tcbj-btm">
+						<div class="ny2-tcbj-ctbox ny2-tcbj-cbbox">
+							<label><span>*</span> 行业：</label>
+							<div class="ny2-tcbj-cbsel">
+								<select>
+									<option>请选择行业</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="ny2-tcbj-btn">
+						<button>提交报价</button>
+					</div>
+					<div class="ny2-tcbj-text">
+						<h4>说明:</h4>
+						<p>1.期望价格提交后，商品将自动加入购物车，报价过程中该商品不能提交订单；</p>
+						<p>2.商品将于2分钟内，根据您的报价更新合适的价格，晚上8点至次日早上8点不更新报价；</p>
+						<p>3.商城更新后的报价，2小时内有效，请及时提交订单！</p>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer"}
+		</div>
+	</body>
+</html>
+<script type="text/javascript " src="/static/index/js/swiper.min.js"></script>
+<script type="text/javascript">
+	var galleryThumbs = new Swiper('.ny3-tllb .gallery-thumbs', {
+		spaceBetween: 14,
+		slidesPerView: 4,
+		freeMode: true,
+		// loop: true,
+		// autoplay: true,
+		direction : 'vertical',
+		watchSlidesVisibility: true,
+		watchSlidesProgress: true,
+		
+	});
+	var galleryTop = new Swiper('.ny3-tllb .gallery-top', {
+		// spaceBetween: 10,
+		// // autoplay: true,
+		thumbs: {
+			swiper: galleryThumbs
+		},
+		// loop: true,
+		navigation: {
+			nextEl: '.ny3-tllb .swiper-button-next',
+			prevEl: '.ny3-tllb .swiper-button-prev',
+		},
+
+	});
+	var swiper = new Swiper('.ny3-bottom .swiper-container', {
+		slidesPerView: 5,
+		spaceBetween: 20,
+		loop: true,
+		// autoplay: true,
+		// pagination: {
+		// 	el: '.ny3-bottom .swiper-pagination',
+		// 	clickable: true,
+		// },
+		navigation: {
+			nextEl: '.ny3-bottom .swiper-button-next',
+			prevEl: '.ny3-bottom .swiper-button-prev',
+		},
+
+	});
+</script>

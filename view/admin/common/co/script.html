@@ -1,0 +1,42 @@
+<script type="text/javascript">
+	layui.use(function(){
+		layer = layui.layer;
+		var table = layui.table;
+
+		const isState = window.extraOptions?.isState ?? ('{$conf.co.ding??''}' || '{$conf.co.tuijian??''}' || '{$conf.co.hot??''}' || '{$conf.co.pass??''}' ? true : false);
+		const stateWidth = window.extraOptions?.stateWidth ?? '{:getStateWidth($conf??[])}';
+		const data = window.extraOptions?.data ?? {:json_encode($lists)};
+		const langText = window.extraOptions?.langText ?? {:json_encode($langHtml.common)};
+		const extraOptions = window.extraOptions ?? {};
+
+		var initOptions = {
+			url: '{$Request.root}/{$route}/',
+			table: table,
+			elem: 'dataTable',
+			data: data,
+			langText: langText,
+			colsType: true,
+			recycleType:false,
+			isState: isState,
+			stateWidth: stateWidth,
+			...extraOptions
+		}
+
+		tableInit(initOptions);
+
+		allState(initOptions.url + 'default','lm');
+		allState(initOptions.url + 'default','zt_val');
+		if('{$conf.co.ding??""}'){
+			state(initOptions.url + 'make','ding','id');
+		}
+		if('{$conf.co.tuijian??""}'){
+			state(initOptions.url + 'make','tuijian','id');
+		}
+		if('{$conf.co.hot??""}'){
+			state(initOptions.url + 'make','hot','id');
+		}
+		if('{$conf.co.pass??""}'){
+			state(initOptions.url + 'make','pass','id');
+		}
+	});
+</script>

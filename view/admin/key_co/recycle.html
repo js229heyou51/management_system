@@ -1,0 +1,47 @@
+{extend name="common/co/recycle/recycle" /}
+
+{block name="search"}
+{include file="common/co/recycle/search" /}
+{/block}
+
+{block name="toolbar"}
+<script type="text/html" id="toolbarDemo">
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="recovery" >
+		<i class="layui-icon layui-icon-refresh"></i> {$langHtml.common.restoreData} 
+	</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="remove"  >
+		<i class="layui-icon layui-icon-delete"></i> {$langHtml.common.completelyDelete} 
+	</button>
+</script>
+{/block}
+
+{block name="state"}
+<script type="text/html" id="state">
+	<input type="checkbox" name="pass" value="{{d.id}}" lay-skin="switch" lay-text="{$langHtml.common.shield}|{$langHtml.common.unshielded}" lay-filter="pass" {{# if(d.pass==0){ }} checked {{# } }}>
+</script>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+	layui.use(function(){
+		var table = layui.table; 
+		var langText = {:json_encode($langHtml.common)};
+		
+		var colsInit = [{field: 'title', title: langText.title}];
+		var initData = {
+			url: '{$Request.root}/{$route}/',
+			table: table,
+			elem: 'dataTable',
+			data: {:json_encode($lists)},
+			langText: langText,
+			colsInit : colsInit,
+			colsType: true,
+			isTitle: false,
+			recycleType: true,
+			height: 'full-113',
+			pageInit: {limit: 10}
+		}
+		tableInit(initData);
+	});
+</script>
+{/block}

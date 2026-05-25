@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{:showseo()}
+	{include file="public/head" /}
+</head>
+	<body>
+		<div class="wrap">
+			{include file="public/header" /}
+			<!-- main -->
+			<div class="bom">
+				<div class="bom-banner">
+					<img src="/static/index/images/bom_01.jpg">
+				</div>
+				<div class="container">
+					<div class="bom-con">
+						<div class="bom-cnav">
+							<div class="bom-ctit active"><a href="/bom/">多型号配单</a></div>
+							<div class="bom-csc"><a href="/bom/upload/">上传BOM文件</a></div>
+						</div>
+						<div class="bom-middle">
+							<form action="/bom/search/" method="post" id="bform">
+								<div class="bom-left">
+									<div class="bom-textarea">
+										<textarea placeholder="可输入BOM表中的型号和数量(参考右侧格式，支持多行输入)" name="content"></textarea>
+										<div class="bom-btn">
+											<button type="button" onclick="mate()">开始匹配</button>
+										</div>
+									</div>
+								</div>
+							</form>
+							<div class="bom-right">
+								<div class="bom-text">
+									<h3>说明：</h3>
+									<p>1.可从excel,txt文件复制需匹配的型号及数量；</p>
+									<p>2.粘贴到输入框中，然后点击“开始匹配”</p>
+								</div>
+								<div class="bom-text">
+									<h3>示例</h3>
+									<table border="0" cellspacing="0" cellpadding="0">
+										<tr>
+											<td width="60%">型号/规格</td>
+											<td width="40%">数量</td>
+										</tr>
+										<tr>
+											<td>STM32F030K6T6</td>
+											<td>200</td>
+										</tr>
+										<tr>
+											<td>STM32F030K6T6</td>
+											<td>200</td>
+										</tr>
+										<tr>
+											<td>STM32F030K6T6</td>
+											<td>200</td>
+										</tr>
+										<tr>
+											<td>STM32F030K6T6</td>
+											<td>200</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- main -->
+			{include file="public/footer" /}
+		</div>
+	</body>
+</html>
+<script>
+	layui.use(['layer'],function(){
+		$ = layui.jquery;
+
+		mate = function(){
+			var textarea = $('textarea[name=content]').val();
+			if(textarea == ''){
+				layer.msg('输入框不能为空',{icon:2});
+				return false;
+			}
+			var data = $('#bform').serialize();
+			$('#bform').submit();
+		}
+	})
+</script>

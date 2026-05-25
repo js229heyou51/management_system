@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<title>{$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+		<link rel="stylesheet" type="text/css" href="/static/admin/css/login.css">
+	</head>
+	<body style="background-color: #282626;">
+		<div style="position: fixed;height: 100%;bottom: 0;top: 0;left: 0;width:  100%;">
+			<div class="container" style="width:100%;height:100%">
+				<div id="particles-js"></div>
+			</div>
+			<div class="layadmin-user-login layadmin-user-display-show signinpanel" id="LAY-user-login" style="">
+				<div class="layadmin-user-login-main">
+					<div class="layadmin-user-login-box layadmin-user-login-header">
+						<h2 style="color:#fff">{$langHtml.common.systemTitle}</h2>
+					</div>
+					<div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+						<form class="layui-form login-form">
+							<div class="layui-form-item">
+								<label class="layadmin-user-login-icon layui-icon layui-icon-username" for="username"></label>
+								<input type="text" lay-affix="clear" id="username" name="username" placeholder="{$langHtml.common.email}" class="layui-input" value="{:isset($username) ? $username : 'heyou'}">
+							</div>
+							<div class="layui-form-item">
+								<label class="layadmin-user-login-icon layui-icon layui-icon-password" for="password"></label>
+								<input type="password" lay-affix="clear" name="password" class="layui-input" placeholder="{$langHtml.common.password}" class="layui-input" value="{:isset($password) ? $password : 'heyou51+'}">
+							</div>
+							<div class="layui-form-item">
+								<div class="layui-row">
+									<div class="layui-col-xs7">
+										<label class="layadmin-user-login-icon layui-icon layui-icon-vercode" for="code"></label>
+										<input type="text" name="code" maxlength="4" placeholder="{$langHtml.common.VerificationCode}" class="layui-input" autocomplete="true">
+									</div>
+									<div class="layui-col-xs5">
+										<div style="margin-left:10px;">
+											<img src="{:captcha_src()}" id="img" class="layadmin-user-login-codeimg" onclick="reloadImg()">
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="layui-form-item" style="margin-bottom: 20px;">
+								<input type="checkbox" name="remember" {:isset($remember) ? 'checked' : ''} lay-skin="primary" title="{$langHtml.common.keepLogOn}">
+							</div>
+						</form>
+						<div class="layui-form-item">
+							<button class="layui-btn layui-btn-fluid layui-bg-color" onclick="login()">{$langHtml.common.logOn}</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script src="/static/admin/jqbg/js/particles.js"></script>
+<script src="/static/admin/jqbg/js/app.js"></script>
+<script type="text/javascript">
+	layui.use(['layer','form'],function(){
+		var form = layui.form;
+		layer = layui.layer;
+		$ = layui.jquery;
+		// 用户名控件获取焦点
+		$('#username').focus();
+		$('input').keydown(function(e){
+			if(e.keyCode == 13){
+				login()
+			}
+		})
+	});
+	function reloadImg(){
+		$('#img').attr('src','{:captcha_src()}?' + Math.random());
+	}
+	function login(){
+		var data = $('.login-form').serialize();
+		// console.log(data);
+		$.post('{$Request.root}/login/login',data,function(res){
+			if(res.code == 200){
+				setTimeout(function(){
+					window.location.href = '{$Request.root}/index';
+				},100);
+			}else{
+				layer.msg(res.msg,{'icon':2});
+				reloadImg();
+				return false;
+			}
+		},'json');
+	}
+</script>

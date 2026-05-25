@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.config} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<a href="javascript:;" onclick="tab(this,'layui-setup')"><span class="this">{$langHtml.common.system}{$langHtml.common.settings}</span></a>
+			<a href="javascript:;" onclick="tab(this,'layui-information')"><span>{$langHtml.common.information}{$langHtml.common.settings}</span></a>
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div id="layui-setup">
+				<form class="layui-form">
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.systemID}</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="sy[id]" id="id" placeholder="" value="{$conf.sy.id??''}">
+						</div>
+						<div class="layui-form-mid layui-word-aux">{$langHtml.common.systemIDTip}</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.systemName}</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="sy[name]" id="name" placeholder="" value="{$conf.sy.name??''}">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.systemPre}</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="sy[pre]" id="pre" placeholder="" value="{$conf.sy.pre??''}">
+						</div>
+						<div class="layui-form-mid layui-word-aux">{$langHtml.common.systemPreTip}</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.informationTableName}</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="sy[table_co]" id="table_co" placeholder="" value="{$conf.sy.table_co??''}">
+						</div>
+					</div>
+				</form>
+				<div class="layui-form-item">
+					<div class="layui-input-block layui-input-block-large">
+						<button type="button" class="layui-btn layui-bg-color" onclick="save('{$Request.root}/{$route}/setconfig',1)">{$langHtml.common.save}</button>
+					</div>
+				</div>
+			</div>
+			<div class="layui-box" id="layui-information" style="display: none;">
+				<form class="layui-form">
+					<div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.title}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[title]" value="true" {if (isset($conf.co.title))}{:$conf.co.title == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="co[title]" value="false" {if (isset($conf.co.title))}{:$conf.co.title == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+						</div>
+					</div><div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.num}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[num]" value="true" {if (isset($conf.co.num))}{:$conf.co.num == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="co[num]" value="false" {if (isset($conf.co.num))}{:$conf.co.num == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+						</div>
+					</div><div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.name}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[name]" value="true" {if (isset($conf.co.name))}{:$conf.co.name == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="co[name]" value="false" {if (isset($conf.co.name))}{:$conf.co.name == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+						</div>
+					</div><div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.sex}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[sex]" value="true" {if (isset($conf.co.sex))}{:$conf.co.sex == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="co[sex]" value="false" {if (isset($conf.co.sex))}{:$conf.co.sex == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+						</div>
+					</div><div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.phone}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[phone]" value="true" {if (isset($conf.co.phone))}{:$conf.co.phone == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="co[phone]" value="false" {if (isset($conf.co.phone))}{:$conf.co.phone == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+						</div>
+					</div><div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.fax}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[fax]" value="true" {if (isset($conf.co.fax))}{:$conf.co.fax == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="co[fax]" value="false" {if (isset($conf.co.fax))}{:$conf.co.fax == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+						</div>
+					</div><div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.email}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[email]" value="true" {if (isset($conf.co.email))}{:$conf.co.email == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="co[email]" value="false" {if (isset($conf.co.email))}{:$conf.co.email == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+						</div>
+					</div><div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.qq}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[qq]" value="true" {if (isset($conf.co.qq))}{:$conf.co.qq == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="co[qq]" value="false" {if (isset($conf.co.qq))}{:$conf.co.qq == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+						</div>
+					</div><div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.wechat}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[wx]" value="true" {if (isset($conf.co.wx))}{:$conf.co.wx == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="co[wx]" value="false" {if (isset($conf.co.wx))}{:$conf.co.wx == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+						</div>
+					</div><div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.company}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[compname]" value="true" {if (isset($conf.co.compname))}{:$conf.co.compname == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="co[compname]" value="false" {if (isset($conf.co.compname))}{:$conf.co.compname == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+						</div>
+					</div><div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.address}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[address]" value="true" {if (isset($conf.co.address))}{:$conf.co.address == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="co[address]" value="false" {if (isset($conf.co.address))}{:$conf.co.address == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+						</div>
+					</div><div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.post}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<input type="radio" name="co[post]" value="true" {if (isset($conf.co.post))}{:$conf.co.post == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="co[post]" value="false" {if (isset($conf.co.post))}{:$conf.co.post == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+						</div>
+					</div><div class="layui-form-item">
+						<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.notes}</label>
+						<div class="layui-input-block layui-input-block-large">
+							<div>
+								<input type="radio" lay-filter="info" name="co[info]" value="true" {if (isset($conf.co.info))}{:$conf.co.info == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+								<input type="radio" lay-filter="info" name="co[info]" value="false" {if (isset($conf.co.info))}{:$conf.co.info == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="layui-form-item">
+					<div class="layui-input-block layui-input-block-large">
+						<button type="button" class="layui-btn layui-bg-color" onclick="save('{$Request.root}/{$route}/setconfig',1)">{$langHtml.common.save}</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

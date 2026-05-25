@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.title}</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<!-- <span>本系统设置</span> -->
+			<div></div>
+		</div>
+		<form class="layui-form">
+			<div class="layui-form-item">
+				<label class="layui-form-label layui-form-label-large">{$langHtml.common.webLogo}</label>
+				<div class="layui-input-block layui-input-block-large">
+					<input type="radio" name="logo" value="true" {if(isset($list.logo))}{:$list.logo == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+					<input type="radio" name="logo" value="false" {if(isset($list.logo))}{:$list.logo == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label layui-form-label-large">{$langHtml.common.webIcon}</label>
+				<div class="layui-input-block layui-input-block-large">
+					<input type="radio" name="icon" value="true" {if(isset($list.icon))}{:$list.icon == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+					<input type="radio" name="icon" value="false" {if(isset($list.icon))}{:$list.icon == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label layui-form-label-large">{$langHtml.common.webHeadCode}</label>
+				<div class="layui-input-block layui-input-block-large">
+					<input type="radio" name="ym_hcode" value="true" {if(isset($list.ym_hcode))}{:$list.ym_hcode == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+					<input type="radio" name="ym_hcode" value="false" {if(isset($list.ym_hcode))}{:$list.ym_hcode == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label layui-form-label-large">{$langHtml.common.webBot}</label>
+				<div class="layui-input-block layui-input-block-large">
+					<input type="radio" name="ym_bot" value="true" {if(isset($list.ym_bot))}{:$list.ym_bot == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+					<input type="radio" name="ym_bot" value="false" {if(isset($list.ym_bot))}{:$list.ym_bot == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label layui-form-label-large">{$langHtml.common.webBodyCode}</label>
+				<div class="layui-input-block layui-input-block-large">
+					<input type="radio" name="ym_bcode" value="true" {if(isset($list.ym_bcode))}{:$list.ym_bcode == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+					<input type="radio" name="ym_bcode" value="false" {if(isset($list.ym_bcode))}{:$list.ym_bcode == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label layui-form-label-large">{$langHtml.common.webMap}</label>
+				<div class="layui-input-block layui-input-block-large">
+					<input type="radio" name="map" value="true" {if(isset($list.map))}{:$list.map == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+					<input type="radio" name="map" value="false" {if(isset($list.map))}{:$list.map == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label layui-form-label-large">{$langHtml.common.webEmail}</label>
+				<div class="layui-input-block layui-input-block-large">
+					<input type="radio" name="email" value="true" {if(isset($list.email))}{:$list.email == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+					<input type="radio" name="email" value="false" {if(isset($list.email))}{:$list.email == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label layui-form-label-large">{$langHtml.common.webInBox}</label>
+				<div class="layui-input-block layui-input-block-large">
+					<input type="radio" name="r_email" value="true" {if(isset($list.r_email))}{:$list.r_email == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+					<input type="radio" name="r_email" value="false" {if(isset($list.r_email))}{:$list.r_email == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+				</div>
+			</div>
+		</form>
+		<div class="layui-form-item">
+			<div class="layui-input-block layui-input-block-large">
+				<button type="button" class="layui-btn layui-bg-color" onclick="save('{$Request.root}/{$route}/setconfig',1)">{$langHtml.common.save}</button>
+			</div>
+		</div>
+	</body>
+</html>
+{include file="public/footer" /}

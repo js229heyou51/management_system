@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$langHtml.common.add} {$langHtml.common.limit} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	
+	<body style="padding:10px; box-sizing: border-box;">
+		<form class="layui-form">
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.group}</label>
+				<div class="layui-input-block">
+					<select name="fid" id="fid" lay-filter="fid">
+						{if !empty($nav)}
+							{foreach $nav as $nv}
+								<option value="{$nv.id}">{$nv.title}</option>
+							{/foreach}
+						{/if}
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<span>
+					<label class="layui-form-label">{$langHtml.common.limitName}</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" name="title" placeholder="{$langHtml.common.enter}{$langHtml.common.limitName}" value="">
+					</div>
+				</span>
+			</div>
+			<div class="layui-form-item">
+				<span>
+					<label class="layui-form-label">{$langHtml.common.limitValue}</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" name="title_val" placeholder="{$langHtml.common.enter}{$langHtml.common.limitValue}" value="">
+					</div>
+					<div class="layui-form-mid layui-word-aux">{$langHtml.common.limitValueTip}</div>
+				</span>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.limitState}</label>
+				<div class="layui-input-block">
+					<input type="radio" name="pass" checked value="1" title="{$langHtml.common.use}">
+					<input type="radio" name="pass" value="0" title="{$langHtml.common.stop}">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$langHtml.common.order}</label>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" name="px" placeholder="{$langHtml.common.order}" value="1" >
+				</div>
+			</div>
+		</form>
+		<div class="layui-form-item" style="margin-top:10px;">
+			<div class="layui-input-block">
+				<button type="button" class="layui-btn layui-bg-color" onclick="save('{$Request.root}/{$route}/limitAdd')">{$langHtml.common.save}</button>
+			</div>
+		</div>
+	</body>
+</html>
+{include file="public/footer" /}

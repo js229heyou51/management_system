@@ -1,0 +1,77 @@
+<div class="layui-box" id="layui-category" style="display: none;">
+	<form class="layui-form">
+		<div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.seo}</label>
+			<div class="layui-input-block layui-input-block-large">
+				<input type="radio" name="lm[seo_lm]" value="true" {if (isset($conf.lm.seo_lm))}{:$conf.lm.seo_lm == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+				<input type="radio" name="lm[seo_lm]" value="false" {if (isset($conf.lm.seo_lm))}{:$conf.lm.seo_lm == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+			</div>
+		</div><div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.add}{$langHtml.common.category}</label>
+			<div class="layui-input-block layui-input-block-large">
+				<input type="radio" name="lm[add_lm]" value="true" {if (isset($conf.lm.add_lm))}{:$conf.lm.add_lm == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+				<input type="radio" name="lm[add_lm]" value="false" {if (isset($conf.lm.add_lm))}{:$conf.lm.add_lm == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+			</div>
+		</div><div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.apname}</label>
+			<div class="layui-input-block layui-input-block-large">
+				<input type="radio" name="lm[apname_lm]" value="true" {if (isset($conf.lm.apname_lm))}{:$conf.lm.apname_lm == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+				<input type="radio" name="lm[apname_lm]" value="false" {if (isset($conf.lm.apname_lm))}{:$conf.lm.apname_lm == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+			</div>
+		</div><div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.link}</label>
+			<div class="layui-input-block layui-input-block-large">
+				<input type="radio" name="lm[url_lm]" value="true" {if (isset($conf.lm.url_lm))}{:$conf.lm.url_lm == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+				<input type="radio" name="lm[url_lm]" value="false" {if (isset($conf.lm.url_lm))}{:$conf.lm.url_lm == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+			</div>
+		</div><div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.desc}</label>
+			<div class="layui-input-block layui-input-block-large">
+				<input type="radio" name="lm[f_body_lm]" value="true" {if (isset($conf.lm.f_body_lm))}{:$conf.lm.f_body_lm == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+				<input type="radio" name="lm[f_body_lm]" value="false" {if (isset($conf.lm.f_body_lm))}{:$conf.lm.f_body_lm == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+			</div>
+		</div><div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.det}</label>
+			<div class="layui-input-block layui-input-block-large">
+				<input type="radio" name="lm[z_body_lm]" value="true" {if (isset($conf.lm.z_body_lm))}{:$conf.lm.z_body_lm == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+				<input type="radio" name="lm[z_body_lm]" value="false" {if (isset($conf.lm.z_body_lm))}{:$conf.lm.z_body_lm == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+			</div>
+		</div><div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.picture}</label>
+			<div class="layui-input-block layui-input-block-large">
+				<input type="radio" name="lm[img_sl_lm]" value="true" {if (isset($conf.lm.img_sl_lm))}{:$conf.lm.img_sl_lm == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+				<input type="radio" name="lm[img_sl_lm]" value="false" {if (isset($conf.lm.img_sl_lm))}{:$conf.lm.img_sl_lm == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+			</div>
+		</div><div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.attribute}</label>
+			<div class="layui-input-block layui-input-block-large">
+				<input type="radio" name="lm[con_att_lm]" value="true" {if (isset($conf.lm.con_att_lm))}{:$conf.lm.con_att_lm == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+				<input type="radio" name="lm[con_att_lm]" value="false" {if (isset($conf.lm.con_att_lm))}{:$conf.lm.con_att_lm == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+			</div>
+		</div><div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.recommended}</label>
+			<div class="layui-input-block layui-input-block-large">
+				<input type="radio" name="lm[tuijian_lm]" value="true" {if (isset($conf.lm.tuijian_lm))}{:$conf.lm.tuijian_lm == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+				<input type="radio" name="lm[tuijian_lm]" value="false" {if (isset($conf.lm.tuijian_lm))}{:$conf.lm.tuijian_lm == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+			</div>
+		</div><div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.popular}</label>
+			<div class="layui-input-block layui-input-block-large">
+				<input type="radio" name="lm[hot_lm]" value="true" {if (isset($conf.lm.hot_lm))}{:$conf.lm.hot_lm == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+				<input type="radio" name="lm[hot_lm]" value="false" {if (isset($conf.lm.hot_lm))}{:$conf.lm.hot_lm == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+			</div>
+		</div><div class="layui-form-item">
+			<label class="layui-form-label layui-form-label-large">{$langHtml.common.use} {$langHtml.common.shield}</label>
+			<div class="layui-input-block layui-input-block-large">
+				<input type="radio" name="lm[pass_lm]" value="true" {if (isset($conf.lm.pass_lm))}{:$conf.lm.pass_lm == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+				<input type="radio" name="lm[pass_lm]" value="false" {if (isset($conf.lm.pass_lm))}{:$conf.lm.pass_lm == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+			</div>
+		</div>
+	</form>
+	
+	<div class="layui-form-item">
+		<div class="layui-input-block layui-input-block-large">
+			<button type="button" class="layui-btn layui-bg-color" onclick="save('{$Request.root}/{$route}/setconfig',1)">{$langHtml.common.save}</button>
+		</div>
+	</div>
+</div>

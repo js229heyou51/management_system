@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<title>联系方式模块 | 突出电话</title>
+	<!-- Font Awesome 6 (免费图标库) -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			background: #f5f7fc;   /* 柔和背景衬托卡片 */
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 100vh;
+			font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+			padding: 1.5rem;
+		}
+
+		/* 主容器：最大宽度800，居中，现代化卡片 */
+		.contact-card {
+			max-width: 800px;
+			width: 100%;
+			background: #ffffff;
+			border-radius: 2rem;
+			box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.02);
+			overflow: hidden;
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		.contact-card:hover {
+			box-shadow: 0 25px 40px -14px rgba(0, 0, 0, 0.12);
+		}
+
+		/* 内边距统一，移动端舒适 */
+		.card-inner {
+			padding: 2rem 2rem 2.2rem 2rem;
+		}
+
+		/* 标题区域 */
+		.section-title {
+			margin-bottom: 1.8rem;
+			position: relative;
+			text-align: center;
+		}
+
+		.section-title h2 {
+			font-size: 1.8rem;
+			font-weight: 700;
+			letter-spacing: -0.01em;
+			background: linear-gradient(135deg, #1a2c5e 0%, #2b3f7a 100%);
+			background-clip: text;
+			-webkit-background-clip: text;
+			color: transparent;
+			margin-bottom: 0.5rem;
+		}
+
+		.title-underline {
+			height: 4px;
+			width: 56px;
+			background: #4c6aff;
+			border-radius: 4px;
+			margin: 0.5rem auto 0;
+		}
+
+		/* ----- 电话突出区域 (核心) ----- */
+		.phone-highlight {
+			background: #f8faff;
+			border-radius: 1.8rem;
+			padding: 1.8rem 1.5rem;
+			margin-bottom: 2.5rem;
+			transition: all 0.2s;
+			border: 1px solid rgba(76, 106, 255, 0.12);
+			box-shadow: 0 6px 14px rgba(76, 106, 255, 0.04);
+		}
+
+		.phone-icon-wrapper {
+			display: flex;
+			justify-content: center;
+			margin-bottom: 1rem;
+		}
+
+		.phone-number-main {
+			text-align: center;
+			margin: 0.75rem 0 1rem 0;
+		}
+
+		.phone-number-main a {
+			font-size: 2.2rem;
+			font-weight: 800;
+			letter-spacing: -0.02em;
+			color: #4c6aff;
+			text-decoration: none;
+			background: linear-gradient(115deg, #4c6aff, #6b85ff);
+			background-clip: text;
+			-webkit-background-clip: text;
+			color: #4c6aff; /* fallback */
+			transition: all 0.2s;
+			display: inline-block;
+		}
+
+		.phone-number-main a:hover {
+			transform: scale(1.02);
+			text-shadow: 0 2px 8px rgba(76, 106, 255, 0.2);
+		}
+
+		.phone-tagline {
+			text-align: center;
+			font-size: 0.9rem;
+			color: #5b6e8c;
+			margin-bottom: 1.3rem;
+			font-weight: 500;
+			letter-spacing: 0.3px;
+		}
+
+		.phone-tagline i {
+			font-size: 0.7rem;
+			color: #4c6aff;
+			margin-right: 4px;
+		}
+
+		/* 突出电话的按钮 */
+		.call-button {
+			display: flex;
+			justify-content: center;
+			margin-top: 0.6rem;
+		}
+
+		.btn-call {
+			background: #4c6aff;
+			color: white;
+			border: none;
+			padding: 0.9rem 2rem;
+			border-radius: 60px;
+			font-size: 1.05rem;
+			font-weight: 600;
+			display: inline-flex;
+			align-items: center;
+			gap: 12px;
+			cursor: pointer;
+			transition: all 0.25s ease;
+			box-shadow: 0 8px 20px -6px rgba(76, 106, 255, 0.4);
+			text-decoration: none;
+			letter-spacing: 0.3px;
+		}
+
+		.btn-call i {
+			font-size: 1.1rem;
+			transition: transform 0.2s;
+		}
+
+		.btn-call:hover {
+			background: #3a57e6;
+			transform: translateY(-2px);
+			box-shadow: 0 14px 24px -8px rgba(76, 106, 255, 0.5);
+		}
+
+		.btn-call:active {
+			transform: translateY(1px);
+		}
+		/* 响应式细节 */
+		@media (max-width: 640px) {
+			.card-inner {
+				padding: 1.6rem;
+			}
+			.phone-number-main a {
+				font-size: 1.65rem;
+			}
+			.phone-icon-bg {
+				width: 60px;
+				height: 60px;
+			}
+			.phone-icon-bg i {
+				font-size: 2.2rem;
+			}
+			.btn-call {
+				padding: 0.75rem 1.5rem;
+				font-size: 0.95rem;
+			}
+			.section-title h2 {
+				font-size: 1.5rem;
+			}
+			.info-grid {
+				gap: 1rem;
+			}
+			.contact-item {
+				gap: 0.75rem;
+			}
+		}
+
+		@media (max-width: 480px) {
+			.phone-number-main a {
+				font-size: 1.4rem;
+				word-break: break-all;
+			}
+			.btn-call {
+				width: 100%;
+				justify-content: center;
+			}
+		}
+
+		/* 让电话号码点击区域明显 */
+		.phone-number-main a:focus-visible,
+		.btn-call:focus-visible {
+			outline: 3px solid rgba(76, 106, 255, 0.5);
+			outline-offset: 2px;
+			border-radius: 40px;
+		}
+
+		/* 保持可访问性 */
+		.visually-hidden {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0,0,0,0);
+			border: 0;
+		}
+	</style>
+</head>
+<body>
+	<div class="contact-card">
+		<div class="card-inner">
+			<!-- 重点：电话突出区域 (最大程度凸显电话) -->
+			<div class="phone-highlight">
+				<div class="section-title">
+					<h2>联系方式</h2>
+					<div class="title-underline"></div>
+				</div>
+				<div class="phone-number-main">
+					<!-- 电话链接：直接可点击拨打，大号突出显示，主色调强化 -->
+					<a href="tel:400-669-6649" aria-label="拨打客服热线 400-669-6649">
+						400-669-6649
+					</a>
+				</div>
+				<div class="call-button">
+					<a href="tel:400-669-6649" class="btn-call">
+						<i class="fas fa-phone-volume"></i> 立即致电咨询
+						<i class="fas fa-arrow-right" style="font-size: 0.85rem;"></i>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

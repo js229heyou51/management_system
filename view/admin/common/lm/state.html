@@ -1,0 +1,11 @@
+<script type="text/html" id="state">
+	{if($conf.lm.tuijian_lm == true)}
+	<input type="checkbox" name="tuijian" value="{{d.id_lm}}" lay-skin="switch" lay-text="{$langHtml.common.recommend}|{$langHtml.common.recommend}" lay-filter="tuijian_lm" data-id_lm="{{d.id_lm}}" {{# if(d.tuijian==1){ }} checked {{# } }}>
+	{/if}
+	{if($conf.lm.hot_lm == true)}
+	<input type="checkbox" name="pass" value="{{d.id_lm}}" lay-skin="switch" lay-text="{$langHtml.common.hot}|{$langHtml.common.hot}" lay-filter="hot_lm" data-id_lm="{{d.id_lm}}" {{# if(d.hot==1){ }} checked {{# } }}>
+	{/if}
+	{if($conf.lm.pass_lm == true)}
+	<input type="checkbox" name="pass" value="{{d.id_lm}}" lay-skin="switch" lay-text="{$langHtml.common.shield}|{$langHtml.common.unshielded}" lay-filter="pass_lm" data-id_lm="{{d.id_lm}}" {{# if(d.pass==0){ }} checked {{# } }}>
+	{/if}
+</script>

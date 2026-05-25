@@ -1,0 +1,53 @@
+<form action="" class="layui-form" id="sform" method="get">
+	<div class="layui-inline">
+		<label>{$langHtml.common.search}</label>
+	</div>
+	{if (isset($conf.sy.need_lm) && $conf.sy.need_lm == true)}
+	<div class="layui-inline">
+		<select name="lm" id="lm" lay-filter="lm">
+			<option value="">{$langHtml.common.category}</option>
+			{if(!empty($category))}
+			{:categoryTree($category,0,'',$searchItem.lm??'')}
+			{/if}
+		</select>
+	</div>
+	{/if}
+	<div class="layui-inline">
+		<select name="zt_val" id="zt_val" lay-filter="zt_val">
+			<option value="">{$langHtml.common.allState}</option>
+			{if(isset($conf.co.ding) && $conf.co.ding == true)}
+			<option value="ding1" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'ding1'"}selected{/if}>{$langHtml.common.topUp}</option>
+			<option value="ding2" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'ding2'"}selected{/if}>{$langHtml.common.notTopUp}</option>
+			{/if}
+			{if(isset($conf.co.tuijian) && $conf.co.tuijian == true)}
+			<option value="tuijian1" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'tuijian1'"}selected{/if}>{$langHtml.common.recommended}</option>
+			<option value="tuijian2" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'tuijian2'"}selected{/if}>{$langHtml.common.notRecommended}</option>
+			{/if}
+			{if(isset($conf.co.hot) && $conf.co.hot == true)}
+			<option value="hot1" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'hot1'"}selected{/if}>{$langHtml.common.popular}</option>
+			<option value="hot2" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'hot2'"}selected{/if}}>{$langHtml.common.notPopular}</option>
+			{/if}
+			{if(isset($conf.co.pass) && $conf.co.pass == true)}
+			<option value="pass2" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'pass2'"}selected{/if}>{$langHtml.common.shield}</option>
+			<option value="pass1" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'pass1'"}selected{/if}>{$langHtml.common.unshielded}</option>
+			{/if}
+		</select>
+	</div>
+	<div class="layui-inline">
+		<input type="text" class="layui-input" lay-affix="clear" name="keyword" value="{$searchItem.keyword??''}">
+	</div>
+	<div class="layui-inline">
+		<div class="layui-inline" id="searchDate">
+			<div class="layui-input-inline" >
+				<input type="text" autocomplete="off" name="startDate" id="start-date" class="layui-input" placeholder="开始日期" value="{$searchItem.startDate ?? ''}">
+			</div>
+			<div class="layui-form-mid">-</div>
+			<div class="layui-input-inline"> 
+				<input type="text" autocomplete="off" name="endDate" id="end-date" class="layui-input" placeholder="结束日期" value="{$searchItem.endDate ?? ''}">
+			</div>
+		</div>
+	</div>
+	<div class="layui-inline">
+		<button class="layui-btn layui-bg-color">{$langHtml.common.search}</button>
+	</div>
+</form>

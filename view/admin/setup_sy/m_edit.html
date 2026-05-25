@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>收件箱</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="header" style="margin-bottom:20px;">
+			<!-- <span style="background-color: #999;">收件箱设置</span> -->
+			<div></div>
+		</div>
+		<div class="layui-wrap">
+			<div>
+				<form class="layui-form">
+					<input type="hidden" name="sy_id" value="{$find.sy_id}">
+					<div class="layui-form-item">
+						<label class="layui-form-label">收件箱</label>
+						<div class="layui-input-block">
+							<textarea class="layui-textarea" id="r_email" name="r_email" placeholder="收件箱">{$find['r_email']??''}</textarea>
+							<div class="layui-form-mid layui-word-aux">多个收件箱请用"|"隔开</div>
+						</div>
+					</div>
+				</form>
+				
+				<div class="layui-form-item" style="margin-top:10px;">
+					<div class="layui-input-block">
+						<button type="button" class="layui-btn" onclick="save('{$Request.root}/{$route}/m_edit')">保存</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

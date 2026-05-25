@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{$conf.sy.name} - {$langHtml.common.systemTitle}</title>
+		{include file="public/head" /}
+	</head>
+	<body style="padding:10px; box-sizing: border-box;">
+		<div class="layui-wrap">
+			<div>
+				<table id="dataTable" lay-filter="dataTable"></table>
+			</div>
+		</div>
+	</body>
+
+</html>
+{block name="toolbar"}toolbar{/block}
+{block name="state"}state{/block}
+{block name="operate"}operate{/block}
+
+{block name="script"}script{/block}

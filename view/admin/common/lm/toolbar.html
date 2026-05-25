@@ -1,0 +1,20 @@
+<script type="text/html" id="power-toolbar">
+	{if ($conf.lm.add_lm == true)}
+	<button class="layui-btn layui-btn-primary layui-btn-sm layui-border" lay-event="add" onclick="add('{$Request.root}/{$route}/add','{$langHtml.common.add}')">
+		<i class="layui-icon layui-icon-add-1"></i>
+		{$langHtml.common.add}
+	</button>
+	{/if}
+	<button class="layui-btn layui-btn-success layui-btn-sm layui-bg-color" lay-event="expandAll">
+		<i class="layui-icon layui-icon-spread-left"></i>
+		{$langHtml.common.expand}
+	</button>
+	<button class="layui-btn layui-btn-success layui-btn-sm layui-bg-color" lay-event="foldAll">
+		<i class="layui-icon layui-icon-shrink-right"></i>
+		{$langHtml.common.fold}
+	</button>
+	<button class="layui-btn layui-btn-sm layui-bg-red" lay-event="recycle" onclick="recycle('{$Request.root}/{$route}/recycle')">
+		<i class="layui-icon layui-icon-delete"></i>
+		{$langHtml.common.recycle}
+	</button>
+</script>
