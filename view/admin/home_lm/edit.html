@@ -6,7 +6,7 @@
 {block name="content"}
 	<div id="layui-information">
 		<form class="layui-form">
-			<input type="hidden" name="id_lm" value="{$find.id_lm}">
+			<input type="hidden" name="id_lm" value="{$find.id_lm??''}">
 			{if ($conf.sy.need_lm == true)}
 			<div class="layui-form-item">
 				<label class="layui-form-label">{$langHtml.common.category}</label>
