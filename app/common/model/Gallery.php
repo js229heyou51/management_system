@@ -32,8 +32,6 @@ use think\Model;
  */
 class Gallery extends Model
 {
-	// 设置表名
-	protected $table = 'gallery';
 	
 	// 自动写入时间戳
 	protected $autoWriteTimestamp = true;
