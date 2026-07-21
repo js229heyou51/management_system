@@ -586,8 +586,8 @@ class installModel
             /* Skip sql that is note. */
             if (strpos($table, '--') === 0) continue;
 
-            $table = str_replace('`la_', $this->name . '.`la_', $table);
-            $table = str_replace('`la_', '`' . $this->prefix, $table);
+            $table = str_replace('`st_', $this->name . '.`st_', $table);
+            $table = str_replace('`st_', '`' . $this->prefix, $table);
 
             if (strpos($table, 'CREATE') !== false) {
                 $tableName = explode('`', $table)[1];
@@ -651,8 +651,8 @@ class installModel
             $table = trim($table);
             if (empty($table)) continue;
 
-            $table = str_replace('`la_', $this->name . '.`la_', $table);
-            $table = str_replace('`la_', '`' .$this->prefix, $table);
+            $table = str_replace('`st_', $this->name . '.`st_', $table);
+            $table = str_replace('`st_', '`' .$this->prefix, $table);
             if ( !$this->dbh->query($table)) return false;
         }
 
@@ -810,18 +810,16 @@ class installModel
      */
     public function initAccount($post)
     {
-        $time = time();
+        $time = date('Y-m-d H:i:s');
         $salt = substr(md5($time . $post['admin_user']), 0, 8); //随机8位密码盐
 
         global $uniqueSalt;
         $uniqueSalt = $salt;
 
-        $password = $this->createPassword($post['admin_password'], $salt);
+        $password = password_hash($post['admin_password'], PASSWORD_DEFAULT);
 
         // 超级管理员
-        $sql = "INSERT INTO `la_admin`(`id`, `root`, `name`, `avatar`, `account`, `password`, `login_time`, `login_ip`, `multipoint_login`, `disable`, `create_time`, `update_time`, `delete_time`) VALUES (1, 1, '{$post['admin_user']}', '', '{$post['admin_user']}', '{$password}','{$time}', '', 1, 0, '{$time}', '{$time}', NULL);";
-        // 超级管理员关联部门
-        $sql .= "INSERT INTO `la_admin_dept` (`admin_id`, `dept_id`) VALUES (1, 1);";
+        $sql = "INSERT INTO `st_master`(`id`, `rename`, `username`, `menu_list`, `action_list`, `password`, `ltime`, `lip`, `wtime`, `pass`, `lang`, `delete_time`) VALUES (1, '{$post['admin_user']}', '{$post['admin_user']}', 'all', 'all', '{$password}','{$time}', '', '{$time}',1 , 'zh-cn', NULL);";
 
         return $sql;
     }

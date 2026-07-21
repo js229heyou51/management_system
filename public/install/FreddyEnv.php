@@ -35,9 +35,9 @@ class FreddyEnv
     {
         $applyDbEnv = [
             '{DB_HOST}' => $databaseEnv['host'],
-            '{DB_DATABASE}' => $databaseEnv['name'],
-            '{DB_USERNAME}' => $databaseEnv['user'],
-            '{DB_PASSWORD}' => $databaseEnv['password'],
+            '{DB_NAME}' => $databaseEnv['name'],
+            '{DB_USER}' => $databaseEnv['user'],
+            '{DB_PASS}' => $databaseEnv['password'],
             '{DB_PORT}' => $databaseEnv['port'],
             '{DB_PREFIX}' => $databaseEnv['prefix'],
             '{REDIS_HOST}' => $databaseEnv['redis_host'],
