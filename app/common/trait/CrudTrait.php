@@ -36,11 +36,19 @@ trait CrudTrait{
 		}
 		$find = $query->find($id);
 		if(!empty($find->img_sl)){
-			$find->gallery_list = getGalleryList($find->img_sl);
+		try{
+			if(!empty($find->img_sl)){
+				$find->gallery_list = getGalleryList($find->img_sl);
+			}
+		}catch(\Exception $e){
+			$find->gallery_list = [];
 		}
-
-		if(!empty($find->vid_sl)){
-			$find->video_list = getVideoList($find->vid_sl);
+		try{
+			if(!empty($find->vid_sl)){
+				$find->video_list = getVideoList($find->vid_sl);
+			}
+		}catch(\Exception $e){
+			$find->video_list = [];
 		}
 		return $find;
 	}
@@ -63,11 +71,19 @@ trait CrudTrait{
 		$query->order($orderBy);
 		$query->limit(1);
 		$find = $query->find();
-		if(!empty($find->img_sl)){
-			$find->gallery_list = getGalleryList($find->img_sl);
+		try{
+			if(!empty($find->img_sl)){
+				$find->gallery_list = getGalleryList($find->img_sl);
+			}
+		}catch(\Exception $e){
+			$find->gallery_list = [];
 		}
-		if(!empty($find->vid_sl)){
-			$find->video_list = getVideoList($find->vid_sl);
+		try{
+			if(!empty($find->vid_sl)){
+				$find->video_list = getVideoList($find->vid_sl);
+			}
+		}catch(\Exception $e){
+			$find->video_list = [];
 		}
 		return $find;
 	}
