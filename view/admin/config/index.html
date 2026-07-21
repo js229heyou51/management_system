@@ -17,22 +17,22 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label layui-form-label-large">{$langHtml.common.seo}</label>
 						<div class="layui-input-block layui-input-block-large">
-							<input type="radio" name="sy_seo" value="1" {if(!empty($find.config.sy_seo))}{:$find.config.sy_seo == 1 ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
-							<input type="radio" name="sy_seo" value="0" {if(!empty($find.config.sy_seo))}{:$find.config.sy_seo == 0 ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+							<input type="radio" name="sy_seo" value="1" {if(isset($find.config.sy_seo))}{:$find.config.sy_seo == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="sy_seo" value="0" {if(isset($find.config.sy_seo))}{:$find.config.sy_seo == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label layui-form-label-large">{$langHtml.common.log}</label>
 						<div class="layui-input-block layui-input-block-large">
-							<input type="radio" name="log" value="1" {if(!empty($find.config.log))}{:$find.config.log == 1 ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
-							<input type="radio" name="log" value="0" {if(!empty($find.config.log))}{:$find.config.log == 0 ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+							<input type="radio" name="log" value="1" {if(isset($find.config.log))}{:$find.config.log == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="log" value="0" {if(isset($find.config.log))}{:$find.config.log == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label layui-form-label-large">{$langHtml.common.key}</label>
 						<div class="layui-input-block layui-input-block-large">
-							<input type="radio" name="key" value="1" {if(!empty($find.config.key))}{:$find.config.key == 1 ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
-							<input type="radio" name="key" value="0" {if(!empty($find.config.key))}{:$find.config.key == 0 ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
+							<input type="radio" name="key" value="1" {if(isset($find.config.key))}{:$find.config.key == true ? 'checked' : '';}{/if} title="{$langHtml.common.use}">
+							<input type="radio" name="key" value="0" {if(isset($find.config.key))}{:$find.config.key == false ? 'checked' : '';}{/if} title="{$langHtml.common.notUse}">
 						</div>
 					</div>
 					<div class="layui-form-item">
