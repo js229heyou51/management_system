@@ -43,7 +43,6 @@ class Video extends Model
 	use SoftDelete;
 	protected $deleteTime = 'delete_time';
 	
-	protected $table = 'video';
 	protected $pk = 'id';
 	
 	// 自动时间戳
