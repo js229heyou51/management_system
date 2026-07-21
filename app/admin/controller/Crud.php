@@ -27,6 +27,10 @@ class Crud extends Base{
 		$conf['sy']['table_lm'] = $data['sy']['pre'].'_lm';
 		// 信息表
 		$conf['sy']['table_co'] = $data['sy']['pre'].'_co';
+
+		$data['sy']['table_lm'] = ucfirst($data['sy']['pre']).'Lm';
+		$data['sy']['table_co'] = ucfirst($data['sy']['pre']).'Co';
+
 		$setup_sy['config'] = serialize($conf);
 		$find = SetupSyService::getBySyId($setup_sy['sy_id']);
 		if(empty($find)){
@@ -43,7 +47,7 @@ class Crud extends Base{
 			'lang' => $lang
 		];
 		$memuService = new MasterMenuService();
-		$insert = $memuService->create($insDate,false);
+		$insert = $memuService->create($insDate,false,false);
 		$fid = $insert->getLastInsID();
 		$MM_Data = [
 			[
@@ -81,7 +85,7 @@ class Crud extends Base{
 			],
 		];
 		try {
-			$insert = $memuService->batchCreate($MM_Data,false);
+			$insert = $memuService->batchCreate($MM_Data,false,100,false);
 		}catch (\Exception $e){
 			return ['code'=>201,'msg'=>$e->getMessage()];
 		}
@@ -160,7 +164,7 @@ class Crud extends Base{
 		];
 		try {
 			$actionService = new MasterActionService();
-			$insert = $actionService->batchCreate($MA_Data,false);
+			$insert = $actionService->batchCreate($MA_Data,false,100,false);
 		}catch (\Exception $e){
 			return ['code'=>201,'msg'=>$e->getMessage()];
 		}
@@ -205,7 +209,7 @@ class Crud extends Base{
 				`wtime` timestamp NULL DEFAULT NULL COMMENT "创建时间",
 				`delete_time` timestamp NULL DEFAULT NULL COMMENT "删除时间",
 				PRIMARY KEY (`id_lm`)
-				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT="'.$data['sy']['name'].'";
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT="'.$data['sy']['name'].'";
 				');
 		}catch (\Exception $e){
 			return ['code'=>201,'msg'=>$e->getMessage()];
@@ -243,7 +247,7 @@ class Crud extends Base{
 				`wtime` timestamp NULL DEFAULT NULL COMMENT "创建时间",
 				`delete_time` timestamp NULL DEFAULT NULL COMMENT "删除时间",
 				PRIMARY KEY (`id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT="'.$data['sy']['name'].'";
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT="'.$data['sy']['name'].'";
 				');
 		}catch (\Exception $e){
 			return ['code'=>201,'msg'=>$e->getMessage()];
