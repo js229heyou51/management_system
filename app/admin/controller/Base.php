@@ -646,7 +646,7 @@ class Base extends \app\BaseController{
 	//记录后台操作日志
 	public function master_log($z_body,$username=''){
 		$conf=self::$cong;
-		if ($conf['log']==true){
+		if (isset($conf['log']) && $conf['log']==true){
 			if($username==''){
 				$username=$this->admin['username']??'';
 			}
