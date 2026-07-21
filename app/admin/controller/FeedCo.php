@@ -547,6 +547,10 @@ class FeedCo extends Base{
 			return json(['code'=>200,'where'=>$can_str,'msg'=>$this->langHtml['tip']['loading']]);
 
 		}else{
+			if(empty($this->conf)){
+				return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['configSettingsFile'].'</h1>';
+				die();
+			}
 			$searchItem = Request::param();
 			$zt_val = $searchItem['zt_val']??'';
 			$keyword = $searchItem['keyword']??'';
@@ -741,6 +745,7 @@ class FeedCo extends Base{
 			return json(['code'=>200,'where'=>$can_str,'msg'=>$this->langHtml['tip']['loading']]);
 
 		}else{
+
 			$searchItem = Request::param();
 			$zt_val = $searchItem['zt_val']??'';
 			$keyword = $searchItem['keyword']??'';
