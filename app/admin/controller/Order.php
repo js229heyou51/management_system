@@ -173,6 +173,10 @@ class Order extends Base{
 
 			return json(['code' => 0, 'data' => $lists, 'type' => $type]);
 		}else{
+			if(empty($this->conf)){
+				return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['configSettingsFile'].'</h1>';
+				die();
+			}
 			$where = [];
 			$lists = OM::with([
 				'userinfo',
