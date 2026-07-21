@@ -39,9 +39,6 @@ class GalleryCategory extends Model
 	use SoftDelete;
 	protected $deleteTime = 'delete_time';
 
-	// 设置表名
-	protected $table = 'gallery_category';
-
 	// 自动写入时间戳
 	protected $autoWriteTimestamp = true;
 	protected $createTime = 'create_time';
