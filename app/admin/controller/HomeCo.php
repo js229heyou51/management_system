@@ -199,6 +199,12 @@ class HomeCo extends Base{
 	 */
 	public function make(){
 		$params = request()->param();
+		$act = $params['act'];
+		if($act == 'ajax'){
+			$lm = $params['lm']??'';
+			$findLm = $this->categoryService->getCategoryById($lm);
+			return json(['code'=>200,'data'=>$findLm]);
+		}
 		return $this->statusMake($this->service,$params);
 	}
 
