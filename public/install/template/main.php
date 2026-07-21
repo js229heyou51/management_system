@@ -498,9 +498,6 @@
                                         安装成功
                                     </div>
                                     <div class="success-content">
-                                        <div style="width: 48px;height: 48px;">
-                                            <img src="./images/icon_mountSuccess.png" />
-                                        </div>
                                         <div class="mt16 result">安装完成，进入管理后台</div>
                                         <div style="margin-top: 5px;font-size:14px;">版本号：1.9.4</div>
                                         <div class="tips">
