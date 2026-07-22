@@ -107,8 +107,10 @@ function buildCols(initData){
 					event = 'lay-event="edit"';
 				}
 				html += '<span class="cursor" '+ event +'>' + (d.title) + '</span>';
-				if(d?.gallery_list[0]?.path) {
-					html += ' <i class="layui-icon layui-icon-picture" onmouseover="show_img(this)" onmouseleave="hide_img()" src="' + d?.gallery_list[0]?.path + '"></i>';
+				if(typeof d?.gallery_list !== 'undefined'){
+					if(d?.gallery_list[0]?.path) {
+						html += ' <i class="layui-icon layui-icon-picture" onmouseover="show_img(this)" onmouseleave="hide_img()" src="' + d?.gallery_list[0]?.path + '"></i>';
+					}
 				}
 				html += '</div>';
 				return html;
@@ -137,6 +139,9 @@ function toolInit(initData, operate = {del: 'del', edit: 'edit'}){
 		if(obj.event === 'create'){
 			create(initData.url + 'createWeb?id='+data.id+'')
 		}
+		if(obj.event === 'delRecord') {
+			del(initData.url + 'recordDel?id='+data.id+'',''+initData.langText.delete+'')
+		}
 
 		if(obj.event === 'cart'){
 			edit(initData.url + 'orderDetail?id='+data.id+'',''+ initData.langText.orderDetail +'', initData.toolbarConfig)
@@ -147,7 +152,7 @@ function toolInit(initData, operate = {del: 'del', edit: 'edit'}){
 /*
 // 表格工具栏操作
  */
-function toolbarInit(initData, elem = 'listForm', operate = {add:'add', recycle:'recycle', recycleRecord: 'recycleRecord', make: 'make'}){
+function toolbarInit(initData, elem = 'listForm', operate = {add:'add', recycle:'recycle', recycleRecord: 'recycleRecord', makeRecord: 'makeRecord', make: 'make'}){
 	initData.table.on('toolbar(' + initData.elem + ')', function(obj){
 		if(obj.event === 'refresh'){
 			window.location.reload();
@@ -167,7 +172,7 @@ function toolbarInit(initData, elem = 'listForm', operate = {add:'add', recycle:
 			return false
 		}
 		var event = obj.event
-		var operateArr = ['ding1','ding2','tj1','tj2','hot1','hot2','pass1','pass2','del','recovery','remove'];
+		var operateArr = ['ding1','ding2','tj1','tj2','hot1','hot2','pass1','pass2','del','recovery','remove','makeRecord'];
 		if(operateArr.includes(event)){
 			var id = obj.config.id;
 			var checkStatus = initData.table.checkStatus(id);
@@ -176,11 +181,15 @@ function toolbarInit(initData, elem = 'listForm', operate = {add:'add', recycle:
 				return layer.msg('请选择一行');
 			}
 			var idArr = [];
-			console.log(data.length);
 			for(var i = 0; i < data.length; i ++){
 				const formId = data[i]['id']??data[i]['id_lm'];
 				$('#' + elem).append('<input type="hidden" name="checkbox['+formId+']" value="on">')
 				$('#' + elem).append('<input type="hidden" name="id[]" value='+formId+'>');
+			}
+
+			if(event === 'makeRecord'){
+				make(initData.url + '' + operate.makeRecord + '?act=del')
+				return false
 			}
 
 			if(event === 'recovery'){
