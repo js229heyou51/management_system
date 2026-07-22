@@ -59,7 +59,7 @@ class Base extends \app\BaseController{
 		}
 		if(empty(self::$cong)){
 			$config = Config::where('type','config')->find();
-			self::$cong = unserialize($config['lists']);
+			self::$cong = unserialize($config['lists']??'');
 		}
 		View::assign([
 			'route' => $this->route,
