@@ -35,7 +35,6 @@ trait CrudTrait{
 			$query->with($params['with']);
 		}
 		$find = $query->find($id);
-		if(!empty($find->img_sl)){
 		try{
 			if(!empty($find->img_sl)){
 				$find->gallery_list = getGalleryList($find->img_sl);
