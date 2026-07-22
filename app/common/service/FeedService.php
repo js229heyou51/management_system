@@ -23,11 +23,6 @@ class FeedService
 		$this->categoryService = new FeedCategoryService();
 	}
 
-	public function ceshi($id){
-
-		Log::info('定时文章发布任务执行中...'.$id, ['time' => date('Y-m-d H:i:s')]);
-	}
-
 	public function createWeb($id = ''){
 		$param = Request::param();
 		$id = $param['id'] ?? $id;
