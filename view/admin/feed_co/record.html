@@ -7,12 +7,12 @@
 {block name="toolbar"}
 <script type="text/html" id="toolbarDemo">
 	{if ($conf.co.add_xx == true)}
-	<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="add" ><i class="layui-icon layui-icon-add-1"></i>{$langHtml.common.add}</button>
+	<!-- <button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="add" ><i class="layui-icon layui-icon-add-1"></i>{$langHtml.common.add}</button> -->
 	{/if}
 	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="recycleRecord">
 		<i class="layui-icon layui-icon-delete"></i>{$langHtml.common.recycle}
 	</button>
-	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="del" >{$langHtml.common.deleteSelected}</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="makeRecord" >{$langHtml.common.deleteSelected}</button>
 </script>
 {/block}
 
@@ -24,7 +24,7 @@
 
 {block name="operate"}
 <script type="text/html" id="operateDemo">
-	<button type="button" class="layui-btn layui-bg-red layui-btn-xs" lay-event="del">
+	<button type="button" class="layui-btn layui-bg-red layui-btn-xs" lay-event="delRecord">
 		<i class="layui-icon layui-icon-delete"></i>{$langHtml.common.delete}
 	</button>
 </script> 
