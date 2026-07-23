@@ -7,7 +7,7 @@ use think\facade\View;
 use think\ai\Client;
 use Parsedown;
 
-class ThinkAi extends Base{
+class ThinkAI extends Base{
 
 
 
