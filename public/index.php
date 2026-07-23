@@ -15,6 +15,12 @@ use think\App;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+if (!file_exists(__DIR__ . '/../config/install.lock')) {
+    // 重定向到安装入口文件 install.php
+    header('location:/install/install.php');
+    exit;
+}
+
 // 执行HTTP应用并响应
 $http = (new App())->http;
 
