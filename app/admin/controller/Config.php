@@ -578,6 +578,7 @@ class Config extends Base{
 			if($data['px'] == ''){
 				return json(['code'=>201,'msg'=>$this->langHtml['tip']['sort'].$this->langHtml['tip']['cannotBeEmpty']]);
 			}
+			$data['ip'] = request()->ip();
 			try {
 				$insert = MA::insert($data);
 				return json(['code'=>200,'msg'=>$this->langHtml['tip']['add'].$this->langHtml['tip']['success']]);
