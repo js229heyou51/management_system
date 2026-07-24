@@ -163,6 +163,7 @@
 					if(layId === $(this).attr('lay-id')){
 						$(this).parents('.layui-nav-item').siblings().removeClass('layui-nav-itemed');
 						$(this).parents('.layui-nav-item').addClass('layui-nav-itemed');
+						$(this).parents('.layui-nav-item').siblings().find('dd').removeClass('layui-this');
 						$(this).siblings().removeClass('layui-this');
 						$(this).addClass('layui-this');
 					}
