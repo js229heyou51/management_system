@@ -19,6 +19,9 @@
 <script>
 	layui.use(function(){
 		var util = layui.util;
+
+		$('#edit-button').append('<button type="button" class="layui-btn layui-bg-color" lay-on="aiCreateArticle">生成文章</button>');
+		$('#edit-det').append('<br><span lay-on="layui-copy">{图片占位符}</span>');
 		util.on('lay-on',{
 			'layui-copy': async function(obj){
 				var elem = obj[0];
@@ -29,8 +32,58 @@
 				} catch (err) {
 					layer.msg('复制失败:'+ err,{icon:2});
 				}
+			},
+			'aiCreateArticle': async function(obj){
+				var elem = obj[0];
+				var content = $('form:first input[name="title"]').val();
+				if(content == ''){
+					layer.msg('标题不能为空',{icon:2});
+					return false;
+				}
+				var reply = await getAIReply(content);
+				$('form:first input[name="title"]').val(reply.title);
+				$('textarea[name=ym_tit]').val(reply.title);
+				$('textarea[name=f_body]').val(reply.brief);
+				$('textarea[name=ym_des]').val(reply.brief);
+				tinymce.get('z_body').setContent(reply.content);
 			}
 		})
+		// 模拟 AI 回复（可替换为真实接口）
+		getAIReply = function(userMsg) {
+			return new Promise((resolve, reject) => {
+				// 1. 显示加载层（Layui 风格）
+				if (typeof layer !== 'undefined') {
+					// 如果 layer 已全局加载
+					loadIndex = layer.load(2, { shade: [0.3, '#000'] });
+				} else {
+					// 如果未全局加载，使用 layui.use 动态加载
+					layui.use('layer', function() {
+						loadIndex = layer.load(2, { shade: [0.3, '#000'] });
+					});
+				}
+				$.post('{$Request.root}/{$route}/createArticle',{content: userMsg},function(res){
+					closeLoading();
+					if (res && res.code === 200) {
+						resolve(res.reply || '抱歉，我没有理解您的问题。');
+					} else {
+						// 业务失败时，返回默认提示
+						resolve('服务暂时不可用，请稍后再试。');
+					}
+				},'json').fail(function(xhr, status, error) {
+					closeLoading();
+					// 网络或服务器错误
+					console.error('AI接口请求失败:', error);
+					resolve('网络开小差了，请检查网络后重试。');
+				});
+			})
+		}
+		// 关闭加载层的辅助函数
+		function closeLoading() {
+		    if (loadIndex !== null) {
+		        layer.close(loadIndex);
+		        loadIndex = null;
+		    }
+		}
 	})
 </script>
 {/block}
