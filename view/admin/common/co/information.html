@@ -141,7 +141,7 @@
 		</div>
 		{/if}{if (isset($conf.co.z_body) && $conf.co.z_body == true)}
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.det}<br><span lay-on="layui-copy">{图片占位符}</span></label>
+			<label class="layui-form-label" id="edit-det">{$langHtml.common.det}</label>
 			<div class="layui-input-block">
 				<textarea id="z_body" name="z_body" style="width:100%;height:250px;">{$find.z_body??''}</textarea>
 			</div>				
@@ -165,7 +165,7 @@
 		</div>
 	</form>
 	<div class="layui-form-item" style="margin-top:10px;">
-		<div class="layui-input-block">
+		<div class="layui-input-block" id="edit-button">
 			<button type="button" class="layui-btn layui-btn-primary layui-border" onclick="step('next')">{$langHtml.common.nextStep}</button>
 			<button type="button" class="layui-btn layui-bg-color" onclick="save()">{$langHtml.common.save}</button>
 		</div>
