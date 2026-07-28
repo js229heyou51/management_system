@@ -49,19 +49,11 @@
 			}
 		})
 		// 模拟 AI 回复（可替换为真实接口）
-		getAIReply = function(userMsg) {
+		getAIReply = function(content) {
 			return new Promise((resolve, reject) => {
 				// 1. 显示加载层（Layui 风格）
-				if (typeof layer !== 'undefined') {
-					// 如果 layer 已全局加载
-					loadIndex = layer.load(2, { shade: [0.3, '#000'] });
-				} else {
-					// 如果未全局加载，使用 layui.use 动态加载
-					layui.use('layer', function() {
-						loadIndex = layer.load(2, { shade: [0.3, '#000'] });
-					});
-				}
-				$.post('{$Request.root}/{$route}/createArticle',{content: userMsg},function(res){
+				loadIndex = layer.load(2, { shade: [0.3, '#000'] });
+				$.post('{$Request.root}/{$route}/createArticle',{content: content},function(res){
 					closeLoading();
 					if (res && res.code === 200) {
 						resolve(res.reply || '抱歉，我没有理解您的问题。');
