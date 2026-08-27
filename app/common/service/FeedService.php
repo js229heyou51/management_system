@@ -31,7 +31,7 @@ class FeedService
 			Log::info('投喂文章：'.Lang::get('tip')['noData']);
 			return json(['code'=>201,'msg'=>Lang::get('tip')['noData']]);
 		}
-		$find = $this->model->where('id',$id)->field('id,title,article_str,web_str,num')->where('pass','=',1)->find();
+		$find = $this->model->where('id',$id)->field('id,title,article_str,web_str,num,is_repeat')->where('pass','=',1)->find();
 		if(empty($find)){
 			Log::info('投喂文章：该任务已屏蔽');
 			return json(['code'=>400,'msg'=>'该任务已屏蔽']);
@@ -43,6 +43,12 @@ class FeedService
 			return json(['code'=>400,'msg'=>Lang::get('tip')['noData']]);
 		}
 		$where[] = ['lang','=', Lang::getLangSet()];
+
+		if(empty($find['web_str'])){
+			Log::info('投喂文章：没有网站'.Lang::get('tip')['noData']);
+			return json(['code'=>400,'msg'=>'没有选择网站']);
+		}
+		// dump($find['web_str']);die;
 		if($find['web_str']){
 			// 有多少个网站需要发布文章
 			$web = WebCo::with([
@@ -76,7 +82,6 @@ class FeedService
 					'msg' => '该任务已超出今日发布数量',
 				]);
 			}
-
 			$artKey = $num - $recordTotal;
 			$webReleaseCount = 0;
 			foreach ($web as $k => $v) {
@@ -85,10 +90,10 @@ class FeedService
 					$webReleaseCount++;
 					continue;
 				}
+
 				for ($i=0; $i < $v['release']; $i++) { 
 					$artKey --;
 					if(isset($article[$artKey])){
-						
 						try{
 							$client = new Client([
 								'verify' => false,
@@ -179,7 +184,7 @@ class FeedService
 									'px'	   => 100,
 								];
 								$feed = FeedRecord::insert($data);
-								Log::info('投喂文章：'.$article[$artKey]['title'].'到网站:'.$title);
+								Log::info('投喂文章2：'.$article[$artKey]['title'].'到网站:'.$title);
 								return json([
 									'code' => 201,
 									'msg' => $jsonResponse['msg'],
@@ -194,6 +199,9 @@ class FeedService
 						}
 					}
 				}
+				if($find['is_repeat'] == 1){
+					$artKey = $num - $recordTotal;
+				}
 				
 			}
 			if($webReleaseCount >= $count){
@@ -204,6 +212,8 @@ class FeedService
 				]);
 			}
 		}
+
+
 		return json([
 			'code' => 200,
 			'msg' => '投喂成功'
