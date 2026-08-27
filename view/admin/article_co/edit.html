@@ -19,7 +19,9 @@
 <script>
 	layui.use(function(){
 		var util = layui.util;
-
+		var form = layui.form;
+		$('input[name=title]').parents('.layui-form-item').after('<div class="layui-form-item"><label class="layui-form-label">使用授权</label><div class="layui-input-block"><input type="radio" name="is_auth" value="0" title="不使用" checked><input type="radio" name="is_auth" value="1" title="使用授权"><input type="radio" name="is_auth" value="2" title="使用电话"></div></div>');
+		form.render();
 		$('#edit-button').append('<button type="button" class="layui-btn layui-bg-color" lay-on="aiCreateArticle">生成文章</button>');
 		$('#edit-det').append('<br><span lay-on="layui-copy">{图片占位符}</span>');
 		util.on('lay-on',{
@@ -35,12 +37,13 @@
 			},
 			'aiCreateArticle': async function(obj){
 				var elem = obj[0];
+				var is_auth = $('form:first input[type=radio]:checked').val();
 				var content = $('form:first input[name="title"]').val();
 				if(content == ''){
 					layer.msg('标题不能为空',{icon:2});
 					return false;
 				}
-				var reply = await getAIReply(content);
+				var reply = await getAIReply({content,is_auth});
 				$('form:first input[name="title"]').val(reply.title);
 				$('textarea[name=ym_tit]').val(reply.title);
 				$('textarea[name=f_body]').val(reply.brief);
@@ -49,11 +52,11 @@
 			}
 		})
 		// 模拟 AI 回复（可替换为真实接口）
-		getAIReply = function(content) {
+		getAIReply = function(params = {}) {
 			return new Promise((resolve, reject) => {
 				// 1. 显示加载层（Layui 风格）
 				loadIndex = layer.load(2, { shade: [0.3, '#000'] });
-				$.post('{$Request.root}/{$route}/createArticle',{content: content},function(res){
+				$.post('{$Request.root}/{$route}/createArticle',{content: params.content,is_auth: params.is_auth},function(res){
 					closeLoading();
 					if (res && res.code === 200) {
 						resolve(res.reply || '抱歉，我没有理解您的问题。');
