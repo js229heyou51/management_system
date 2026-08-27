@@ -15,6 +15,13 @@
 			$extraContent .= '<input type="text" class="layui-input" name="num" placeholder="'.lang('common')['enter'].lang('common')['num'].'" value="'.($find['num'] ?? '').'">';
 			$extraContent .= '</div></div>';
 		$extraContent .= '<div class="layui-form-item"><label class="layui-form-label">';
+			$extraContent .= '文章去重';
+			$extraContent .= '</label>';
+			$extraContent .= '<div class="layui-input-block">';
+			$extraContent .= '<input type="radio" name="is_repeat" value="0" title="去重" '.(isset($find['is_repeat']) && $find['is_repeat'] == 0 ? 'checked' : '' ).' >
+					<input type="radio" name="is_repeat" value="1" title="不去重" '.(isset($find['is_repeat']) && $find['is_repeat'] == 1 ? 'checked' : '' ).'>';
+			$extraContent .= '</div></div>';
+		$extraContent .= '<div class="layui-form-item"><label class="layui-form-label">';
 			$extraContent .= '文章';
 			$extraContent .= '</label>';
 			$extraContent .= '<div class="layui-input-block">';
