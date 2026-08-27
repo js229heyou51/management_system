@@ -170,10 +170,10 @@ class ArticleCo extends Base{
 		$content = '用“'.$tit.'”生成一篇通俗易懂的文章';
 
 		if($is_auth == 1){
-			$content .= '，然后在文章里面适当位置，添加网易外贸通经销商--广州合优网络科技有限公司的介绍和电话020-82591888';
+			$content .= '，然后在文章里面适当位置，添加网易外贸通经销商';
 		}
 		if($is_auth == 2){
-			$content .= '，然后在文章里面适当位置，添加咨询电话400-669-6649';
+			$content .= '，然后在文章里面适当位置，添加咨询电话';
 		}
 
 		$result = $client->chat()->completions([
