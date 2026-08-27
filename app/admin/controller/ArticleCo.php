@@ -74,22 +74,7 @@ class ArticleCo extends Base{
 	public function default(){
 		if(request()->isPost()){
 			$data = request()->param();
-			$can = '';
-			$lm = $data['lm']??'';
-			if(!empty($lm)){
-				$can .= '&lm='.$lm.'';
-			}
-			$zt_val = $data['zt_val']??'';
-			if(!empty($zt_val)){
-				$can .= '&zt_val='.$zt_val.'';
-			}
-			$keyword = $data['keyword']??'';
-			if(!empty($keyword)){
-				$can .= '&keyword='.$keyword;
-			}
-			$can_str = ltrim($can,'&');
-			return json(['code'=>200,'where'=>$can_str,'msg'=>$this->langHtml['tip']['loading']]);
-
+			return $this->defaultCommon($data);
 		}else{
 			if(empty($this->conf)){
 				return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['configSettingsFile'].'</h1>';
@@ -115,26 +100,7 @@ class ArticleCo extends Base{
 	public function add(){
 		if(request()->isPost()){
 			$data = request()->param();
-			try{
-				$info = $this->service->create($data);
-				$id = $info->getLastInsID();
-				if(!empty($this->conf['co']['info']) && $this->conf['co']['info'] == true){
-					$plinfo = $this->plInfoCreate($id,$this->sy_id);
-					if(!$plinfo){
-						return json(['code'=>201,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['fail']]);
-					}
-				}
-				if(!empty($this->conf['co']['file']) && $this->conf['co']['file'] == true){
-					$plFile = $this->plFnfoCreate($id,$this->sy_id);
-					if(!$plFile){
-						return json(['code'=>201,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['fail']]);
-					}
-				}
-				Base::master_log($this->langHtml['tip']['add'].$this->conf['sy']['name'].$this->langHtml['tip']['information'].'：'.$data['title']);
-				return json(['code'=>200,'msg'=>$this->langHtml['tip']['add'].$this->langHtml['tip']['success']]);
-			}catch (\Exception $e){
-				return json(['code'=>201,'msg'=>$this->langHtml['tip']['add'].$this->langHtml['tip']['fail'].$e->getMessage()]);
-			}
+			return $this->addCommon($this->service,$data,$this->conf,$this->sy_id);
 		}else{
 			$category = $this->categoryService->getCategoryList();
 			View::assign([
@@ -151,18 +117,12 @@ class ArticleCo extends Base{
 	public function edit(){
 		$data = request()->param();
 		if(request()->isPost()){
-			$id = $data['id'] ?? '';
-			try{
-				$update = $this->service->update($id,$data);
-				Base::master_log($this->langHtml['tip']['edit'].$this->conf['sy']['name'].$this->langHtml['tip']['information'].'：'.$data['title']);
-				return json(['code'=>200,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['success']]);
-			}catch (\Exception $e){
-				return json(['code'=>201,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['fail'].$e->getMessage()]);
-			}
+			return $this->editCommon($this->service,$data,$this->conf);
 		}else{
 			$id = $data['id']??'';
 			if(empty($id)){
-				return json(['code'=>201,'msg'=>$this->langHtml['tip']['id'].$this->langHtml['tip']['cannotBeEmpty']]);   
+				return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['id'].$this->langHtml['tip']['cannotBeEmpty'].'</h1>';
+				die();
 			}
 			$find = $this->service->getById($id);
 			$category = $this->categoryService->getCategoryList();
@@ -180,17 +140,7 @@ class ArticleCo extends Base{
 	 */
 	public function del(){
 		$data = request()->param();
-		$id = $data['id'];
-		if(empty($id)){
-			return json(['code'=>201,'msg'=>$this->langHtml['tip']['id'].$this->langHtml['tip']['cannotBeEmpty']]);
-		}
-		try{
-			$bol = $this->service->delete($id);
-			Base::master_log($this->langHtml['tip']['del'].$this->conf['sy']['name'].$this->langHtml['tip']['information'].'：'.$id);
-			return json(['code'=>200,'msg'=>$this->langHtml['tip']['del'].$this->langHtml['tip']['success']]);
-		}catch (\Exception $e){
-			return json(['code'=>201,'msg'=>$this->langHtml['tip']['del'].$this->langHtml['tip']['fail'].$e->getMessage()]);
-		}
+		return $this->delCommon($this->service,$data,$this->conf);
 	}
 
 	/**
@@ -212,11 +162,19 @@ class ArticleCo extends Base{
 		$role = $this->admin->username ?? 'user';
 
 		$tit = $data['content'] ?? '';
+		$is_auth = $data['is_auth'] ?? '';
 		if(empty($tit)){
 			return json(['code' => 201,'msg'=> '参数错误']);
 		}
 
 		$content = '用“'.$tit.'”生成一篇通俗易懂的文章';
+
+		if($is_auth == 1){
+			$content .= '，然后在文章里面适当位置，添加网易外贸通经销商--广州合优网络科技有限公司的介绍和电话020-82591888';
+		}
+		if($is_auth == 2){
+			$content .= '，然后在文章里面适当位置，添加咨询电话400-669-6649';
+		}
 
 		$result = $client->chat()->completions([
 			'model' => env('THINKAI_MODEL'),

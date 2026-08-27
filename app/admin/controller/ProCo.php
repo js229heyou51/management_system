@@ -167,26 +167,7 @@ class ProCo extends Base{
 	public function add(){
 		if(request()->isPost()){
 			$data = request()->param();
-			try{
-				$info = $this->service->create($data);
-				$id = $info->getLastInsID();
-				if(!empty($this->conf['co']['info']) && $this->conf['co']['info'] == true){
-					$plinfo = $this->plInfoCreate($id,$this->sy_id);
-					if(!$plinfo){
-						return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail']]);
-					}
-				}
-				if(!empty($this->conf['co']['file']) && $this->conf['co']['file'] == true){
-					$plFile = $this->plFnfoCreate($id,$this->sy_id);
-					if(!$plFile){
-						return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail']]);
-					}
-				}
-				Base::master_log(lang('tip')['add'].$this->conf['sy']['name'].lang('tip')['information'].'：'.$data['title']);
-				return json(['code'=>200,'msg'=>lang('tip')['add'].lang('tip')['success']]);
-			}catch (\Exception $e){
-				return json(['code'=>201,'msg'=>lang('tip')['add'].lang('tip')['fail'].$e->getMessage()]);
-			}
+			return $this->addCommon($this->service,$data,$this->conf,$this->sy_id);
 		}else{
 			$category = $this->categoryService->getCategoryList();
 			View::assign([
@@ -203,21 +184,15 @@ class ProCo extends Base{
 	public function edit(){
 		$data = request()->param();
 		if(request()->isPost()){
-			$id = $data['id'] ?? '';
-			try{
-				$paramArr = $data['param'] ?? [];
-				unset($data['param']);
-				$data['param_json'] = json_encode($paramArr);
-				$update = $this->service->update($id,$data);
-				Base::master_log(lang('tip')['edit'].$this->conf['sy']['name'].lang('tip')['information'].'：'.$data['title']);
-				return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
-			}catch (\Exception $e){
-				return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail'].$e->getMessage()]);
-			}
+			$paramArr = $data['param'] ?? [];
+			unset($data['param']);
+			$data['param_json'] = json_encode($paramArr);
+			return $this->editCommon($this->service,$data,$this->conf);
 		}else{
 			$id = $data['id']??'';
 			if(empty($id)){
-				return json(['code'=>201,'msg'=>lang('tip')['id'].lang('tip')['cannotBeEmpty']]);   
+				return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['id'].$this->langHtml['tip']['cannotBeEmpty'].'</h1>';
+				die();
 			}
 			$find = $this->service->getById($id);
 			$category = $this->categoryService->getCategoryList();
@@ -235,17 +210,7 @@ class ProCo extends Base{
 	 */
 	public function del(){
 		$data = request()->param();
-		$id = $data['id'];
-		if(empty($id)){
-			return json(['code'=>201,'msg'=>lang('tip')['id'].lang('tip')['cannotBeEmpty']]);
-		}
-		try{
-			$bol = $this->service->delete($id);
-			Base::master_log(lang('tip')['del'].$this->conf['sy']['name'].lang('tip')['information'].'：'.$id);
-			return json(['code'=>200,'msg'=>lang('tip')['del'].lang('tip')['success']]);
-		}catch (\Exception $e){
-			return json(['code'=>201,'msg'=>lang('tip')['del'].lang('tip')['fail'].$e->getMessage()]);
-		}
+		return $this->delCommon($this->service,$data,$this->conf);
 	}
 
 	/**

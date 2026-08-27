@@ -342,6 +342,7 @@ class Base extends \app\BaseController{
 					$del = $service->delete($value);
 					if(!empty($del)){
 						$delete ++;
+						
 					}
 				}
 			}
@@ -360,14 +361,17 @@ class Base extends \app\BaseController{
 
 			if($find['ding'] == 1){
 				$data['ding'] = 0;
+				$dingTitle = lang('tip')['cancel'].lang('common')['ding'];
 			}else{
 				$data['ding'] = 1;
+				$dingTitle = lang('common')['ding'];
 			}
 			$update = $service->update($id,$data,false);
 
 			if(empty($update)){
 				return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail']]);
 			}
+			$this->master_log($dingTitle.$this->conf['sy']['name'].lang('tip')['information'].'：'.$find['id'].'-'.$find['title']);
 			return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
 		}
 		if($act == 'tuijian'){
@@ -378,14 +382,17 @@ class Base extends \app\BaseController{
 
 			if($find['tuijian'] == 1){
 				$data['tuijian'] = 0;
+				$tuijianTitle = lang('tip')['tuijianTitle'];
 			}else{
 				$data['tuijian'] = 1;
+				$tuijianTitle = lang('tip')['cancel'].lang('tip')['tuijianTitle'];
 			}
 			$update = $service->update($id,$data,false);
 
 			if(empty($update)){
 				return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail']]);
 			}
+			$this->master_log($tuijianTitle.$this->conf['sy']['name'].lang('tip')['information'].'：'.$find['id'].'-'.$find['title']);
 			return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
 		}
 		if($act == 'hot'){
@@ -396,14 +403,17 @@ class Base extends \app\BaseController{
 
 			if($find['hot'] == 1){
 				$data['hot'] = 0;
+				$hotTitle = lang('tip')['hotTitle'];
 			}else{
 				$data['hot'] = 1;
+				$hotTitle = lang('tip')['cancel'].lang('tip')['hotTitle'];
 			}
 			$update = $service->update($id,$data,false);
 
 			if(empty($update)){
 				return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail']]);
 			}
+			$this->master_log($hotTitle.$this->conf['sy']['name'].lang('tip')['information'].'：'.$find['id'].'-'.$find['title']);
 			return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
 		}
 		if($act == 'pass'){
@@ -414,14 +424,17 @@ class Base extends \app\BaseController{
 
 			if($find['pass'] == 1){
 				$data['pass'] = 0;
+				$passTitle = lang('tip')['passTitle'];
 			}else{
 				$data['pass'] = 1;
+				$passTitle = lang('tip')['cancel'].lang('tip')['passTitle'];
 			}
 			$update = $service->update($id,$data,false);
 
 			if(empty($update)){
 				return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail']]);
 			}
+			$this->master_log($passTitle.$this->conf['sy']['name'].lang('tip')['information'].'：'.$find['id'].'-'.$find['title']);
 			return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
 		}
 		
@@ -431,12 +444,13 @@ class Base extends \app\BaseController{
 			}
 			$find = $service->getById($id);
 
-			$data['px'] = $param['px'] ?? '100';
+			$data['px'] = $params['px'] ?? '100';
 			$update = $service->update($id,$data,false);
 
 			if(empty($update)){
 				return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail']]);
 			}
+			$this->master_log(lang('tip')['sort'].$this->conf['sy']['name'].lang('tip')['information'].'：'.$find['id'].'-'.$find['title'].'-'.lang('tip')['sort'].$data['px']);
 			return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
 		}
 	}
@@ -557,6 +571,75 @@ class Base extends \app\BaseController{
 			return true;
 		}
 		return true;
+	}
+
+	public function defaultCommon($data){
+		$can = '';
+		$lm = $data['lm']??'';
+		if(!empty($lm)){
+			$can .= '&lm='.$lm.'';
+		}
+		$zt_val = $data['zt_val']??'';
+		if(!empty($zt_val)){
+			$can .= '&zt_val='.$zt_val.'';
+		}
+		$keyword = $data['keyword']??'';
+		if(!empty($keyword)){
+			$can .= '&keyword='.$keyword;
+		}
+		$can_str = ltrim($can,'&');
+		return json(['code'=>200,'where'=>$can_str,'msg'=>lang('tip')['loading']]);
+	}
+
+	public function addCommon($service,$data,$conf,$sy_id){
+		try{
+			$info = $service->create($data);
+			$id = $info->getLastInsID();
+			if(!empty($conf['co']['info']) && $conf['co']['info'] == true){
+				$plinfo = $this->plInfoCreate($id,$sy_id);
+				if(!$plinfo){
+					return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail']]);
+				}
+			}
+			if(!empty($conf['co']['file']) && $conf['co']['file'] == true){
+				$plFile = $this->plFileCreate($id,$sy_id);
+				if(!$plFile){
+					return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail']]);
+				}
+			}
+			$this->master_log(lang('tip')['add'].$conf['sy']['name'].lang('tip')['information'].'：'.$data['title']);
+			return json(['code'=>200,'msg'=>lang('tip')['add'].lang('tip')['success']]);
+		}catch (\Exception $e){
+			return json(['code'=>201,'msg'=>lang('tip')['add'].lang('tip')['fail'].$e->getMessage()]);
+		}
+	}
+
+	public function editCommon($service,$data,$conf){
+		$id = $data['id'] ?? '';
+		if(empty($id)){
+			return json(['code'=>201,'msg'=>lang('tip')['id'].lang('tip')['cannotBeEmpty']]);
+		}
+		try{
+			$update = $service->update($id,$data);
+			$this->master_log(lang('tip')['edit'].$conf['sy']['name'].lang('tip')['information'].'：'.$data['title']);
+			return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
+		}catch (\Exception $e){
+			return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail'].$e->getMessage()]);
+		}
+	}
+
+	public function delCommon($service,$data,$conf){
+		$id = $data['id']??'';
+		if(empty($id)){
+			return json(['code'=>201,'msg'=>lang('tip')['id'].lang('tip')['cannotBeEmpty']]);
+		}
+		try{
+			$bol = $service->delete($id);
+			$this->master_log(lang('tip')['del'].$conf['sy']['name'].lang('tip')['information'].'：'.$id);
+			return json(['code'=>200,'msg'=>lang('tip')['del'].lang('tip')['success']]);
+		}catch (\Exception $e){
+			return json(['code'=>201,'msg'=>lang('tip')['del'].lang('tip')['fail'].$e->getMessage()]);
+		}
 	}
 
 	public function theme(){
