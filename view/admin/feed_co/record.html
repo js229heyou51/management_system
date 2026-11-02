@@ -7,12 +7,12 @@
 {block name="toolbar"}
 <script type="text/html" id="toolbarDemo">
 	{if ($conf.co.add_xx == true)}
-	<!-- <button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="add" ><i class="layui-icon layui-icon-add-1"></i>{$langHtml.common.add}</button> -->
+	<!-- <button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-event="add" ><i class="layui-icon layui-icon-add-1"></i>{:lang('common')['add']??''}</button> -->
 	{/if}
 	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="recycleRecord">
-		<i class="layui-icon layui-icon-delete"></i>{$langHtml.common.recycle}
+		<i class="layui-icon layui-icon-delete"></i>{:lang('common')['recycle']??''}
 	</button>
-	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="makeRecord" >{$langHtml.common.deleteSelected}</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="makeRecord" >{:lang('common')['deleteSelected']??''}</button>
 </script>
 {/block}
 
@@ -25,7 +25,7 @@
 {block name="operate"}
 <script type="text/html" id="operateDemo">
 	<button type="button" class="layui-btn layui-bg-red layui-btn-xs" lay-event="delRecord">
-		<i class="layui-icon layui-icon-delete"></i>{$langHtml.common.delete}
+		<i class="layui-icon layui-icon-delete"></i>{:lang('common')['delete']??''}
 	</button>
 </script> 
 {/block}
@@ -42,11 +42,11 @@
 				,{field: 'name', title: '文章标题'}
 				,{field: 'ym_key', title: '文章关键词'}
 				,{field: 'article_id', title: '文章ID', width: 80, align: 'center'}
-				,{field: 'wtime', title: '{$langHtml.common.time}', width: 160, align: 'center',sort:'desc'}
-				,{field: '', title: '{$langHtml.common.state}', width: 100, align: 'center',templet: '#state'}
-				,{field: '', title: '{$langHtml.common.operate}', width: 150, align: 'center',templet: '#operateDemo',fixed: 'right'}
+				,{field: 'wtime', title: '{:lang('common')['time']??''}', width: 160, align: 'center',sort:'desc'}
+				,{field: '', title: '{:lang('common')['state']??''}', width: 100, align: 'center',templet: '#state'}
+				,{field: '', title: '{:lang('common')['operate']??''}', width: 150, align: 'center',templet: '#operateDemo',fixed: 'right'}
 			],
-
+			module: 'recordIndex',
 			colsType: false,
 		}
 	</script>

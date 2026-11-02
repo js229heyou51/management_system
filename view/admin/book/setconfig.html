@@ -45,8 +45,8 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label layui-form-label-large">{$langHtml.common.use}{$langHtml.common.send}{$langHtml.common.email}</label>
 			<div class="layui-input-block layui-input-block-large">
-				<input type="radio" name="sy[send]" value="true" {if (isset($conf.sy.send))} {$conf.sy.send == 'true' ? 'checked' : '';} {/if} title="{$langHtml.common.use}">
-				<input type="radio" name="sy[send]" value="false" {if (isset($conf.sy.send))} {$conf.sy.send == 'false' ? 'checked' : '';} {/if} title="{$langHtml.common.notUse}">
+				<input type="radio" name="sy[send]" value="true" {if (isset($conf.sy.send))} {:$conf.sy.send == true ? 'checked' : '';} {/if} title="{$langHtml.common.use}">
+				<input type="radio" name="sy[send]" value="false" {if (isset($conf.sy.send))} {:$conf.sy.send == false ? 'checked' : '';} {/if} title="{$langHtml.common.notUse}">
 			</div>
 		</div>
 	</form>

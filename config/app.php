@@ -16,9 +16,7 @@ return [
     // 应用映射（自动多应用模式有效）
     'app_map'          => [],
     // 域名绑定（自动多应用模式有效）
-    'domain_bind'      => [
-        '' => '',
-    ],
+    'domain_bind'      => [],
     // 禁止URL访问的应用列表（自动多应用模式有效）
     'deny_app_list'    => [],
 
@@ -36,4 +34,7 @@ return [
     'success_tmpl'=> app()->getRootPath() . 'view\admin\tpl\success_tmpl.tpl',
     // 404模板
     'error_404_tmpl'=> app()->getRootPath() . 'view\admin\tpl\error_404_tmpl.tpl',
+
+    'trusted_proxies' => ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'],
+    'proxy_server_ip_header' => ['X-Forwarded-For', 'X-Real-IP'],
 ];

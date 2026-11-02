@@ -17,6 +17,7 @@ class Book extends Base{
 		parent::initialize();
 		$this->conf = SetupSyService::getConfig($this->sy_id);
 		$this->service = new BookService();
+		// dump($this->conf);
 		View::assign([
 			'conf' => $this->conf,
 		]);
@@ -28,14 +29,7 @@ class Book extends Base{
 			
 		}else{
 			$searchItem = request()->param();
-			$keyword = $searchItem['keyword']??'';
-			$where = [];
-			if(!empty($keyword)){
-				$where[] = ["title", "like", "%" . $keyword . "%"];
-			}
-			$lists = $this->service->getListAll(['where' => $where ,'order' => 'wtime desc'],true,[]);
 			View::assign([
-				'lists' => $lists,
 				'searchItem' => $searchItem,
 			]);
 			return View::fetch();
@@ -50,6 +44,7 @@ class Book extends Base{
 	public function setconfig(){
 		if(request()->isPost()){
 			$conf = request()->param();
+			
 			try{
 				$update = SetupSyService::update($this->sy_id,$conf);
 				Base::master_log($this->langHtml['tip']['edit'].$conf['sy']['name'].$this->langHtml['tip']['system'].$this->langHtml['tip']['configFile']);
@@ -65,16 +60,6 @@ class Book extends Base{
 
 	public function default(){
 		if(request()->isPost()){
-			$data = request()->param();
-			$can = '';
-			if(!empty($data['chakan'])){
-				$can .= '&chakan='.$data['chakan'];
-			}
-			if(!empty($data['keyword'])){
-				$can .= '&keyword='.$data['keyword'];
-			}
-			$can_str = ltrim($can,'&');
-			return json(['code'=>200,'where'=>$can_str,'msg'=>$this->langHtml['tip']['loading']]);
 		}else{
 			if(empty($this->conf)){
 				return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['configSettingsFile'].'</h1>';
@@ -82,35 +67,63 @@ class Book extends Base{
 			}
 			$searchItem = request()->param();
 
-			$where[] = ['id_re','=',0];
-			if(!empty($searchItem['chakan'])){
-				if($searchItem['chakan'] == 'chakan1'){
-					$where[] = ['chakan','=',1];
-				}else if($searchItem['chakan'] == 'chakan2'){
-					$where[] = ['chakan','=',0];
-				}else if($searchItem['chakan'] == 'huifu1'){
-					$where[] = ['huifu','=',1];
-				}else if($searchItem['chakan'] == 'huifu2'){
-					$where[] = ['huifu','=',0];
-				}else if($searchItem['chakan'] == 'pass1'){
-					$where[] = ['pass','=',1];
-				}else if($searchItem['chakan'] == 'pass2'){
-					$where[] = ['pass','=',0];
-				}
-			}
-			if(!empty($searchItem['keyword'])){
-				$where[] = ['title','like','%'.$searchItem['keyword'].'%'];
-			}
+			// $where[] = ['id_re','=',0];
+			// if(!empty($searchItem['chakan'])){
+			// 	if($searchItem['chakan'] == 'chakan1'){
+			// 		$where[] = ['chakan','=',1];
+			// 	}else if($searchItem['chakan'] == 'chakan2'){
+			// 		$where[] = ['chakan','=',0];
+			// 	}else if($searchItem['chakan'] == 'huifu1'){
+			// 		$where[] = ['huifu','=',1];
+			// 	}else if($searchItem['chakan'] == 'huifu2'){
+			// 		$where[] = ['huifu','=',0];
+			// 	}else if($searchItem['chakan'] == 'pass1'){
+			// 		$where[] = ['pass','=',1];
+			// 	}else if($searchItem['chakan'] == 'pass2'){
+			// 		$where[] = ['pass','=',0];
+			// 	}
+			// }
+			// if(!empty($searchItem['keyword'])){
+			// 	$where[] = ['title','like','%'.$searchItem['keyword'].'%'];
+			// }
 
-			$lists = $this->service->getListAll(['where' => $where ,'order' => 'wtime desc'],false,[]);
+			// $lists = $this->service->getListAll(['where' => $where ,'order' => 'wtime desc'],false,[]);
 
 			View::assign([
-				'lists' => $lists,
 				'searchItem' => $searchItem,
 			]);
 
 			return View::fetch();
 		}
+	}
+
+
+	public function index(?array $params = []){
+		$param = request()->param();
+		$param['order'] = $params['order'] ?? 'wtime desc,id desc';
+		$param['with'] = '';
+		$where[] = ['id_re','=',0];
+		if(!empty($params['chakan'])){
+			if($params['chakan'] == 'chakan1'){
+				$where[] = ['chakan','=',1];
+			}else if($params['chakan'] == 'chakan2'){
+				$where[] = ['chakan','=',0];
+			}else if($params['chakan'] == 'huifu1'){
+				$where[] = ['huifu','=',1];
+			}else if($params['chakan'] == 'huifu2'){
+				$where[] = ['huifu','=',0];
+			}else if($params['chakan'] == 'pass1'){
+				$where[] = ['pass','=',1];
+			}else if($params['chakan'] == 'pass2'){
+				$where[] = ['pass','=',0];
+			}
+		}
+		$param['where'] = $where;
+
+		if(!empty($params)){
+			$param = $params;
+		}
+		return $this->dataTable($this->service,$param);
 	}
 
 	public function show(){

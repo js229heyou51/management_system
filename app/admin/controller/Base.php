@@ -40,7 +40,8 @@ class Base extends \app\BaseController{
 	protected function initialize(){
 		$this->route = request()->controller();
 		$rememberToken = cookie('remember_token')??session('remember_token');
-		$this->admin = new MasterService()->getByWhere(['remember_token'=>$rememberToken]);
+		$this->admin = (new MasterService())->getByWhere(['remember_token'=>$rememberToken]);
+		// dump(lang());
 		$this->lang = Lang::getLangSet();
 		$this->langHtml = Lang::get();
 		$this->color = cookie('color');
@@ -572,6 +573,30 @@ class Base extends \app\BaseController{
 		}
 		return true;
 	}
+	
+	public function dataTable($service,$params){
+
+		$where['page'] = $params['page'] ?? 1;
+		$where['limit'] = $params['limit'] ?? 15;
+		$where['where'] = $params['where']??'';
+		$where['order'] = $params['order']??'';
+		$where['keyword'] = $params['keyword']??'';
+		$where['with'] = $params['with']??'';
+		$where['withCount'] = $params['withCount']??'';
+		$where['startTime'] = $params['startDate'] ?? '';
+		$where['endTime'] = $params['endDate'] ?? '';
+		$where['isTrashed'] = (bool)($params['isTrashed']??false);
+
+		$lists = $service->getList($where);
+		// dump($lists->items());die;
+		$count = $service->count($where);
+		return [
+			'code'=>0,
+			'msg'=>lang('tip')['success'],
+			'count' => $count,
+			'data' => $lists->items()
+		];
+	}
 
 	public function defaultCommon($data){
 		$can = '';
@@ -620,7 +645,7 @@ class Base extends \app\BaseController{
 			return json(['code'=>201,'msg'=>lang('tip')['id'].lang('tip')['cannotBeEmpty']]);
 		}
 		try{
-			$update = $service->update($id,$data);
+			$update = $service->update($id,$data,false);
 			$this->master_log(lang('tip')['edit'].$conf['sy']['name'].lang('tip')['information'].'：'.$data['title']);
 			return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
 		}catch (\Exception $e){

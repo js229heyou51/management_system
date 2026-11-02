@@ -106,7 +106,7 @@ if (!function_exists('categoryTree')) {
 
 if (!function_exists('listTree')) {
 	// 分类
-	function listTree($array=[] , $i="",$conf=[],$zt=false,$url,$type=0){
+	function listTree($array=[] , $i="",$conf=[],$zt=false,$url='',$type=0){
 		if($i == ''){
 			$i = '&nbsp;&nbsp; ';
 		}else{

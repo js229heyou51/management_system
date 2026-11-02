@@ -8,18 +8,18 @@
 		
 		var colsInit = [
 			{type: 'checkbox', fixed: 'left'},
-			{field: 'px', title: '{$langHtml.common.sort}', width: 60, align: 'center',sort:'desc', fixed: 'left',edit: 'text'},
-			{field: 'id_lm', title: '{$langHtml.common.id}', width: 80, align: 'center'},
-			{field: 'title_lm', title: '{$langHtml.common.title}'},
-			{field: 'wtime', title: '{$langHtml.common.time}', width: 160, sort:'desc',align: 'center'},
-			{field: '', title: '{$langHtml.common.state}', width: 270 , maxWidth:300, align: 'center',templet: '#state'}
+			{field: 'px', title: '{:lang('common')['sort']??''}', width: 60, align: 'center',sort:'desc', fixed: 'left',edit: 'text'},
+			{field: 'id_lm', title: '{:lang('common')['id']??''}', width: 80, align: 'center'},
+			{field: 'title_lm', title: '{:lang('common')['title']??''}'},
+			{field: 'wtime', title: '{:lang('common')['time']??''}', width: 160, sort:'desc',align: 'center'},
+			{field: '', title: '{:lang('common')['state']??''}', width: 270 , maxWidth:300, align: 'center',templet: '#state'}
 		];
 		var initData = {
 			url: '{$Request.root}/{$route}/',
 			table: table,
 			elem: 'dataTable',
 			data: {:json_encode($lists)},
-			langText: {:json_encode($langHtml.common)},
+			langText: {:json_encode(lang('common'))},
 			colsInit : colsInit,
 			colsType: false,
 			recycleType: true,

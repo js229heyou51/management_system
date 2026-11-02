@@ -29,9 +29,11 @@ class Gallery extends Base
 
 		$params = request()->param();
 		$page = $params['page'] ?? '1';
+		$limit = $params['limit'] ?? 18;
+		unset($params['limit']);
 		$keyword = $params['params'] ?? [];
 		if(request()->isPost()){
-			$lists = GalleryService::getList($params,$page);
+			$lists = GalleryService::getList($params,$page,$limit);
 			$pages = $lists->render();
 			$items = $lists->items();
 			$photos = array_map(function($item){
@@ -43,7 +45,7 @@ class Gallery extends Base
 			}, $items);
 			return json(['code' => 200, 'lists' => $lists, 'pages' => $pages, 'params' => $params,'photos' => $photos,]);
 		}else{
-			$lists = GalleryService::getList($params,$page);
+			$lists = GalleryService::getList($params,$page,$limit);
 			$pages = $lists->render();
 
 			$items = $lists->items();
@@ -64,6 +66,7 @@ class Gallery extends Base
 				'lists' => $lists,
 				'params' => $params,
 				'pages' => $pages,
+				'limit' => $limit,
 				'photos' => $photos,
 			]);
 			return View::fetch();

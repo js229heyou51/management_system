@@ -10,6 +10,7 @@ use think\facade\Cookie;
 use think\facade\Session;
 use app\common\model\Master as M;
 use app\admin\validate\Login as V;
+use app\common\utils\RateLimiter;
 
 class Login extends Base{
 	public function index(){
@@ -48,14 +49,21 @@ class Login extends Base{
 				// 'lang'=> $this->lang,
 			];
 
+			$limiter = new RateLimiter(5, 900);
+			$ip = request()->ip(true);
+
 			$user = M::where($where)->find();
 			if(!$user){
 				Base::master_log($username.$this->langHtml['tip']['noData'],$username);
+				$limiter->assertNotLocked($ip, 'admin-login');   // 维度一：来源 IP
+				$limiter->hit($ip, 'admin-login');
 				return json(array('code'=>201,'msg' => $this->langHtml['tip']['noData']));
 			}
 
 			if($user->pass == 0){
 				Base::master_log($username.$this->langHtml['tip']['notPermission'],$username);
+				$limiter->assertNotLocked($ip, 'admin-login');   // 维度一：来源 IP
+				$limiter->hit($ip, 'admin-login');
 				return json(array('code'=>201,'msg' => $this->langHtml['tip']['notPermission']));
 			}
 			if($user->error_num < 3 || ($user->error_time > 0 && (time() - $user->error_time) > 900)){
@@ -65,6 +73,8 @@ class Login extends Base{
 					}else{
 						M::where('id',$user->id)->update(['error_num' => $user->error_num + 1]);
 					}
+					$limiter->assertNotLocked($ip, 'admin-login');   // 维度一：来源 IP
+					$limiter->hit($ip, 'admin-login');
 					Base::master_log($username.$this->langHtml['tip']['passwordError'],$username);
 					return json(array('code'=>201,'msg' => $this->langHtml['tip']['passwordError']));
 				}else{
@@ -102,9 +112,12 @@ class Login extends Base{
 					];
 					Session::set('remember_token',$rememberToken);
 					Base::master_log($username.$this->langHtml['tip']['loginSuccess'],$username);
+					$limiter->clear($ip, 'admin-login'	);
 					return json(array('code'=>200,'msg' => $this->langHtml['tip']['loginSuccess']));
 				}
 			}else{
+				$limiter->assertNotLocked($ip, 'admin-login');   // 维度一：来源 IP
+				$limiter->hit($ip, 'admin-login');
 				return json(array('code'=>201,'msg' => $this->langHtml['tip']['errorTip']));
 			}
 		}

@@ -1,32 +1,32 @@
 <div class="layui-step" id="layui-seo" >
 	<form class="layui-form">
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.pageTitle}</label>
+			<label class="layui-form-label">{:lang('common')['pageTitle']??''}</label>
 			<div class="layui-input-block">
-				<textarea class="layui-textarea" id="ym_tit" name="ym_tit" placeholder="{$langHtml.common.pageTitle}">{$find.ym_tit??''}</textarea>
-				<div class="layui-form-mid layui-word-aux">{$langHtml.common.pageTitleTip}</div>
+				<textarea class="layui-textarea" id="ym_tit" name="ym_tit" placeholder="{:lang('common')['pageTitle']??''}">{$find.ym_tit??''}</textarea>
+				<div class="layui-form-mid layui-word-aux">{:lang('common')['pageTitleTip']??''}</div>
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.pageKeyword}</label>
+			<label class="layui-form-label">{:lang('common')['pageKeyword']??''}</label>
 			<div class="layui-input-block">
-				<textarea class="layui-textarea" id="ym_key" name="ym_key" placeholder="{$langHtml.common.pageKeyword}">{$find.ym_key??''}</textarea>
-				<div class="layui-form-mid layui-word-aux">{$langHtml.common.pageKeywordTip}</div>
+				<textarea class="layui-textarea" id="ym_key" name="ym_key" placeholder="{:lang('common')['pageKeyword']??''}">{$find.ym_key??''}</textarea>
+				<div class="layui-form-mid layui-word-aux">{:lang('common')['pageKeywordTip']??''}</div>
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.pageDesc}</label>
+			<label class="layui-form-label">{:lang('common')['pageDesc']??''}</label>
 			<div class="layui-input-block">
-				<textarea class="layui-textarea" id="ym_des" name="ym_des" placeholder="{$langHtml.common.pageDesc}">{$find.ym_des??''}</textarea>
-				<div class="layui-form-mid layui-word-aux">{$langHtml.common.pageDescTip}</div>
+				<textarea class="layui-textarea" id="ym_des" name="ym_des" placeholder="{:lang('common')['pageDesc']??''}">{$find.ym_des??''}</textarea>
+				<div class="layui-form-mid layui-word-aux">{:lang('common')['pageDescTip']??''}</div>
 			</div>
 		</div>
 	</form>
 	
 	<div class="layui-form-item" style="margin-top:10px;">
 		<div class="layui-input-block">
-			<button type="button" class="layui-btn layui-btn-primary layui-border" onclick="step('prev')">{$langHtml.common.prevStep}</button>
-			<button type="button" class="layui-btn layui-bg-color" onclick="save()">{$langHtml.common.save}</button>
+			<button type="button" class="layui-btn layui-btn-primary layui-border" onclick="step('prev')">{:lang('common')['prevStep']??''}</button>
+			<button type="button" class="layui-btn layui-bg-color" onclick="save()">{:lang('common')['save']??''}</button>
 		</div>
 	</div>
 </div>

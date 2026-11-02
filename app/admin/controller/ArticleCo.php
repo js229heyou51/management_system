@@ -42,15 +42,8 @@ class ArticleCo extends Base{
 			
 		}else{
 			$searchItem = request()->param();
-			$keyword = $searchItem['keyword']??'';
-			$where = [];
-			if(!empty($keyword)){
-				$where[] = ["title", "like", "%" . $keyword . "%"];
-			}
-			$lists = $this->service->getListAll($where,true);
 			$category = $this->categoryService->getCategoryList();
 			View::assign([
-				'lists' => $lists,
 				'category' => $category,
 				'searchItem' => $searchItem,
 			]);
@@ -73,25 +66,29 @@ class ArticleCo extends Base{
 	 */
 	public function default(){
 		if(request()->isPost()){
-			$data = request()->param();
-			return $this->defaultCommon($data);
 		}else{
 			if(empty($this->conf)){
 				return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['configSettingsFile'].'</h1>';
 				die();
 			}
 			$searchItem = request()->param();
-			$params['where'] = $this->setWhere($searchItem);
-			$params['keyword'] = $searchItem['keyword']??'';
-			$lists = $this->service->getListAll($params);
 			$category = $this->categoryService->getCategoryList([],['info']);
 			View::assign([
-				'lists' => $lists,
 				'category' => $category,
 				'searchItem' => $searchItem
 			]);
 			return View::fetch();
 		}
+	}
+
+	public function index(?array $params = []){
+		$param = request()->param();
+		$param['order'] = $params['order'] ?? 'ding desc,px desc,wtime desc,id desc';
+		$param['with'] = 'profile';
+		if(!empty($params)){
+			$param = $params;
+		}
+		return $this->dataTable($this->service,$param);
 	}
 
 	/**
@@ -170,10 +167,10 @@ class ArticleCo extends Base{
 		$content = '用“'.$tit.'”生成一篇通俗易懂的文章';
 
 		if($is_auth == 1){
-			$content .= '，然后在文章里面适当位置，添加网易外贸通经销商';
+			$content .= '，然后在文章里面适当位置，添加网易外贸通经销商--广州合优网络科技有限公司的介绍和电话020-82591888';
 		}
 		if($is_auth == 2){
-			$content .= '，然后在文章里面适当位置，添加咨询电话';
+			$content .= '，然后在文章里面适当位置，添加咨询电话400-669-6649';
 		}
 
 		$result = $client->chat()->completions([

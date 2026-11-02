@@ -48,57 +48,64 @@ class FeedService
 			Log::info('投喂文章：没有网站'.Lang::get('tip')['noData']);
 			return json(['code'=>400,'msg'=>'没有选择网站']);
 		}
-		// dump($find['web_str']);die;
+
+		$recordTotal = FeedRecord::where('feed_id',$id)->whereTime('wtime','today')->count(); //今日发布记录数
+		// dump($num);die;
+		if($recordTotal >= $num){
+			Log::info('投喂文章：该任务已超出今日发布数量');
+			return json([
+				'code' => 400,
+				'msg' => '该任务已超出今日发布数量',
+			]);
+		}
+		$quantity = $num - $recordTotal; // 今日剩余文章数
+		// 随机获取 $num 篇文章
+		$article = ArticleCo::with('profile')->where('lm','=',$find['article_str'])->where('pass','=',1)->where($where)->where('read_num',0)->orderRaw('rand()')->limit($quantity)->select()->toArray();
+		$artCount = ArticleCo::where('lm','=',$find['article_str'])->where('pass','=',1)->where('read_num',0)->where($where)->orderRaw('rand()')->limit($quantity)->count();
+		if($artCount <= 0){
+			Log::info('投喂文章：当前没有可用文章');
+			return json([
+				'code' => 400,
+				'msg' => '当前没有可用文章',
+			]);
+		}
+		// dump($quantity);die;
 		if($find['web_str']){
 			// 有多少个网站需要发布文章
 			$web = WebCo::with([
-				'profile' => function($query){
-					$query->field('id_lm,title_lm');
-				}
-			])->where('id','in',$find['web_str'])->field('lm,tlm,title,tfile,table_co,table_lm,link_url,web_url,id,release,folder_path')->where('pass','=',1)->select()->toArray();
+						'profile' => function($query){
+							$query->field('id_lm,title_lm');
+						}
+					])->where('id','in',$find['web_str'])->field('lm,tlm,title,tfile,table_co,table_lm,link_url,web_url,id,release,folder_path')->where('pass','=',1)->select()->toArray();
 			$count = WebCo::where('id','in',$find['web_str'])->where('pass','=',1)->count();
+			
 			if($count <= 0){
 				Log::info('投喂文章：'.Lang::get('tip')['noData']);
 				return json(['code'=>400,'msg'=>Lang::get('tip')['noData']]);
 			}
 			
-			// 随机获取 $num 篇文章
-			$article = ArticleCo::with('profile')->where('lm','=',$find['article_str'])->where('pass','=',1)->where($where)->where('read_num',0)->orderRaw('rand()')->limit($num)->select()->toArray();
-			$artCount = ArticleCo::where('lm','=',$find['article_str'])->where('pass','=',1)->where('read_num',0)->where($where)->orderRaw('rand()')->limit($num)->count();
-			if($artCount <= 0){
-				Log::info('投喂文章：当前没有可用文章');
-				return json([
-					'code' => 400,
-					'msg' => '当前没有可用文章',
-				]);
-			}
-
-			$recordTotal = FeedRecord::where('feed_id',$id)->whereTime('wtime','today')->count();
-
-			if($recordTotal >= $num){
-				Log::info('投喂文章：该任务已超出今日发布数量');
-				return json([
-					'code' => 400,
-					'msg' => '该任务已超出今日发布数量',
-				]);
-			}
-			$artKey = $num - $recordTotal;
-			$webReleaseCount = 0;
+			$artKey = $quantity; // 今日总剩余文章数 4
+			$webReleaseCount = 0; // 网站发布数量
+			$finishRelease = false;
 			foreach ($web as $k => $v) {
-				$recordCount = FeedRecord::where('web_id',$v['id'])->whereTime('wtime','today')->count();
-				if(empty($v['release']) || $v['release'] <= $recordCount){
+				$recordCount = FeedRecord::where('web_id',$v['id'])->whereTime('wtime','today')->count(); // 当前网站发布数
+				// dump($recordCount);die;
+				if(empty($v['release']) || $v['release'] <= $recordCount){ // 超出该网站今日发布数量跳过该网站
 					$webReleaseCount++;
 					continue;
 				}
-
-				for ($i=0; $i < $v['release']; $i++) { 
-					$artKey --;
+				$webRelease = $v['release'] - $recordCount; //该网站剩余待发布的数量 
+				if($webRelease < $artKey){ // 当剩余数量小于文章数量 
+					$artKey = $webRelease; // 
+				}
+				for ($i=0; $i < $webRelease; $i++) {  // 剩余数量循环发布
+					$artKey --; // 文章的最大下标  // 该网站发布完$artKey篇文章后，再发布其他网站
 					if(isset($article[$artKey])){
 						try{
 							$client = new Client([
 								'verify' => false,
 							]);
-
+    
 							$url = $v['link_url'] ?? '';
 							if(empty($url)){
 								Log::info('投喂文章：链接不能为空');
@@ -113,7 +120,9 @@ class FeedService
 							$postData['keyword'] = $article[$artKey]['keyword'] ?? '';
 							$postData['f_body'] = $article[$artKey]['f_body'] ?? '';
 							$postData['z_body'] = $article[$artKey]['z_body'] ?? '';
+							$postData['ym_tit'] = $article[$artKey]['ym_tit'] ?? '';
 							$postData['ym_key'] = $article[$artKey]['ym_key'] ?? '';
+							$postData['ym_des'] = $article[$artKey]['ym_des'] ?? '';
 							$postData['table_co'] = $v['table_co'] ?? '';
 							$postData['table_lm'] = $v['table_lm'] ?? '';
 							$postData['folder_path'] = $v['folder_path'] ?? '';
@@ -131,6 +140,7 @@ class FeedService
 									'postData' => $postData,
 								]
 							]);
+							// dump($response->getBody());die;
 							// 获取状态码
 							$statusCode = $response->getStatusCode();
 							
@@ -163,6 +173,12 @@ class FeedService
 								$updateData['read_num'] = $article[$artKey]['read_num'] + 1;
 								$update = ArticleCo::where('id',$article[$artKey]['id'])->update($updateData);
 								Log::info('投喂文章：'.$article[$artKey]['title'].'到网站:'.$title);
+
+								$recordCount ++ ;
+								if(empty($v['release']) || $v['release'] <= $recordCount){ // 超出该网站今日发布数量跳过该网站
+									$finishRelease = true;
+									continue 2;
+								}
 								// sleep(2);
 							}else{
 								$web_url = '';
@@ -199,10 +215,17 @@ class FeedService
 						}
 					}
 				}
+				// 目前的是重复发布文章
 				if($find['is_repeat'] == 1){
-					$artKey = $num - $recordTotal;
+					$artKey = $quantity;
 				}
 				
+			}
+			if($finishRelease){
+				return json([
+					'code' => 200,
+					'msg' => '投喂成功'
+				]);
 			}
 			if($webReleaseCount >= $count){
 				Log::info('已超出今日发布数量');
@@ -212,12 +235,6 @@ class FeedService
 				]);
 			}
 		}
-
-
-		return json([
-			'code' => 200,
-			'msg' => '投喂成功'
-		]);
 	}
 }
 ?>

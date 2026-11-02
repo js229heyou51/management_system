@@ -5,20 +5,20 @@
 
 		const isState = window.extraOptions?.isState ?? ('{$conf.co.ding??''}' || '{$conf.co.tuijian??''}' || '{$conf.co.hot??''}' || '{$conf.co.pass??''}' ? true : false);
 		const stateWidth = window.extraOptions?.stateWidth ?? '{:getStateWidth($conf??[])}';
-		const data = window.extraOptions?.data ?? {:json_encode($lists)};
-		const langText = window.extraOptions?.langText ?? {:json_encode($langHtml.common)};
+		const langText = window.extraOptions?.langText ?? {:json_encode(lang('common'))};
 		const extraOptions = window.extraOptions ?? {};
 
 		var initOptions = {
 			url: '{$Request.root}/{$route}/',
 			table: table,
 			elem: 'dataTable',
-			data: data,
+			// data: data,
 			langText: langText,
 			colsType: true,
 			recycleType:false,
 			isState: isState,
 			stateWidth: stateWidth,
+			where: { lm: "{$searchItem.lm??''}", zt_val: "{$searchItem.zt_val??''}", keyword: "{$searchItem.keyword??''}",startDate: "{$searchItem.startDate??''}", endDate: "{$searchItem.endDate??''}" },
 			...extraOptions
 		}
 

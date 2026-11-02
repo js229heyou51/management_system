@@ -2,39 +2,39 @@
 	<form class="layui-form">
 		{if ($conf.sy.need_lm == true)}
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.category}</label>
+			<label class="layui-form-label">{:lang('common')['category']??''}</label>
 			<div class="layui-input-block">
 				<select name="lm" id="lm" lay-filter="lm" lay-search="{caseSensitive:false, fuzzy: false}">
-					<option value=''>{$langHtml.common.primaryCategory}</option>
+					<option value=''>{:lang('common')['primaryCategory']??''}</option>
 					{:categoryTree($category,0,'',$find.lm??'')}
 				</select>
 			</div>
 		</div>
 		{/if}<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.title}</label>
+			<label class="layui-form-label">{:lang('common')['title']??''}</label>
 			<div class="layui-input-block">
-				<input type="text" class="layui-input" name="title" placeholder="{$langHtml.common.enter}{$langHtml.common.title}" value="{$find.title??''}">
+				<input type="text" class="layui-input" name="title" placeholder="{:lang('common')['enter']??''}{:lang('common')['title']??''}" value="{$find.title??''}">
 			</div>
 		</div>{if (isset($conf.co.apname) && $conf.co.apname == true)}
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.apname}</label>
+			<label class="layui-form-label">{:lang('common')['apname']??''}</label>
 			<div class="layui-input-inline">
-				<input type="text" class="layui-input" name="apname" placeholder="{$langHtml.common.enter}{$langHtml.common.apname}" value="{$find.apname??''}">
+				<input type="text" class="layui-input" name="apname" placeholder="{:lang('common')['enter']??''}{:lang('common')['apname']??''}" value="{$find.apname??''}">
 			</div>
-			<div class="layui-form-mid layui-word-aux">{$langHtml.common.apnameTip}</div>
+			<div class="layui-form-mid layui-word-aux">{:lang('common')['apnameTip']??''}</div>
 		</div>
 		{/if}{if (isset($conf.co.keyword) && $conf.co.keyword == true)}
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.keyword}</label>
+			<label class="layui-form-label">{:lang('common')['keyword']??''}</label>
 			<div class="layui-input-block">
-				<input type="text" class="layui-input" name="keyword" placeholder="{$langHtml.common.enter}{$langHtml.common.keyword}" value="{$find.keyword??''}">
+				<input type="text" class="layui-input" name="keyword" placeholder="{:lang('common')['enter']??''}{:lang('common')['keyword']??''}" value="{$find.keyword??''}">
 			</div>
 		</div>
 		{/if}{if (isset($conf.co.link_url) && $conf.co.link_url == true)}
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.link}</label>
+			<label class="layui-form-label">{:lang('common')['link']??''}</label>
 			<div class="layui-input-block">
-				<input type="text" class="layui-input" name="link_url" placeholder="{$langHtml.common.enter}{$langHtml.common.link}" value="{$find.link_url??''}">
+				<input type="text" class="layui-input" name="link_url" placeholder="{:lang('common')['enter']??''}{:lang('common')['link']??''}" value="{$find.link_url??''}">
 			</div>
 		</div>
 		{/if}
@@ -43,21 +43,21 @@
 		{/if}
 		{if (isset($conf.co.param_one) && $conf.co.param_one == true)}
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.param_one}</label>
+			<label class="layui-form-label">{:lang('common')['param_one']??''}</label>
 			<div class="layui-input-block">
-				<input type="text" class="layui-input" name="param_one" placeholder="{$langHtml.common.enter}{$langHtml.common.param_one}" value="{$find.param_one??''}">
+				<input type="text" class="layui-input" name="param_one" placeholder="{:lang('common')['enter']??''}{:lang('common')['param_one']??''}" value="{$find.param_one??''}">
 			</div>
 		</div>
 		{/if}{if (isset($conf.co.price) && $conf.co.price == true)}
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.price}</label>
+			<label class="layui-form-label">{:lang('common')['price']??''}</label>
 			<div class="layui-input-block">
-				<input type="text" class="layui-input" name="price" placeholder="{$langHtml.common.enter}{$langHtml.common.price}" value="{$find.price??''}">
+				<input type="text" class="layui-input" name="price" placeholder="{:lang('common')['enter']??''}{:lang('common')['price']??''}" value="{$find.price??''}">
 			</div>
 		</div>
 		{/if}{if (isset($conf.co.img_sl) && $conf.co.img_sl == true)}
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.picture}</label>
+			<label class="layui-form-label">{:lang('common')['picture']??''}uploadImg</label>
 			<div class="layui-input-block">
 				<div class="upload-list" id="img_sl_list">
 					{if(isset($find.gallery_list))}
@@ -66,7 +66,7 @@
 					{/volist}
 					{/if}
 				</div><div class="layui-inline">
-					<div class="layui-upload-drag" onclick="uploadTool({elem:'img_sl',url:'{$Request.root}/Gallery/index',type:'image',title:'图片上传'})">
+					<div class="layui-upload-drag" onclick="uploadTool({elem:'img_sl',url:'{$Request.root}/Gallery/index',type:'image',title:'{:lang('common')['uploadImg']??''}'})">
 						<i class="layui-icon layui-icon-picture"></i> 
 					</div>
 				</div>
@@ -75,7 +75,7 @@
 		</div>
 		{/if}{if (isset($conf.co.pic_sl) && $conf.co.pic_sl == true)}
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.picture}</label>
+			<label class="layui-form-label">{:lang('common')['picture']??''}</label>
 			<div class="layui-input-block">
 				<div class="upload-list" id="pic_sl_list">
 					{if(isset($find.picList))}
@@ -93,14 +93,14 @@
 		</div>
 		{/if}{if (isset($conf.co.fil_sl) && $conf.co.fil_sl == true)}
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.file}</label>
+			<label class="layui-form-label">{:lang('common')['file']??''}</label>
 			<div class="layui-input-inline">
-				<button type="button" class="layui-btn layui-bg-color" id="fil_sl">{$langHtml.common.uploadFile}</button>
+				<button type="button" class="layui-btn layui-bg-color" id="fil_sl">{:lang('common')['uploadFile']??''}</button>
 			</div>
 			<div class="layui-form-mid layui-word-aux"></div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.fileLink}</label>
+			<label class="layui-form-label">{:lang('common')['fileLink']??''}</label>
 			<div class="layui-input-block" id="add_fil_sl">
 				<div class="upload_file_li"><input type="text" class="layui-input" name="fil_sl" value="{$find.fil_sl??''}" ><input type="hidden" name="fil_sl" value="{$find.fil_sl??''}"/></div>
 			</div>
@@ -110,7 +110,7 @@
 		</script>
 		{/if}{if (isset($conf.co.vid_sl) && $conf.co.vid_sl == true)}
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.video}</label>
+			<label class="layui-form-label">{:lang('common')['video']??''}</label>
 			<div class="layui-input-block">
 				<div id="vid_sl_list">
 					{if !(count($find.video_list??[]) == 0)}
@@ -134,14 +134,14 @@
 		</div>
 		{/if}{if (isset($conf.co.f_body) && $conf.co.f_body == true)}
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.desc}</label>
+			<label class="layui-form-label">{:lang('common')['desc']??''}</label>
 			<div class="layui-input-block">
-				<textarea class="layui-textarea" id="f_body" name="f_body" placeholder="{$langHtml.common.desc}">{$find.f_body??''}</textarea>
+				<textarea class="layui-textarea" id="f_body" name="f_body" placeholder="{:lang('common')['desc']??''}">{$find.f_body??''}</textarea>
 			</div>
 		</div>
 		{/if}{if (isset($conf.co.z_body) && $conf.co.z_body == true)}
 		<div class="layui-form-item">
-			<label class="layui-form-label" id="edit-det">{$langHtml.common.det}</label>
+			<label class="layui-form-label" id="edit-det">{:lang('common')['det']??''}</label>
 			<div class="layui-input-block">
 				<textarea id="z_body" name="z_body" style="width:100%;height:250px;">{$find.z_body??''}</textarea>
 			</div>				
@@ -151,23 +151,23 @@
 		</div>
 		{/if}{if (isset($conf.co.wtime) && $conf.co.wtime == true)}
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.releaseTime}</label>
+			<label class="layui-form-label">{:lang('common')['releaseTime']??''}</label>
 			<div class="layui-input-block">
 				<input type="text" name="wtime" id="wtime" lay-verify="datetime" placeholder="yyyy-MM-dd HH:mm:ss" value="{if(!empty($find.wtime))}{$find.wtime | date='Y-m-d H:i:s'}{else}{:date('Y-m-d H:i:s')}{/if}" autocomplete="off" class="layui-input">
 			</div>
 		</div>
 		{/if}
 		<div class="layui-form-item">
-			<label class="layui-form-label">{$langHtml.common.sort}</label>
+			<label class="layui-form-label">{:lang('common')['sort']??''}</label>
 			<div class="layui-input-inline">
-				<input type="text" class="layui-input" name="px" placeholder="{$langHtml.common.sort}" value="100" >
+				<input type="text" class="layui-input" name="px" placeholder="{:lang('common')['sort']??''}" value="100" >
 			</div>
 		</div>
 	</form>
 	<div class="layui-form-item" style="margin-top:10px;">
 		<div class="layui-input-block" id="edit-button">
-			<button type="button" class="layui-btn layui-btn-primary layui-border" onclick="step('next')">{$langHtml.common.nextStep}</button>
-			<button type="button" class="layui-btn layui-bg-color" onclick="save()">{$langHtml.common.save}</button>
+			<button type="button" class="layui-btn layui-btn-primary layui-border" onclick="step('next')">{:lang('common')['nextStep']??''}</button>
+			<button type="button" class="layui-btn layui-bg-color" onclick="save()">{:lang('common')['save']??''}</button>
 		</div>
 	</div>
 </div>

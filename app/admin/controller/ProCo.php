@@ -45,15 +45,8 @@ class ProCo extends Base{
 			
 		}else{
 			$searchItem = request()->param();
-			$keyword = $searchItem['keyword']??'';
-			$where = [];
-			if(!empty($keyword)){
-				$where[] = ["title", "like", "%" . $keyword . "%"];
-			}
-			$lists = $this->service->getListAll($where,true);
 			$category = $this->categoryService->getCategoryList();
 			View::assign([
-				'lists' => $lists,
 				'category' => $category,
 				'searchItem' => $searchItem,
 			]);
@@ -76,43 +69,26 @@ class ProCo extends Base{
 	 */
 	public function default(){
 		if(request()->isPost()){
-			$data = request()->param();
-			$can = '';
-			$lm = $data['lm']??'';
-			if(!empty($lm)){
-				$can .= '&lm='.$lm.'';
-			}
-			$zt_val = $data['zt_val']??'';
-			if(!empty($zt_val)){
-				$can .= '&zt_val='.$zt_val.'';
-			}
-			$keyword = $data['keyword']??'';
-			if(!empty($keyword)){
-				$can .= '&keyword='.$keyword;
-			}
-			$can_str = ltrim($can,'&');
-			return json(['code'=>200,'where'=>$can_str,'msg'=>lang('tip')['loading']]);
-
 		}else{
 			if(empty($this->conf)){
-				return '<h1 style="text-align:center;padding-top:30px;">'.lang('tip')['configSettingsFile'].'</h1>';
+				return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['configSettingsFile'].'</h1>';
 				die();
 			}
 			$searchItem = request()->param();
-			$params['where'] = $this->setWhere($searchItem);
-			$params['keyword'] = $searchItem['keyword']??'';
-			$lists = $this->service->getListAll($params);
 			$category = $this->categoryService->getCategoryList();
-
-			// dump($lists);
-
 			View::assign([
-				'lists' => $lists,
 				'category' => $category,
 				'searchItem' => $searchItem
 			]);
 			return View::fetch();
 		}
+	}
+
+	public function index(){
+		$param = request()->param();
+		$param['order'] = 'ding desc,px desc,wtime desc,id desc';
+		$param['with'] = 'profile';
+		return $this->dataTable($this->service,$param);
 	}
 
 	public function getParamJson($list_lm = ''){

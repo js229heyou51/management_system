@@ -11,11 +11,13 @@ use app\common\model\OrderNotes;
 use app\common\model\OrderMessage;
 use app\common\model\ProCo;
 use app\common\model\SetupSy as MS;
+use app\common\service\OrderService;
 
 class Order extends Base{
 
 	protected $middleware = ['AdminCheck','AdminPermission'];
 	protected $sy_id = 2;
+	protected $service;
 	protected $route;
 	protected $tableLmName;
 	protected $tableCoName;
@@ -24,6 +26,7 @@ class Order extends Base{
 	protected function initialize() {
 		parent::initialize();
 		$this->route = Request::controller();
+		$this->service = new OrderService();
 		$lists = MS::where('sy_id',$this->sy_id)->where('lang',$this->lang)->find();
 		if(!empty($lists['config'])){
 			$this->conf = unserialize($lists['config']);
@@ -200,6 +203,24 @@ class Order extends Base{
 			]);
 			return View::fetch();
 		}
+	}
+	public function index(?array $params = []){
+		$param = request()->param();
+		$param['order'] = $params['order'] ?? 'wtime desc,id desc';
+		$param['with'] = [
+				'userinfo',
+				'orderItem' => function($query){
+					$query -> with([
+						'productInfo' => function($query){
+							$query -> field('id,title,keyword,img_sl,param_one,price,stock,package');
+						}
+					]) -> field('id,order_id,goods_id,goods_name,goods_image,goods_price,quantity,specifications');
+				}
+			];
+		if(!empty($params)){
+			$param = $params;
+		}
+		return $this->dataTable($this->service,$param);
 	}
 
 	public function setconfig(){

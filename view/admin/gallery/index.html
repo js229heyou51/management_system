@@ -51,9 +51,10 @@
 			<div class="gallery-box">
 				<div class="gallery-header">
 					<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-sm layui-btn-disabled layui-bg-color" id="layui-choose">使用选中图片</button>
-						<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-on="layui-upload">上传图片</button>
-						<button type="button" class="layui-btn layui-btn-sm layui-btn-primary layui-btn-disabled layui-border" lay-on="layui-delSelect" id="layui-delSelect">删除图片</button>
+						<button type="button" class="layui-btn layui-btn-sm layui-btn-disabled layui-bg-color" id="layui-choose">使用选中</button>
+						<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-on="layui-upload">上传</button>
+						<button type="button" class="layui-btn layui-btn-sm layui-bg-color" lay-on="layui-selectAll">全选</button>
+						<button type="button" class="layui-btn layui-btn-sm layui-btn-primary layui-btn-disabled layui-border" lay-on="layui-delSelect" id="layui-delSelect">删除</button>
 					</div>
 					<div class="layui-inline layui-form gallery-select">
 						<select name="category_id" id="categoryMove" lay-filter="layui-move">
@@ -238,7 +239,7 @@
 
 
 		var idList = [];
-		window.getList = function(category_id = 0,page = 1,params = {}){
+		window.getList = function(category_id = 0,page = 1,params = {limit: {$limit??18}}){
 			$.post('{$Request.root}/Gallery/index',{category_id:category_id,page:page,...params},function(res){
 				if(res.code == 200){
 					var html = '';
@@ -296,7 +297,7 @@
 				$('.gallery-item .img.on').each(function(){
 					var sup = $(this).siblings('.number').find('.badge_content').text();
 					if(sup > _sup){
-						$(this).siblings('.number').find('.badge_content').text(sup-1);
+						$(this).siblings('.number').find('.badge_content').text(Number(sup-1));
 					}
 				})
 				idList = idList.filter(item => item.id !== id);
@@ -447,6 +448,50 @@
 					}
 				},'json');
 			},
+			'layui-selectAll': function(){
+				if($('.gallery-item .img.on').length == $('.gallery-item .img').length){
+					$('.gallery-item .img').siblings('.number').remove();
+					$('.gallery-item .img').removeClass('on');
+					idList = [];
+					return false;
+				}
+				$('.gallery-item .img').each(function(){
+					var that = this;
+					var len = $('.gallery-item .img.on').length;
+					if(len == $('.gallery-item .img').length){
+						$('.gallery-item .img').siblings('.number').remove();
+						$('.gallery-item .img').removeClass('on');
+						idList = [];
+						return false;
+					}
+					var id = $(that).data('id');
+					if(len > 0){
+						index = len + 1;
+					}else{
+						var index = $(that).parent().index();
+						index += 1;
+					}
+					if(!$(that).hasClass('on')){
+						$(that).before('<div class="number"><div class="badge"><a href="#" class="demo-badge"></a><sup class="badge_content is-fixed">'+index+'</sup></div></div>');
+					}
+					
+					$(that).addClass('on');
+					var src = $(that).find('img').attr('data-src');
+					var data = {id:id,src:src}
+					idList.push(data);
+					if(len > 0){
+						$('#layui-choose').removeClass('layui-btn-disabled');
+						$('#layui-choose').attr('lay-on','layui-choose');
+						$('#layui-delSelect').removeClass('layui-btn-disabled');
+						$('#layui-delSelect').attr('lay-on','layui-delSelect');
+					}else{
+						$('#layui-choose').addClass('layui-btn-disabled');
+						$('#layui-choose').attr('lay-on','');
+						$('#layui-delSelect').addClass('layui-btn-disabled');
+						$('#layui-delSelect').attr('lay-on','');
+					}
+				})
+			}
 
 		})
 		util.on('lay-blur', {
@@ -478,4 +523,3 @@
 
 	})
 </script>
-{include file="public/footer" /}

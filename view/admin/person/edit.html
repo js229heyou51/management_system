@@ -101,7 +101,7 @@
 							<i class="layui-icon layui-icon-picture"></i> 
 						</div>
 					</div>
-					<input type="hidden" name="img_sl" id="img_sl" value="{$find.img_sl??''}">
+					<input type="hidden" name="img_sl" id="img_sl" value="{:json_encode($find.img_sl??[])}">
 				</div>
 			</div>
 			{/if}

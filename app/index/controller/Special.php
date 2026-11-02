@@ -87,7 +87,6 @@ class Special extends Base{
 		$page = $productLists->render();
 
 		$industry = [];
-
 		View::assign([
 			'find' => $find,
 			'proCate' => $proCate,

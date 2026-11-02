@@ -19,6 +19,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use app\common\service\SetupSyService;
+use app\common\service\FeedRecordService;
 use app\common\service\FeedService as IS;
 use app\common\service\FeedCategoryService as CS;
 use app\common\service\ArticleCategoryService;
@@ -50,16 +51,8 @@ class FeedCo extends Base{
 			
 		}else{
 			$searchItem = Request::param();
-			$keyword = $searchItem['keyword']??'';
-			$where = [];
-			if(!empty($keyword)){
-				$where[] = ["title", "like", "%" . $keyword . "%"];
-			}
-			$lists = $this->service->getListAll($where,true);
 			$category = $this->categoryService->getCategoryList();
-
 			View::assign([
-				'lists' => $lists,
 				'category' => $category,
 				'searchItem' => $searchItem,
 			]);
@@ -74,44 +67,49 @@ class FeedCo extends Base{
 	// 信息首页
 	public function default(){
 		if(Request::isPost()){
-			$data = Request::param();
-			return $this->defaultCommon($data);
 		}else{
 			if(empty($this->conf)){
 				return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['configSettingsFile'].'</h1>';
 				die();
 			}
 			$searchItem = request()->param();
-			$params['where'] = $this->setWhere($searchItem);
-			$params['keyword'] = $searchItem['keyword']??'';
-			$withCount = [
-				'record' => function($query) {
-					$query->whereTime('wtime','today');
-				}];
-			$with = [
-					'article' => function($query){
-						$query->withCount([
-							'info' => function($query, &$alias) {
-								$query->where('lang','=',$this->lang);
-								$alias = 'info_count';
-							},
-							'usedInfo' => function($query, &$alias) {
-								$query->where('pass',1)->where('lang','=',$this->lang)->where('read_num','>', 0);
-								$alias = 'used_count';
-							},
-						]);
-					}
-				];
-			$lists = $this->service->getListAll($params,false,$with,$withCount);
 			$category = $this->categoryService->getCategoryList([],['info']);
 
 			View::assign([
-				'lists' => $lists,
 				'category' => $category,
 				'searchItem' => $searchItem
 			]);
 			return View::fetch();
 		}
+	}
+
+	public function index(?array $params = []){
+		$param = request()->param();
+		$param['order'] = $params['order'] ?? 'px desc,wtime desc,id desc';
+		$with = [
+				'article' => function($query){
+					$query->withCount([
+						'info' => function($query, &$alias) {
+							$query->where('lang','=',$this->lang);
+							$alias = 'info_count';
+						},
+						'usedInfo' => function($query, &$alias) {
+							$query->where('pass',1)->where('lang','=',$this->lang)->where('read_num','>', 0);
+							$alias = 'used_count';
+						},
+					]);
+				}
+			];
+		$param['with'] = $params['with'] ?? $with;
+		$withCount = [
+			'record' => function($query) {
+				$query->whereTime('wtime','today');
+			}];
+		$param['withCount'] = $params['withCount'] ?? $withCount;
+		if(!empty($params)){
+			$param = $params;
+		}
+		return $this->dataTable($this->service,$param);
 	}
 
 	// 添加信息
@@ -295,64 +293,26 @@ class FeedCo extends Base{
 
 	public function record(){
 		if(Request::isPost()){
-			$data = Request::param();
-			$can = '';
-			$lm = $data['lm']??'';
-			if(!empty($lm)){
-				$can .= '&lm='.$lm.'';
-			}
-			$zt_val = $data['zt_val']??'';
-			if(!empty($zt_val)){
-				$can .= '&zt_val='.$zt_val.'';
-			}
-			$keyword = $data['keyword']??'';
-			if(!empty($keyword)){
-				$can .= '&keyword='.$keyword;
-			}
-			$can_str = ltrim($can,'&');
-			return json(['code'=>200,'where'=>$can_str,'msg'=>$this->langHtml['tip']['loading']]);
-
 		}else{
 			if(empty($this->conf)){
 				return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['configSettingsFile'].'</h1>';
 				die();
 			}
 			$searchItem = Request::param();
-			$zt_val = $searchItem['zt_val']??'';
-			$keyword = $searchItem['keyword']??'';
-
-			$where[] = ['lang','=',$this->lang];
-			if($zt_val == 'pass1'){
-				$where[] = ["pass",'=', 1];
-			}else if($zt_val == 'pass2'){
-				$where[] = ["pass",'=', 0];
-			}
-			if(!empty($keyword)){
-				$where[] = ["title", "like", "%" . $keyword . "%"];
-			}
-			if(!empty($searchItem['startDate'])){
-				$where[] = ['wtime', '>', $searchItem['startDate']]; 
-			}
-			if(!empty($searchItem['endDate'])){
-				$where[] = ['wtime', '<', $searchItem['endDate']]; 
-			}
-			$limit = !empty((input('request.limit'))) ? (input('request.limit')) : '10';
-			$curr = !empty((input('request.curr'))) ? (input('request.curr')) : '1';
-
-			$count = FeedRecord::where($where)->count();
-			$lists = FeedRecord::where($where)->order('ding desc,px desc,id desc')->select();
-			$pageItem = [
-				'count' => $count,
-				'curr' => $curr,
-				'limit' => $limit,
-			];
 			View::assign([
-				'lists' => $lists,
-				'pageItem' => $pageItem,
 				'searchItem' => $searchItem,
 			]);
 			return View::fetch();
 		}
+	}
+	public function recordIndex(?array $params = []){
+		$param = request()->param();
+		$param['order'] = $params['order'] ?? 'px desc,wtime desc,id desc';
+		if(!empty($params)){
+			$param = $params;
+		}
+		$feedRecordService = new FeedRecordService();
+		return $this->dataTable($feedRecordService,$param);
 	}
 
 	// 删除信息
@@ -420,31 +380,12 @@ class FeedCo extends Base{
 	public function recycleRecord(){
 		if(Request::isPost()){
 			
-
 		}else{
-
 			$searchItem = Request::param();
-			$keyword = $searchItem['keyword']??'';
-			$where[] = ['lang','=',$this->lang];
-			if(!empty($keyword)){
-				$where[] = ["title", "like", "%" . $keyword . "%"];
-			}
-			$limit = !empty((input('request.limit'))) ? (input('request.limit')) : '5';
-			$curr = !empty((input('request.curr'))) ? (input('request.curr')) : '1';
-
-			$count = FeedRecord::onlyTrashed()->where($where)->count();
-			$lists = FeedRecord::onlyTrashed()->where($where)->order('ding desc,px desc,id desc')->page($curr,$limit)->select();
-			$pageItem = [
-				'count' => $count,
-				'curr' => $curr,
-				'limit' => $limit,
-			];
 			View::assign([
-				'lists' => $lists,
-				'pageItem' => $pageItem,
 				'searchItem' => $searchItem,
 			]);
-			return View::fetch();
+			return View::fetch('recycle_record');
 		}
 	}
 	public function recycle_makeRecord(){

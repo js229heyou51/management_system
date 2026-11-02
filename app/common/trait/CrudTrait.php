@@ -21,6 +21,75 @@ trait CrudTrait{
 	protected $model;
 
 	/**
+	 * 构建基础查询（count / getList 共用）
+	 */
+	private function buildQuery(array $params = [])
+	{
+		$query = $this->model->where('lang', Lang::getLangSet());
+		// 软删除
+		if (!empty($params['isTrashed'])) {
+			$query->onlyTrashed();
+		}
+		// 字段
+		if (!empty($params['field'])) {
+			$allowFields = ['id', 'lm', 'title', 'z_body', 'wtime', 'px', 'pass']; // 按实际需要改
+			$fields = array_intersect(
+				array_map('trim', explode(',', (string)$params['field'])),
+				$allowFields
+			);
+			if ($fields) {
+				$query->field($fields);
+			}
+		}
+
+		// 精确条件
+		if (!empty($params['where']) && is_array($params['where'])) {
+			$query->where($params['where']);
+		}
+
+		// 关键词
+		if (!empty($params['keyword'])) {
+			$query->whereLike('title|z_body', '%' . $params['keyword'] . '%');
+		}
+
+		// 时间条件：起止时间优先，其次 timeType
+		$startTime = $params['startTime'] ?? null;
+		$endTime   = $params['endTime'] ?? null;
+		$timeType  = $params['timeType'] ?? null;
+
+		if (!empty($startTime) && !empty($endTime)) {
+			$query->whereTime('wtime', 'between', [$startTime, $endTime]);
+		} elseif (!empty($startTime)) {
+			$query->whereTime('wtime', '>=', $startTime);
+		} elseif (!empty($endTime)) {
+			$query->whereTime('wtime', '<=', $endTime);
+		} elseif (!empty($timeType)) {
+			$query->whereTime('wtime', $timeType);
+		}
+
+		return $query;
+	}
+	/**
+	 * 排序白名单
+	 */
+	private function normalizeOrder(string $order): string
+	{
+		$allowFields = ['ding', 'px', 'wtime', 'id'];
+		$parts = [];
+		foreach (explode(',', $order) as $item) {
+			$item = trim($item);
+			if (!preg_match('/^([a-zA-Z0-9_]+)\s+(asc|desc)$/i', $item, $m)) {
+				continue;
+			}
+			if (!in_array($m[1], $allowFields, true)) {
+				continue;
+			}
+			$parts[] = $m[1] . ' ' . strtolower($m[2]);
+		}
+		return $parts ? implode(',', $parts) : 'px desc,wtime desc,id desc';
+	}
+
+	/**
 	 * [getById 根据id获取信息]
 	 * @param  [type] $id [ID]
 	 * @param  array  $params [参数]
@@ -57,14 +126,10 @@ trait CrudTrait{
 	 * @param  array  $where [条件]
 	 * @return [type]        [description]
 	 */
-	public function getByWhere(?array $where = [],?array $params = []): ?Model{
-		$query = $this->model->where('lang', Lang::getLangSet());
-		if(!empty($where)){
-			$query->where($where);
-		}
-		if(!empty($params['with'])){
-			$query->with($params['with']);
-		}
+	public function getByWhere(?array $params = []): ?Model{
+
+		$query = $this->buildQuery($params);
+
 		// 排序
 		$orderBy = 'wtime desc,id desc';
 		$query->order($orderBy);
@@ -337,26 +402,36 @@ trait CrudTrait{
 
 	/**
 	 * [getList 分页获取列表]
-	 * @param  array       $params [description]
+	 * @param  array       $params [description] isTrashed 软删除； where 是查询条件； with 是关联表； withCount 是关联表数量； keyword 是模糊查询； startTime 开始时间，endTime结束时间；order排序。
 	 * @param  int|integer $page   [description]
 	 * @param  int|integer $limit  [description]
 	 * @return [type]              [description]
 	 */
 	public function getList(?array $params = [], int $page = 1, int $limit = 18): Paginator{
-		$query = $this->model->where('lang', Lang::getLangSet());
-		if(!empty($params['where'])){
-			$query->where($params['where']);
-		}
-		if(!empty($params['with'])){
-			$query->with($params['with']);
+
+		$query = $this->buildQuery($params);
+		// 关联加载：限制允许的关联名，避免任意关联
+		$allowWith = ['profile', 'priceList']; // 按你项目实际关联改
+		if (!empty($params['with'])) {
+			$with = array_intersect((array)$params['with'], $allowWith);
+			if ($with) {
+				$query->with($with);
+			}
 		}
 
-		if (!empty($params['keyword'])) {
-			$query->whereLike('title|z_body', '%' . $params['keyword'] . '%');
+		if (!empty($params['withCount'])) {
+			$withCount = array_intersect((array)$params['withCount'], $allowWith);
+			if ($withCount) {
+				$query->withCount($withCount);
+			}
 		}
-		// 排序
-		$orderBy = $params['order'] ?? 'px desc,wtime desc,id desc';
+		// 排序：白名单校验，防止 SQL 注入
+		$orderBy = $this->normalizeOrder($params['order'] ?? 'px desc,wtime desc,id desc');
 		$query->order($orderBy);
+
+		$page  = max(1, (int)($params['page'] ?? 1));
+		$limit = (int)($params['limit'] ?? 18);
+		$limit = $limit > 0 ? min($limit, 100) : 18; // 限制最大条数，防止被刷
 
 		$lists = $query->paginate([
 			'list_rows' => $limit,
@@ -371,49 +446,6 @@ trait CrudTrait{
 			$this->loadVideos($lists->getCollection())
 		);
 
-		return $lists;
-	}
-
-	/**
-	 * [getListAll 获取全部列表]
-	 * @param  array        $params    [description]
-	 * @param  bool|boolean $isTrashed [description]
-	 * @param  array        $with      [description]
-	 * @param  array        $withCount [description]
-	 * @return [type]                  [description]
-	 */
-	public function getListAll(?array $params = [],?bool $isTrashed = false, array $with = ['profile'], array $withCount = []){
-		$query = $this->model->where('lang', Lang::getLangSet());
-		if($isTrashed){
-			$query->onlyTrashed();
-		}
-		if($with){
-			$query->with($with);
-		}
-		if($withCount){
-			$query->withCount($withCount);
-		}
-		if(!empty($params['field'])){
-			$query->field($params['field']);
-		}
-		if(!empty($params['where'])){
-			$query->where($params['where']);
-		}
-		if (!empty($params['keyword'])) {
-			$query->whereLike('title|z_body', '%' . $params['keyword'] . '%');
-		}
-		// 排序
-		$orderBy = $params['order'] ?? 'px desc,wtime desc,id desc';
-		$query->order($orderBy);
-		if(!empty($params['limit'])){
-			$query->limit($params['limit']);
-		}
-		// $count = $query->count();
-		$result = $query->select();
-		// 批量加载图片
-		$lists = $this->loadGalleries($result);
-		// 批量加载视频
-		$lists = $this->loadVideos($lists);
 		return $lists;
 	}
 
@@ -537,15 +569,13 @@ trait CrudTrait{
 
 	/**
 	 * [count 获取数量]
-	 * @param  array  $where [查询条件]
+	 * @param  array  $params [条件] isTrashed 软删除； where 是查询条件；keyword是模糊查询； $timeType 传 'today' / 'week' / 'month' / 'year'；startTime 开始时间，endTime结束时间；order排序。
 	 * @return [type]        [description]
 	 */
-	public function count(?array $where = []){
-		$query = $this->model->where('lang', Lang::getLangSet());
-		if (!empty($where)) {
-			$query->where($where);
-		}
-		return $query->count();
+	public function count(?array $params = []){
+		return $this->buildQuery($params)->count();
 	}
+
+	
 }
 ?>

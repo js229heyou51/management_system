@@ -42,15 +42,8 @@ class {{$table}}Co extends Base{
 			
 		}else{
 			$searchItem = request()->param();
-			$keyword = $searchItem['keyword']??'';
-			$where = [];
-			if(!empty($keyword)){
-				$where[] = ["title", "like", "%" . $keyword . "%"];
-			}
-			$lists = $this->service->getListAll($where,true);
 			$category = $this->categoryService->getCategoryList();
 			View::assign([
-				'lists' => $lists,
 				'category' => $category,
 				'searchItem' => $searchItem,
 			]);
@@ -73,22 +66,6 @@ class {{$table}}Co extends Base{
 	 */
 	public function default(){
 		if(request()->isPost()){
-			$data = request()->param();
-			$can = '';
-			$lm = $data['lm']??'';
-			if(!empty($lm)){
-				$can .= '&lm='.$lm.'';
-			}
-			$zt_val = $data['zt_val']??'';
-			if(!empty($zt_val)){
-				$can .= '&zt_val='.$zt_val.'';
-			}
-			$keyword = $data['keyword']??'';
-			if(!empty($keyword)){
-				$can .= '&keyword='.$keyword;
-			}
-			$can_str = ltrim($can,'&');
-			return json(['code'=>200,'where'=>$can_str,'msg'=>$this->langHtml['tip']['loading']]);
 
 		}else{
 			if(empty($this->conf)){
@@ -96,17 +73,23 @@ class {{$table}}Co extends Base{
 				die();
 			}
 			$searchItem = request()->param();
-			$params['where'] = $this->setWhere($searchItem);
-			$params['keyword'] = $searchItem['keyword']??'';
-			$lists = $this->service->getListAll($params);
 			$category = $this->categoryService->getCategoryList([],['info']);
 			View::assign([
-				'lists' => $lists,
 				'category' => $category,
 				'searchItem' => $searchItem
 			]);
 			return View::fetch();
 		}
+	}
+
+	public function index(?array $params = []){
+		$param = request()->param();
+		$param['order'] = $params['order'] ?? 'ding desc,px desc,wtime desc,id desc';
+		$param['with'] = 'profile';
+		if(!empty($params)){
+			$param = $params;
+		}
+		return $this->dataTable($this->service,$param);
 	}
 
 	/**

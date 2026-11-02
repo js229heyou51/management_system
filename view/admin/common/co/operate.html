@@ -1,10 +1,10 @@
 <script type="text/html" id="operateDemo">
 	<div class="layui-clear-space">
 		<button type="button" class="layui-btn layui-btn-xs layui-bg-color" lay-event="edit">
-			<i class="layui-icon layui-icon-edit"></i>{$langHtml.common.edit}
+			<i class="layui-icon layui-icon-edit"></i>{:lang('common')['edit']??''}
 		</button>
 		<button type="button" class="layui-btn layui-bg-red layui-btn-xs " lay-event="del">
-			<i class="layui-icon layui-icon-delete"></i>{$langHtml.common.delete}
+			<i class="layui-icon layui-icon-delete"></i>{:lang('common')['delete']??''}
 		</button>
 	</div>
 </script> 

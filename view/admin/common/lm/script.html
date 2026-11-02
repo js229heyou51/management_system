@@ -6,7 +6,7 @@
 		const MODULE_PATH = "{$Request.root}/{$route}/";
 		const isState = window.extraOptions?.isState ?? ('{$conf.lm.tuijian_lm??''}' || '{$conf.lm.hot_lm??''}' || '{$conf.lm.pass_lm??''}' ? true : false);
 		const stateWidth = window.extraOptions?.stateWidth ?? '{:getLmStateWidth($conf)}';
-		const langText = window.extraOptions?.langText ?? {:json_encode($langHtml.common)};
+		const langText = window.extraOptions?.langText ?? {:json_encode(lang('common'))};
 		const extraOptions = window.extraOptions ?? {};
 
 		let config = {

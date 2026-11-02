@@ -36,7 +36,8 @@
     "wechatpay/wechatpay": "^1.4",
     "topthink/think-ai": "^1.0",
     "erusev/parsedown": "^1.8",
-    "firebase/php-jwt": "^7.0"
+    "firebase/php-jwt": "^7.0",
+    "yansongda/pay": "~3.7.0"
   },
   "require-dev": {
     "topthink/think-dumper": "^1.0",

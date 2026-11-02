@@ -3,26 +3,26 @@
 {block name="search"}
 	<form action="" class="layui-form" id="sform">
 		<div class="layui-inline">
-			<label>{$langHtml.common.search}</label>
+			<label>{:lang('common')['search']??''}</label>
 		</div>
 		<div class="layui-inline">
 			<select name="chakan" id="chakan" lay-filter="chakan">
-				<option value="">{$langHtml.common.allState}</option>
-				<option value="chakan1" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'chakan1'"}selected{/if}>{$langHtml.common.view}</option>
-				<option value="chakan2" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'chakan2'"}selected{/if}>{$langHtml.common.notView}</option>
+				<option value="">{:lang('common')['allState']??''}</option>
+				<option value="chakan1" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'chakan1'"}selected{/if}>{:lang('common')['view']??''}</option>
+				<option value="chakan2" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'chakan2'"}selected{/if}>{:lang('common')['notView']??''}</option>
 				{if ($conf.sy.huifu == 'true')} 
-				<option value="huifu1" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'huifu1'"}selected{/if}>{$langHtml.common.reply}</option>
-				<option value="huifu2" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'huifu2'"}selected{/if}>{$langHtml.common.notReply}</option>
+				<option value="huifu1" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'huifu1'"}selected{/if}>{:lang('common')['reply']??''}</option>
+				<option value="huifu2" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'huifu2'"}selected{/if}>{:lang('common')['notReply']??''}</option>
 				{/if}
-				<option value="pass1" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'pass1'"}selected{/if}>{$langHtml.common.show}</option>
-				<option value="pass2" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'pass2'"}selected{/if}>{$langHtml.common.hide}</option>
+				<option value="pass1" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'pass1'"}selected{/if}>{:lang('common')['show']??''}</option>
+				<option value="pass2" {if condition="!empty($searchItem.chakan) && $searchItem.chakan == 'pass2'"}selected{/if}>{:lang('common')['hide']??''}</option>
 			</select>
 		</div>
 		<div class="layui-inline">
 			<input type="text" class="layui-input" name="keyword" value="{$searchItem.keyword??''}">
 		</div>
 		<div class="layui-inline">
-			<button type="button" class="layui-btn layui-bg-color" onclick="search()">{$langHtml.common.search}</button>
+			<button class="layui-btn layui-bg-color">{:lang('common')['search']??''}</button>
 		</div>
 	</form>
 {/block}
@@ -30,9 +30,9 @@
 {block name="toolbar"}
 <script type="text/html" id="toolbarDemo">
 	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="recycle">
-		<i class="layui-icon layui-icon-delete"></i>{$langHtml.common.recycle}
+		<i class="layui-icon layui-icon-delete"></i>{:lang('common')['recycle']??''}
 	</button>
-	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="del" >{$langHtml.common.deleteSelected}</button>
+	<button type="button" class="layui-btn layui-btn-sm layui-bg-red" lay-event="del" >{:lang('common')['deleteSelected']??''}</button>
 </script>
 {/block}
 
@@ -44,17 +44,17 @@
 <script type="text/html" id="operateDemo">
 	<div class="layui-inline">
 		<button type="button" class="layui-btn layui-btn-xs layui-bg-color" lay-on="show" data-id="{{d.id}}">
-			<i class="layui-icon layui-icon-read"></i>{$langHtml.common.view}
+			<i class="layui-icon layui-icon-read"></i>{:lang('common')['view']??''}
 		</button>
 	</div>
 	<div class="layui-inline">
 		<button type="button" class="layui-btn layui-btn-xs layui-bg-color" lay-on="hide" data-id="{{d.id}}">
-			<i class="layui-icon layui-icon-menu-fill"></i>{{# if(d.pass==1){ }} {$langHtml.common.show} {{# }else{ }} {$langHtml.common.hide} {{# } }}
+			<i class="layui-icon layui-icon-menu-fill"></i>{{# if(d.pass==1){ }} {:lang('common')['show']??''} {{# }else{ }} {:lang('common')['hide']??''} {{# } }}
 		</button>
 	</div>
 	<div class="layui-inline">
 		<button type="button" class="layui-btn layui-btn-xs layui-bg-red" lay-event="del" data-id="{{d.id}}">
-			<i class="layui-icon layui-icon-delete"></i>{$langHtml.common.delete}
+			<i class="layui-icon layui-icon-delete"></i>{:lang('common')['delete']??''}
 		</button>
 	</div>
 </script>
@@ -65,33 +65,34 @@
 		window.extraOptions = {
 			url: '{$Request.root}/{$route}/',
 			colsInit: [
-				{field: 'rename', title: '{$langHtml.common.name}', align: 'center', width: 370},
-				{field: 'state', title: '{$langHtml.common.state}', align: 'center', width: 170, templet: function(d){
+				{field: 'rename', title: '{:lang('common')['name']??''}', align: 'center', width: 370},
+				{field: 'state', title: '{:lang('common')['state']??''}', align: 'center', width: 170, templet: function(d){
 					var html = '<span>';
 					if(d.chakan == 1){
-						html += '{$langHtml.common.view}'
+						html += '{:lang('common')['view']??''}'
 					}else{
-						html += '<font color="#009688">{$langHtml.common.notView}</font>'
+						html += '<font color="#009688">{:lang('common')['notView']??''}</font>'
 					}
 					html += '</span>&nbsp;&nbsp;';
 					html += '<span>';
 					if(d.huifu == 1){
-						html += '{$langHtml.common.reply}'
+						html += '{:lang('common')['reply']??''}'
 					}else{
-						html += '<font color="#009688">{$langHtml.common.notReply}</font>'
+						html += '<font color="#009688">{:lang('common')['notReply']??''}</font>'
 					}
 					html += '</span>&nbsp;&nbsp;';
 					html += '<span>';
 					if(d.pass == 1){
-						html += '{$langHtml.common.show}'
+						html += '{:lang('common')['show']??''}'
 					}else{
-						html += '<font color="#009688">{$langHtml.common.hide}</font>'
+						html += '<font color="#009688">{:lang('common')['hide']??''}</font>'
 					}
 					html += '</span>';
 					return html;
 				}}
 			],
 			isPx: false,
+			where: {chakan:"{$searchItem.chakan}",keyword: "{$searchItem.keyword}"},
 			isTitleEdit: false,
 		}
 	</script>
@@ -102,15 +103,8 @@
 			var form = layui.form; 
 			util = layui.util; 
 
-			form.on('select(chakan)', function(data){
-				$.post(extraOptions.url + "default",$('#sform').serialize(),function(res){
-					if(res.code==200){
-						setTimeout(function(){window.location.href= extraOptions.url + 'default?'+res.where;},500);
-					}else{
-						layer.alert(res.msg,{icon:2});
-					}
-				},'json');
-			});
+			
+			allState(initOptions.url + 'default','chakan');
 
 			util.on({
 				'show': function(obj){
@@ -118,7 +112,7 @@
 					const id = $(elem).data('id');
 					layer.full(layer.open({
 						type: 2,
-						title: '{$langHtml.common.view}',
+						title: '{:lang('common')['view']??''}',
 						shade: 0.3,
 						area: ['90%','80%'],
 						fixed: false, //不固定

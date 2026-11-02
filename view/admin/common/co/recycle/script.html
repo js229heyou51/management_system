@@ -3,18 +3,19 @@
 		var table = layui.table; 
 		
 		var colsInit = [];
+		const langText = window.extraOptions?.langText ?? {:json_encode(lang('common'))};
 		const extraOptions = window.extraOptions ?? {};
 		var initData = {
 			url: '{$Request.root}/{$route}/',
 			table: table,
 			elem: 'dataTable',
-			data: {:json_encode($lists)},
-			langText: {:json_encode($langHtml.common)},
+			langText: langText,
 			colsInit : colsInit,
 			colsType: true,
 			recycleType: true,
 			height: 'full-113',
 			pageInit: {limit: 10},
+			where: { isTrashed: true, keyword: "{$searchItem.keyword??''}" },
 			...extraOptions
 		}
 		tableInit(initData);

@@ -27,6 +27,12 @@ class SetupSyService{
 		if(isset($conf['sy']['need_lm'])){
 			$conf['sy']['need_lm'] = changety($conf['sy']['need_lm']);
 		}
+		if(isset($conf['sy']['huifu'])){
+			$conf['sy']['huifu'] = changety($conf['sy']['huifu']);
+		}
+		if(isset($conf['sy']['send'])){
+			$conf['sy']['send'] = changety($conf['sy']['send']);
+		}
 		if(!empty($conf['lm'])){
 			foreach ($conf['lm'] as $key => $value) {
 				$conf['lm'][$key] = changety($value);

@@ -199,17 +199,17 @@
 		</div>
 		{if ($conf.map == true)}
 		<!-- <script type="text/javascript" src="http://api.map.baidu.com/api?key=&v=1.4&services=true"></script> -->
-		<script type="text/javascript" src="//api.map.baidu.com/api?v=1.0&&type=webgl&ak=eDx5mde33mMgv3ks9Tw2NtRNpRm2SJ2m"></script>
+		<!-- <script type="text/javascript" src="//api.map.baidu.com/api?v=1.0&&type=webgl&ak=eDx5mde33mMgv3ks9Tw2NtRNpRm2SJ2m"></script> -->
+		<script src="http://api.tianditu.gov.cn/api?v=4.0&tk=3641d40e1d69e48ad84e45a9e506c6f9" type="text/javascript"></script>
 		<script type="text/javascript">
-			var map = new BMapGL.Map("allmap");
-			var point = new BMapGL.Point(116.331398,39.897445);
+			var map = new T.Map("allmap");
+			var point = new T.LngLat(116.331398,39.897445);
 			map.centerAndZoom(point,12);
 			map.enableKeyboard = true;
-			
 
-			map.addControl(new BMapGL.ScaleControl()); // 添加比例尺控件
-			// map.addControl(new BMapGL.ZoomControl()); // 添加缩放控件
-			// map.addControl(new BMapGL.CityListControl()); // 添加城市列表控件
+			map.addControl(new T.Control.Scale()); // 添加比例尺控件
+			// map.addControl(new T.ZoomControl()); // 添加缩放控件
+			// map.addControl(new T.CityListControl()); // 添加城市列表控件
 			map.enableScrollWheelZoom(); // 允许滚轮缩放
 		</script>
 		<script type="text/javascript">
@@ -218,7 +218,7 @@
 			})
 			// 将地址解析结果显示在地图上,并调整地图视野
 			function getpo(str){
-				var myGeo = new BMapGL.Geocoder();
+				var myGeo = new T.Geocoder();
 				myGeo.getPoint(str, function(point){
 					if (point) {
 						showpo(point);
@@ -228,18 +228,18 @@
 				}, "{$langHtml.common.beiJing}");
 			}
 			function showpo(point){
-				map.clearOverlays(); 
+				// map.clearOverlays(); 
 				layui.jquery('#zuobiao').val(point.lng+","+point.lat);
 				map.centerAndZoom(point, 20);
-				marker=new BMapGL.Marker(point);
-				map.addOverlay(marker);
+				marker=new T.Marker(point);
+				map.addOverLay(marker);
 				var opts = {
 					width : 'auto',     // 信息窗口宽度
 					height: 'auto',     // 信息窗口高度
 					title : "{$setup.title??''}" , // 信息窗口标题
 				}
 				var content = '<div class="layui-box" style="padding: 5px 5px 20px;"><h3>{$setup.title??''}</h3><p>{$setup.mapf_body | raw}</p></div>';
-				var infoWindow = new BMapGL.InfoWindow(content);  // 创建信息窗口对象 
+				var infoWindow = new T.InfoWindow(content);  // 创建信息窗口对象 
 				marker.addEventListener("click", function(){
 					map.openInfoWindow(infoWindow, point); //开启信息窗口
 				}); 
@@ -255,7 +255,7 @@
 		{/if}
 		{if($conf.map == true)}
 		<script type="text/javascript">
-			var point = new BMapGL.Point({$setup.zuobiao});
+			var point = new T.LngLat({$setup.zuobiao});
 			showpo(point);
 		</script>
 		{/if}

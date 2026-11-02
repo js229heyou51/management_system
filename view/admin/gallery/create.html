@@ -67,7 +67,7 @@
 			choose: function(obj){
 				obj.preview(function(index, file, result){
 					$('#upload-preview').removeClass('layui-hide');
-					$('#upload-preview').append('<div class="upload_pic_li mb10"><span></span><img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img"><div class="layui-progress" lay-filter="progress-'+ index +'"><div class="layui-progress-bar" lay-percent=""></div></div></div>');
+					$('#upload-preview').append('<div class="upload_pic_li mb10"><span></span><img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img"><div class="layui-progress" lay-filter="progress-'+ index +'"><div class="layui-progress-bar layui-bg-color" lay-percent=""></div></div></div>');
 				})
 			},
 			allDone: function(obj){ // 多文件上传完毕后的状态回调

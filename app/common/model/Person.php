@@ -42,6 +42,10 @@ use think\model\concern\SoftDelete;
  */
 class Person extends Model{
 	use SoftDelete;
+
+	protected $type = [
+		'img_sl' => 'json',
+	];
 }
 
 ?>

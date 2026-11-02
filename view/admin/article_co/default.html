@@ -19,7 +19,7 @@
 {block name="script"}
 	<script type="text/javascript">
 		window.extraOptions = {
-			colsInit: [{field: 'read_num', title: '{$langHtml.common.num}', width: 80, align: 'center'}],
+			colsInit: [{field: 'read_num', title: '{:lang('common')['num']??''}', width: 80, align: 'center'}],
 		}
 	</script>
 	{include file="common/co/script" /}

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\command\Task;
+namespace app\command\task;
 
 use think\console\Command;
 use think\console\Input;

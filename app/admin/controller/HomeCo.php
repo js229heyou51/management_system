@@ -37,15 +37,8 @@ class HomeCo extends Base{
 		
 		}else{
 			$searchItem = request()->param();
-			$keyword = $searchItem['keyword']??'';
-			$where = [];
-			if(!empty($keyword)){
-				$where[] = ["title", "like", "%" . $keyword . "%"];
-			}
-			$lists = $this->service->getListAll($where,true);
 			$category = $this->categoryService->getCategoryList();
 			View::assign([
-				'lists' => $lists,
 				'category' => $category,
 				'searchItem' => $searchItem,
 			]);
@@ -70,25 +63,29 @@ class HomeCo extends Base{
 	 */
 	public function default(){
 		if(request()->isPost()){
-			$data = request()->param();
-			return $this->defaultCommon($data);
 		}else{
 			if(empty($this->conf)){
 				return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['configSettingsFile'].'</h1>';
 				die();
 			}
 			$searchItem = request()->param();
-			$params['where'] = $this->setWhere($searchItem);
-			$params['keyword'] = $searchItem['keyword']??'';
-			$lists = $this->service->getListAll($params);
 			$category = $this->categoryService->getCategoryList([],['info']);
 			View::assign([
-				'lists' => $lists,
 				'category' => $category,
 				'searchItem' => $searchItem
 			]);
 			return View::fetch();
 		}
+	}
+
+	public function index(?array $params = []){
+		$param = request()->param();
+		$param['order'] = $params['order'] ?? 'ding desc,px desc,wtime desc,id desc';
+		$param['with'] = 'profile';
+		if(!empty($params)){
+			$param = $params;
+		}
+		return $this->dataTable($this->service,$param);
 	}
 
 	/**

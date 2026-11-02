@@ -9,6 +9,7 @@ use app\common\model\MasterAction as MA;
 use app\common\model\MasterMenu as MM;
 use app\common\model\MasterLog as ML;
 use app\admin\validate\Master as V;
+use app\common\service\MasterService;
 /**
  * 
  */
@@ -17,10 +18,12 @@ class Master extends Base{
 	protected $middleware = ['AdminCheck','AdminPermission'];
 
 	protected $route;
+	protected $service;
 
 	protected function initialize() {
 		parent::initialize();
 		$this->route = Request::controller();
+		$this->service = new MasterService();
 		View::assign([
 			'route' => $this->route,
 		]);
@@ -29,131 +32,41 @@ class Master extends Base{
 	public function recycle(){
 		if(Request::isPost()){
 			
-
 		}else{
-
 			$searchItem = Request::param();
-			$keyword = $searchItem['keyword']??'';
-			$where[] = ['lang','=',$this->lang];
-			// $where = [];
-			if(!empty($keyword)){
-				$where[] = ["title", "like", "%" . $keyword . "%"];
-			}
-			$limit = !empty((input('request.limit'))) ? (input('request.limit')) : '10';
-			$curr = !empty((input('request.curr'))) ? (input('request.curr')) : '1';
-
-			$count = M::onlyTrashed()->where($where)->count();
-			$lists = M::onlyTrashed()->where($where)->order('id desc')->page($curr,$limit)->select();
-			$pageItem = [
-				'count' => $count,
-				'curr' => $curr,
-				'limit' => $limit,
-			];
 			View::assign([
-				'lists' => $lists,
-				'pageItem' => $pageItem,
 				'searchItem' => $searchItem,
 			]);
 			return View::fetch();
 		}
 	}
 	public function recycle_make(){
-		$param = Request::param();
-		if(Request::isPost()){
-			$act = $param['act'];
-			$id = $param['id']??'';
-			$checkbox = $param['checkbox'] ?? '';
-			if(empty($id)){
-				return json(['code'=>201,'msg'=>$this->langHtml['tip']['noData']]);
-			}
-			if($act == 'recovery'){
-				if(empty($checkbox)){
-					return json(['code'=>201,'msg'=>$this->langHtml['tip']['selectData']]);
-				}
-				try{
-					foreach ($id as $key => $value){
-						if(isset($checkbox[$value]) && $checkbox[$value] == 'on'){
-							M::onlyTrashed()->find($value)->restore();
-						}
-					}
-				}catch (\Exception $e){
-					return ['code'=>201,'msg'=>$this->langHtml['tip']['operate'].$this->langHtml['tip']['fail'].$e->getMessage()];
-				}
-				return ['code'=>200,'msg'=>$this->langHtml['tip']['operate'].$this->langHtml['tip']['success']];
-			}
-			if($act == 'remove'){
-				if(empty($checkbox)){
-					return json(['code'=>201,'msg'=>$this->langHtml['tip']['selectData']]);
-				}
-				try{
-					foreach ($id as $key => $value){
-						if(isset($checkbox[$value]) && $checkbox[$value] == 'on'){
-							M::destroy($value,true);
-						}
-					}
-					
-				}catch (\Exception $e){
-					return ['code'=>201,'msg'=>$this->langHtml['tip']['operate'].$this->langHtml['tip']['fail'].$e->getMessage()];
-				}
-				return ['code'=>200,'msg'=>$this->langHtml['tip']['operate'].$this->langHtml['tip']['success']];
-			}
-		}
+		$param = request()->param();
+		return $this->recycleMake($this->service,$param);
 	}
 
 	public function setconfig(){
-
 		return View::fetch();
 	}
 
 	public function default(){
 		if(Request::isPost()){
-			$data = Request::param();
-			$can = '';
-			if(!empty($data['zt_val'])){
-				$can .= '&zt_val='.$data['zt_val'];
-			}
-			if(!empty($data['keyword'])){
-				$can .= '&keyword='.$data['keyword'];
-			}
-			$can_str = ltrim($can,'&');
-			return json(['code'=>200,'where'=>$can_str,'msg'=>$this->langHtml['tip']['loading']]);
 		}else{
 			$searchItem = Request::param();
-			$where[] = ['lang','=',$this->lang];
-			if(!empty($searchItem['zt_val'])){
-				if($searchItem['zt_val'] == 'pass1'){
-					$where[] = ['pass','=',1];
-				}else if($searchItem['zt_val'] == 'pass2'){
-					$where[] = ['pass','=',0];
-				}
-			}
-			if(!empty($searchItem['keyword'])){
-				$where[] = [
-					['username','like','%'.$searchItem['keyword'].'%'],
-					['rename','like','%'.$searchItem['keyword'].'%'],
-				];
-			}
-			if(!empty($searchItem['startDate'])){
-				$where[] = ['wtime', '>', $searchItem['startDate']]; 
-			}
-			if(!empty($searchItem['endDate'])){
-				$where[] = ['wtime', '<', $searchItem['endDate']]; 
-			}
-			$limit = !empty((input('request.limit'))) ? (input('request.limit')) : '10';
-			$curr = !empty((input('request.curr'))) ? (input('request.curr')) : '1';
-
-			$count = M::where($where)->count();
-			$lists = M::where($where)->order('id desc')->select()->toArray();
-			$pageItem['count'] = $count;
-			$pageItem['curr'] = $curr;
-			$pageItem['limit'] = $limit;
 			View::assign([
-				'lists' => $lists,
-				'pageItem' => $pageItem,
 				'searchItem' => $searchItem,
 			]);
 			return View::fetch();
 		}
+	}
+
+	public function index(?array $params = []){
+		$param = request()->param();
+		$param['order'] = $params['order'] ?? 'wtime desc,id desc';
+		if(!empty($params)){
+			$param = $params;
+		}
+		return $this->dataTable($this->service,$param);
 	}
 
 	// 添加管理员
@@ -412,48 +325,23 @@ class Master extends Base{
 
 	public function default_log(){
 		if(Request::isPost()){
-			$data = Request::param();
-			$can = '';
-			if(!empty($data['zt_val'])){
-				$can .= '&zt_val='.$data['zt_val'];
-			}
-			if(!empty($data['keyword'])){
-				$can .= '&keyword='.$data['keyword'];
-			}
-			$can_str = ltrim($can,'&');
-			return json(['code'=>200,'where'=>$can_str,'msg'=>$this->langHtml['tip']['loading']]);
 		}else{
-
-
-
 			$searchItem = Request::param();
-			$where[] = ['lang','=',$this->lang];
-			if(!empty($searchItem['keyword'])){
-				$where[] = ['username','like','%'.$searchItem['keyword'].'%'];
-			}
-			if(!empty($searchItem['startDate'])){
-				$where[] = ['create_at', '>', $searchItem['startDate']]; 
-			}
-			if(!empty($searchItem['endDate'])){
-				$where[] = ['create_at', '<', $searchItem['endDate']]; 
-			}
-			$limit = !empty((input('request.limit'))) ? (input('request.limit')) : '10';
-			$curr = !empty((input('request.curr'))) ? (input('request.curr')) : '1';
-
-			$count = ML::where($where)->count();
-			$lists = ML::where($where)->order('id desc')->select();
-			$pageItem = [
-				'count' => $count,
-				'curr' => $curr,
-				'limit' => $limit,
-			];
 			View::assign([
-				'lists' => $lists,
-				'pageItem' => $pageItem,
 				'searchItem' => $searchItem,
 			]);
 			return View::fetch();
 		}
+	}
+
+	public function logIndex(){
+		$param = request()->param();
+		$param['order'] = $params['order'] ?? 'wtime desc,id desc';
+		if(!empty($params)){
+			$param = $params;
+		}
+		$logService = new \app\common\service\MasterLogService();
+		return $this->dataTable($logService,$param);
 	}
 }
 

@@ -23,12 +23,6 @@ class KeyCo extends Base{
 			
 		}else{
 			$searchItem = request()->param();
-			$keyword = $searchItem['keyword']??'';
-			$where = [];
-			if(!empty($keyword)){
-				$where[] = ["title", "like", "%" . $keyword . "%"];
-			}
-			$lists = $this->service->getListAll($where,true,[]);
 			View::assign([
 				'lists' => $lists,
 				'searchItem' => $searchItem,
@@ -43,30 +37,29 @@ class KeyCo extends Base{
 
 	public function default(){
 		if(request()->isPost()){
-			$data = request()->param();
-			$can = '';
-			if(!empty($data['zt_val'])){
-				$can .= '&zt_val='.$data['zt_val'];
-			}
-			if(!empty($data['keyword'])){
-				$can .= '&keyword='.$data['keyword'];
-			}
-			$can_str = ltrim($can,'&');
-			return json(['code'=>200,'where'=>$can_str,'msg'=>$this->langHtml['tip']['loading']]);
-
 		}else{
+			// if(empty($this->conf)){
+			// 	return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['configSettingsFile'].'</h1>';
+			// 	die();
+			// }
 			$searchItem = request()->param();
-			$params['where'] = $this->setWhere($searchItem);
-			$params['keyword'] = $searchItem['keyword']??'';
-			$lists = $this->service->getListAll($params,false,[]);
-
 			View::assign([
-				'lists' => $lists,
-				'searchItem' => $searchItem,
+				'searchItem' => $searchItem
 			]);
 			return View::fetch();
 		}
 	}
+
+	public function index(?array $params = []){
+		$param = request()->param();
+		$param['order'] = $params['order'] ?? 'px desc,wtime desc,id desc';
+		$param['with'] = '';
+		if(!empty($params)){
+			$param = $params;
+		}
+		return $this->dataTable($this->service,$param);
+	}
+	
 	public function add(){
 		if(request()->isPost()){
 			$data = request()->param();

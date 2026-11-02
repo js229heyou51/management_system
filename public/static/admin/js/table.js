@@ -7,8 +7,11 @@ function tableInit(config = {})
 		table: {}, 
 		data:[], 
 		elem:'dataTable', 
+		url:'', 
+		where: {},        // 新增默认 where
 		langText:[],
 		colsInit : [],
+		module: 'index',
 		recycleMake: 'recycle_make',
 		toolbarElem: 'toolbarDemo',
 		lineStyle : '',
@@ -35,6 +38,9 @@ function tableInit(config = {})
 
 	initData.table.init(initData.elem, {
 		elem: '#'+initData.elem // 指定原始表格元素选择器（推荐 id 选择器）
+		// ,data: initData.data
+		,url: initData.url + initData.module      // 👈 加上这一行
+		,where: initData.where       // 携带业务参数
 		,page: page
 		,cellMinWidth: 80
 		,toolbar: '#' + initData.toolbarElem
@@ -44,7 +50,6 @@ function tableInit(config = {})
 				icon: 'layui-icon-refresh'
 			}]
 		,cols: colsParam
-		,data: initData.data
 		,lineStyle: initData.lineStyle
 		,height: initData.height
 		,width: initData.width
@@ -166,7 +171,6 @@ function toolbarInit(initData, elem = 'listForm', operate = {add:'add', recycle:
 			recycle(initData.url + '' + operate.recycle + '',''+initData.langText.recycle+'')
 			return false
 		}
-
 		if(obj.event === 'recycleRecord'){
 			recycle(initData.url + '' + operate.recycleRecord + '',''+initData.langText.recycle+'')
 			return false
