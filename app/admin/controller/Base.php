@@ -4,44 +4,35 @@ declare (strict_types = 1);
 namespace app\admin\controller;
 
 use think\facade\Session;
-use think\facade\Cookie;
 use think\facade\View;
 use think\facade\Lang;
-use think\facade\Filesystem;  
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Writer\Html;
-use Endroid\QrCode\QrCode;
-use Endroid\QrCode\Writer\PngWriter;
-use app\common\model\SetupGl as MS;
-use app\common\model\Master as MM;
 use app\common\model\MasterLog;
 use app\common\model\Config;
 use app\common\model\KeyCo as KC;
 use app\common\service\PlinfoService;
 use app\common\service\PlfileService;
-use app\common\service\PlimageService;
 use app\common\service\SetupGlService;
-use app\common\service\SetupSyService;
 use app\common\service\MasterService;
-use app\common\service\MasterMenuService;
+use think\Model;
+
 /**
  * 
  */
 class Base extends \app\BaseController{
-	public static $cong;
-	protected $admin;
-	public static $data;
-	public $color;
-	public $langHtml;
-	public $lang;
-	protected $route;
+	public static $cong = [];
+	protected Model $admin;
+	public static $data = [];
+	public $color = '';
+	public $langHtml  = [];
+	public $lang  = [];
+	protected $route = '';
 
 	protected function initialize(){
 		$this->route = request()->controller();
 		$rememberToken = cookie('remember_token')??session('remember_token');
-		$this->admin = (new MasterService())->getByWhere(['remember_token'=>$rememberToken]);
-		// dump(lang());
+		$this->admin = (new MasterService())->getByWhere(['where' => ['remember_token'=>$rememberToken]]);
 		$this->lang = Lang::getLangSet();
 		$this->langHtml = Lang::get();
 		$this->color = cookie('color');
@@ -74,9 +65,9 @@ class Base extends \app\BaseController{
 
 	/**
 	 * [setWhere 设置查询条件]
-	 * @param [array] $params [查询条件数组]
+	 * @param array $params [查询条件数组]
 	 */
-	public function setWhere($params){
+	public function setWhere(?array $params){
 		$where = [];
 		if(!empty($params['lm'])){
 			$where[] = ["list_lm", "like", "%," . $params['lm'] . ",%"];
@@ -111,11 +102,11 @@ class Base extends \app\BaseController{
 	}
 	/**
 	 * [recycleMake 回收站操作]
-	 * @param  [service] $service [信息的service]
-	 * @param  [array] $params  [act操作类型，id操作的id，checkbox选中的数据]
-	 * @return [json]          [code状态码200成功，msg提示信息]
+	 * @param  $service 信息的service
+	 * @param  $params  act操作类型，id操作的id，checkbox选中的数据
+	 * @return array    code状态码200成功，msg提示信息
 	 */
-	public function recycleMake($service,$params){
+	public function recycleMake(?object $service,?array $params){
 		$act = $params['act'];
 		$id = $params['id']??'';
 		$checkbox = $params['checkbox'] ?? '';
@@ -152,11 +143,11 @@ class Base extends \app\BaseController{
 	}
 	/**
 	 * [statusMake 信息状态操作]
-	 * @param  [service] $service [信息的service]
-	 * @param  [array] $params  [act操作类型，id操作的id，checkbox选中的数据]
-	 * @return [json]          [code状态码200成功，msg提示信息]
+	 * @param  $service [信息的service]
+	 * @param  array $params  [act操作类型，id操作的id，checkbox选中的数据]
+	 * @return array          [code状态码200成功，msg提示信息]
 	 */
-	public function statusMake($service,$params){
+	public function statusMake(?object $service,?array $params,?array $conf){
 		$act = $params['act'];
 		$id = $params['id'];
 		$px = $params['px']??'';
@@ -372,7 +363,7 @@ class Base extends \app\BaseController{
 			if(empty($update)){
 				return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail']]);
 			}
-			$this->master_log($dingTitle.$this->conf['sy']['name'].lang('tip')['information'].'：'.$find['id'].'-'.$find['title']);
+			$this->master_log($dingTitle.$conf['sy']['name'].lang('tip')['information'].'：'.$find['id'].'-'.$find['title']);
 			return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
 		}
 		if($act == 'tuijian'){
@@ -393,7 +384,7 @@ class Base extends \app\BaseController{
 			if(empty($update)){
 				return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail']]);
 			}
-			$this->master_log($tuijianTitle.$this->conf['sy']['name'].lang('tip')['information'].'：'.$find['id'].'-'.$find['title']);
+			$this->master_log($tuijianTitle.$conf['sy']['name'].lang('tip')['information'].'：'.$find['id'].'-'.$find['title']);
 			return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
 		}
 		if($act == 'hot'){
@@ -414,7 +405,7 @@ class Base extends \app\BaseController{
 			if(empty($update)){
 				return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail']]);
 			}
-			$this->master_log($hotTitle.$this->conf['sy']['name'].lang('tip')['information'].'：'.$find['id'].'-'.$find['title']);
+			$this->master_log($hotTitle.$conf['sy']['name'].lang('tip')['information'].'：'.$find['id'].'-'.$find['title']);
 			return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
 		}
 		if($act == 'pass'){
@@ -435,7 +426,7 @@ class Base extends \app\BaseController{
 			if(empty($update)){
 				return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail']]);
 			}
-			$this->master_log($passTitle.$this->conf['sy']['name'].lang('tip')['information'].'：'.$find['id'].'-'.$find['title']);
+			$this->master_log($passTitle.$conf['sy']['name'].lang('tip')['information'].'：'.$find['id'].'-'.$find['title']);
 			return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
 		}
 		
@@ -451,17 +442,17 @@ class Base extends \app\BaseController{
 			if(empty($update)){
 				return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail']]);
 			}
-			$this->master_log(lang('tip')['sort'].$this->conf['sy']['name'].lang('tip')['information'].'：'.$find['id'].'-'.$find['title'].'-'.lang('tip')['sort'].$data['px']);
+			$this->master_log(lang('tip')['sort'].$conf['sy']['name'].lang('tip')['information'].'：'.$find['id'].'-'.$find['title'].'-'.lang('tip')['sort'].$data['px']);
 			return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
 		}
 	}
 	/**
 	 * [statusLmMake 分类状态操作]
-	 * @param  [categoryService] $categoryService [分类的service]
-	 * @param  [array] $params          [act操作类型，id操作的id，checkbox选中的数据]
-	 * @return [json]                  [code状态码200成功，msg提示信息]
+	 * @param  $categoryService [分类的service]
+	 * @param  array $params          [act操作类型，id操作的id，checkbox选中的数据]
+	 * @return array                  [code状态码200成功，msg提示信息]
 	 */
-	public function statusLmMake($categoryService,$params){
+	public function statusLmMake(?object $categoryService,?array $params,?array $conf){
 		$act = $params['act'];
 		$id_lm = $params['id']??'';
 		$px = $params['px']??'';
@@ -470,7 +461,7 @@ class Base extends \app\BaseController{
 			$data['px'] = $px;
 			try{
 				$up = $categoryService->updateCategory($id_lm,$data,false);;
-				$this->master_log(lang('tip')['sort'].$this->conf['sy']['name'].lang('tip')['category'].'：'.$find['title_lm']);
+				$this->master_log(lang('tip')['sort'].$conf['sy']['name'].lang('tip')['category'].'：'.$find['title_lm']);
 				return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
 			}catch (\Exception $e){
 				return json(['code'=>201,'msg'=>lang('tip')['edit'].lang('tip')['fail'].$e->getMessage()]);
@@ -492,7 +483,7 @@ class Base extends \app\BaseController{
 			}else{
 				$tuijianTitle = lang('tip')['tuijianTitle'];
 			}
-			$this->master_log($tuijianTitle.$this->conf['sy']['name'].lang('tip')['category'].'：'.$find['title_lm']);
+			$this->master_log($tuijianTitle.$conf['sy']['name'].lang('tip')['category'].'：'.$find['title_lm']);
 			return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
 		}
 		if($act == 'hot_lm'){
@@ -511,7 +502,7 @@ class Base extends \app\BaseController{
 			}else{
 				$hotTitle = lang('tip')['hotTitle'];
 			}
-			$this->master_log($hotTitle.$this->conf['sy']['name'].lang('tip')['category'].'：'.$find['title_lm']);
+			$this->master_log($hotTitle.$conf['sy']['name'].lang('tip')['category'].'：'.$find['title_lm']);
 			return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
 		}
 		if($act == 'pass_lm'){
@@ -529,7 +520,7 @@ class Base extends \app\BaseController{
 			}else{
 				$passTitle = lang('tip')['passTitle'];
 			}
-			$this->master_log($passTitle.$this->conf['sy']['name'].lang('tip')['category'].'：'.$find['title_lm']);
+			$this->master_log($passTitle.$conf['sy']['name'].lang('tip')['category'].'：'.$find['title_lm']);
 			return json(['code'=>200,'msg'=>lang('tip')['edit'].lang('tip')['success']]);
 		}
 	}
@@ -538,7 +529,7 @@ class Base extends \app\BaseController{
 	 * [plInfoCreate 批量信息]
 	 * @param  int    $id    [当前插入的数据id]
 	 * @param  int    $sy_id [系统id]
-	 * @return [type]        [description]
+	 * @return bool        [description]
 	 */
 	public function plInfoCreate(int $id,int $sy_id): bool{
 		$plinfoService = new PlinfoService();
@@ -558,7 +549,7 @@ class Base extends \app\BaseController{
 	 * [plFileCreate 批量文件]
 	 * @param  int    $id    [当前插入的数据id]
 	 * @param  int    $sy_id [系统id]
-	 * @return [type]        [description]
+	 * @return bool        [description]
 	 */
 	public function plFileCreate(int $id,int $sy_id): bool{
 		$plfileService = new PlfileService();
@@ -574,22 +565,10 @@ class Base extends \app\BaseController{
 		return true;
 	}
 	
-	public function dataTable($service,$params){
-
-		$where['page'] = $params['page'] ?? 1;
-		$where['limit'] = $params['limit'] ?? 15;
-		$where['where'] = $params['where']??'';
-		$where['order'] = $params['order']??'';
-		$where['keyword'] = $params['keyword']??'';
-		$where['with'] = $params['with']??'';
-		$where['withCount'] = $params['withCount']??'';
-		$where['startTime'] = $params['startDate'] ?? '';
-		$where['endTime'] = $params['endDate'] ?? '';
-		$where['isTrashed'] = (bool)($params['isTrashed']??false);
-
-		$lists = $service->getList($where);
+	public function dataTable(?object $service,?array $params){  
+		$lists = $service->getList($params);
 		// dump($lists->items());die;
-		$count = $service->count($where);
+		$count = $service->count($params);
 		return [
 			'code'=>0,
 			'msg'=>lang('tip')['success'],
@@ -598,7 +577,7 @@ class Base extends \app\BaseController{
 		];
 	}
 
-	public function defaultCommon($data){
+	public function defaultCommon(?array $data){
 		$can = '';
 		$lm = $data['lm']??'';
 		if(!empty($lm)){
@@ -616,7 +595,7 @@ class Base extends \app\BaseController{
 		return json(['code'=>200,'where'=>$can_str,'msg'=>lang('tip')['loading']]);
 	}
 
-	public function addCommon($service,$data,$conf,$sy_id){
+	public function addCommon(?object $service,?array $data,?array $conf,?int $sy_id){
 		try{
 			$info = $service->create($data);
 			$id = $info->getLastInsID();
@@ -639,7 +618,7 @@ class Base extends \app\BaseController{
 		}
 	}
 
-	public function editCommon($service,$data,$conf){
+	public function editCommon(?object $service,?array $data,?array $conf){
 		$id = $data['id'] ?? '';
 		if(empty($id)){
 			return json(['code'=>201,'msg'=>lang('tip')['id'].lang('tip')['cannotBeEmpty']]);
@@ -653,18 +632,66 @@ class Base extends \app\BaseController{
 		}
 	}
 
-	public function delCommon($service,$data,$conf){
-		$id = $data['id']??'';
-		if(empty($id)){
-			return json(['code'=>201,'msg'=>lang('tip')['id'].lang('tip')['cannotBeEmpty']]);
+	public function delCommon(?object $service,?array $data,?array $conf){
+		$tip = lang('tip');
+		// 2. 校验 type，明确只接受两种值
+		$type = $data['type'] ?? '';
+		if (!in_array($type, ['info', 'category'], true)) {
+			return $this->fail($tip['param'] . $tip['error']);
 		}
-		try{
-			$bol = $service->delete($id);
-			$this->master_log(lang('tip')['del'].$conf['sy']['name'].lang('tip')['information'].'：'.$id);
-			return json(['code'=>200,'msg'=>lang('tip')['del'].lang('tip')['success']]);
-		}catch (\Exception $e){
-			return json(['code'=>201,'msg'=>lang('tip')['del'].lang('tip')['fail'].$e->getMessage()]);
+		// 3. 按类型准备参数
+		if ($type === 'info') {
+			$id        = $data['id'] ?? '';
+			$title     = $id;
+			$emptyTip  = $tip['id'] . $tip['cannotBeEmpty'];
+			$deleteFn  = fn() => $service->delete($id);
+			$titleFn   = fn() => $id;
+		} else {
+			$id        = $data['id_lm'] ?? '';
+			$emptyTip  = $tip['id'] . $tip['cannotBeEmpty'];
+			$find      = $service->getCategoryById($id);
+			if (empty($find)) {
+				return $this->fail($tip['category'] . $tip['notExist']);
+			}
+			$title     = $find['title_lm'] ?? $id;
+			$deleteFn  = fn() => $service->deleteCategory($id);
 		}
+		// 4. 空 id 校验
+		if (empty($id)) {
+			return $this->fail($emptyTip);
+		}
+		// 5. 执行删除，检查返回值
+		try {
+			$result = $deleteFn();
+			if ($result === false) {
+				return $this->fail($tip['del'] . $tip['fail']);
+			}
+
+			// 6. 写日志（统一用实例方法，避免静态/实例混用）
+			$this->master_log(
+				$tip['del'] . $conf['sy']['name'] . $tip['information'] . '：' . $title
+			);
+
+			return $this->success($tip['del'] . $tip['success']);
+		} catch (\Throwable $e) {
+			// 7. 不把异常信息返回前端，只记日志
+			\think\facade\Log::error('delCommon error: ' . $e->getMessage(), [
+				'type' => $type,
+				'id'   => $id,
+				'trace' => $e->getTraceAsString(),
+			]);
+			return $this->fail($tip['del'] . $tip['fail']);
+		}
+	}
+	// 统一响应封装，避免 json([...]) 散落
+	protected function success(string $msg, array $data = [])
+	{
+		return json(['code' => 200, 'msg' => $msg, 'data' => $data]);
+	}
+
+	protected function fail(string $msg, int $code = 201)
+	{
+		return json(['code' => $code, 'msg' => $msg]);
 	}
 
 	public function theme(){
@@ -718,7 +745,7 @@ class Base extends \app\BaseController{
 	}
 
 	//搜索结果中的关键字高亮
-	public function rekey($text){
+	public function rekey(?string $text){
 		if (self::$cong['key']==true){
 			$arr=$this->read_key();
 			if ($arr[0]!='kong'){
@@ -746,13 +773,13 @@ class Base extends \app\BaseController{
 				$result[]=array('title'=>$v['title'],'link_url'=>$v['link_url']);
 			}
 			if (empty($result)){
-				$result[0]='kong';	
+				$result[0]='kong';  
 			}
 			return $result;
 		}
 	}
 	//记录后台操作日志
-	public function master_log($z_body,$username=''){
+	public function master_log(?string $z_body,$username=''){
 		$conf=self::$cong;
 		if (isset($conf['log']) && $conf['log']==true){
 			if($username==''){
@@ -768,7 +795,7 @@ class Base extends \app\BaseController{
 		}
 	}
 	
-	public function addTextToImage($text,$fileName,$arr){
+	public function addTextToImage(?string $text,?string $fileName,?array $arr){
 		// 图片路径
 		$imagePath = 'static/admin/images/zhengshu.jpg';
 		// 要添加的文字
@@ -797,7 +824,7 @@ class Base extends \app\BaseController{
 			$textxy=$v['y']+$v['s'];
 			//文件 字体 角度 文字在图片上x轴坐标 文字在图片上y轴坐标 文字水印字体文件路径 文字
 			//imagettftext($sim,$font,0,$textsx,$textsy,$black,$ttf,$v['t']);
-			imagettftext($image,(int)$v['s'],0,(int)$textxx,(int)$textxy,$textColor,$fontPath,$v['t']);	
+			imagettftext($image,(int)$v['s'],0,(int)$textxx,(int)$textxy,$textColor,$fontPath,$v['t']); 
 		}
 		// 将文字添加到图片上
 		// imagettftext($image, $fontSize, 0, $x, $y, $textColor, $fontPath, $text);
@@ -809,14 +836,14 @@ class Base extends \app\BaseController{
 		$fileName = ''.$filePath.$fileName.'.jpg';
 		imagejpeg($image, $fileName);
 		// 释放图片资源
-		imagedestroy($image);
+		// imagedestroy($image);
 		// 返回成功消息或输出图片
 		return $fileName;
 	}
 
 	// 导入
 
-	public function importExecl($savePath){
+	public function importExecl(?string $savePath){
 		$spreadsheet = IOFactory::load($savePath);  
 		$worksheet = $spreadsheet->getActiveSheet();  
 		// 获取第一行的最高列索引
@@ -840,7 +867,7 @@ class Base extends \app\BaseController{
 	/**
 	 * 扫描文件夹获取所有文件
 	 */
-	function scanFolder($folderPath, $recursive = true) {
+	function scanFolder(?string $folderPath, $recursive = true){
 		if (!is_dir($folderPath)) {
 			return json(['status' => 401,'msg' => '文件夹不存在' . $folderPath]);
 		}
@@ -855,7 +882,7 @@ class Base extends \app\BaseController{
 	/**
 	 * 递归扫描目录
 	 */
-	function scanDirectory($dir, &$images, $recursive, $allowedExtensions) {
+	function scanDirectory(?string $dir, ?array &$images, ?bool $recursive, ?array $allowedExtensions) {
 		$files = scandir($dir);
 		
 		foreach ($files as $file) {
@@ -867,7 +894,7 @@ class Base extends \app\BaseController{
 				// 递归扫描子目录
 				$this->scanDirectory($fullPath, $images, $recursive, $allowedExtensions);
 			} elseif (is_file($fullPath)) {
-				// 检查是否是图片文件				
+				// 检查是否是图片文件                
 				$extension = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
 				if (in_array($extension, $allowedExtensions)) {
 					$images[$extension][] = '/'.$fullPath;
@@ -876,7 +903,7 @@ class Base extends \app\BaseController{
 		}
 	}
 
-	public function replaceImagePlaceholders($content, $imageGallery, $placeholder = '{图片占位符}'){
+	public function replaceImagePlaceholders(?string $content, ?array $imageGallery, $placeholder = '{图片占位符}'){
 		// 如果图库为空，返回原内容
 		if (empty($imageGallery)) {
 			return $content;

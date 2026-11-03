@@ -5,7 +5,6 @@ namespace app\admin\controller;
 
 use think\facade\Db;
 use think\facade\Lang;
-use think\facade\Request;
 use app\common\service\MasterMenuService;
 use app\common\service\SetupSyService;
 use app\common\service\MasterActionService;
@@ -16,7 +15,7 @@ class Crud extends Base{
 	public static $data;
 
 	// 生成菜单
-	public static function goMenu($data){
+	public static function goMenu(?array $data){
 		$menuName = $data['sy']['name']??'';
 		$setup_sy['title'] = $menuName;
 		$setup_sy['sy_id'] = $data['sy']['id']??'';
@@ -47,7 +46,7 @@ class Crud extends Base{
 			'lang' => $lang
 		];
 		$memuService = new MasterMenuService();
-		$insert = $memuService->create($insDate,false,false);
+		$insert = $memuService->create($insDate,false);
 		$fid = $insert->getLastInsID();
 		$MM_Data = [
 			[
@@ -85,7 +84,7 @@ class Crud extends Base{
 			],
 		];
 		try {
-			$insert = $memuService->batchCreate($MM_Data,false,100,false);
+			$insert = $memuService->batchCreate($MM_Data,false,100);
 		}catch (\Exception $e){
 			return ['code'=>201,'msg'=>$e->getMessage()];
 		}
@@ -164,14 +163,14 @@ class Crud extends Base{
 		];
 		try {
 			$actionService = new MasterActionService();
-			$insert = $actionService->batchCreate($MA_Data,false,100,false);
+			$insert = $actionService->batchCreate($MA_Data,false,100);
 		}catch (\Exception $e){
 			return ['code'=>201,'msg'=>$e->getMessage()];
 		}
 	}
 
 	// 添加数据库
-	public static function goAddDb($data,$cong)
+	public static function goAddDb(?array $data,$cong)
 	{
 		if (!preg_match('/^[a-z]+$/i',$data['sy']['pre'])) return ['code' => 201, 'msg' => '表前缀格式不正确'];
 		// 分类表
@@ -255,7 +254,7 @@ class Crud extends Base{
 	}
 
 	// CRUD生成
-	public static function goCrud($data)
+	public static function goCrud(?array $data)
 	{
 		//参数
 		self::$data = $data;
@@ -293,47 +292,47 @@ class Crud extends Base{
 		return true;
 	}
 	// 控制器
-	public static function getController($tpl)
+	public static function getController(?string $tpl)
 	{
 		return str_replace(['{{$sy_id}}','{{$table}}'],
 		[self::$data['sy']['id'],ucfirst(self::$data['sy']['pre'])],file_get_contents($tpl));
 	}
 	// 模型
-	public static function getModel($tpl)
+	public static function getModel(?string $tpl)
 	{
 		return str_replace(['{{$table}}'],
 		[ucfirst(self::$data['sy']['pre'])],file_get_contents($tpl));
 	}
 	// 模型
-	public static function getService($tpl)
+	public static function getService(?string $tpl)
 	{
 		return str_replace(['{{$table}}'],
 		[ucfirst(self::$data['sy']['pre'])],file_get_contents($tpl));
 	}
 
 	// 模板
-	public static function getDefault($tpl)
+	public static function getDefault(?string $tpl)
 	{
 		return str_replace([],[],file_get_contents($tpl));
 	}
 
 	// 模板
-	public static function getRecycle($tpl)
+	public static function getRecycle(?string $tpl)
 	{
 		return str_replace([],[],file_get_contents($tpl));
 	}
 	// 模板
-	public static function getAddLm($tpl)
+	public static function getAddLm(?string $tpl)
 	{
 		return str_replace([],[],file_get_contents($tpl));
 	}
 	// 
-	public static function getAddCo($tpl)
+	public static function getAddCo(?string $tpl)
 	{
 		return str_replace([],[],file_get_contents($tpl));
 	}
 	// 
-	public static function getSet($tpl)
+	public static function getSet(?string $tpl)
 	{
 		return str_replace([],[],file_get_contents($tpl));
 	}

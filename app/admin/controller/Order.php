@@ -9,39 +9,24 @@ use app\common\model\OrderRecord;
 use app\common\model\OrderAddress;
 use app\common\model\OrderNotes;
 use app\common\model\OrderMessage;
-use app\common\model\ProCo;
 use app\common\model\SetupSy as MS;
 use app\common\service\OrderService;
+use app\common\service\SetupSyService;
 
 class Order extends Base{
 
 	protected $middleware = ['AdminCheck','AdminPermission'];
 	protected $sy_id = 2;
-	protected $service;
+	protected OrderService $service;
 	protected $route;
-	protected $tableLmName;
-	protected $tableCoName;
 	protected $conf = [];
 
 	protected function initialize() {
 		parent::initialize();
 		$this->route = Request::controller();
 		$this->service = new OrderService();
-		$lists = MS::where('sy_id',$this->sy_id)->where('lang',$this->lang)->find();
-		if(!empty($lists['config'])){
-			$this->conf = unserialize($lists['config']);
-		}
-		$zt = false;
-		if(!empty($this->conf)){
-			$this->tableCoName = $this->conf['sy']['table_co']??'';
-			if((isset($this->conf['co']['tuijian']) && $this->conf['co']['tuijian'] == true) ||
-				(isset($this->conf['co']['hot']) && $this->conf['co']['hot'] == true) ||
-				(isset($this->conf['co']['pass']) && $this->conf['co']['pass'] == true) ){
-				$zt = true;
-			}else{
-				$zt = false;
-			}
-		}
+		$this->conf = SetupSyService::getConfig($this->sy_id);
+		$zt = SetupSyService::getCoZt($this->conf);
 		View::assign([
 			'route' => $this->route,
 			'conf' => $this->conf,
@@ -52,93 +37,18 @@ class Order extends Base{
 	//
 	public function recycle(){
 		if(Request::isPost()){
-			
-
 		}else{
-
-			$searchItem = Request::param();
-			$keyword = $searchItem['keyword']??'';
-			$where = [];
-			if(!empty($keyword)){
-				$where[] = ["title", "like", "%" . $keyword . "%"];
-			}
-
-			$count = OM::onlyTrashed()->with([
-				'userinfo',
-				'orderItem' => function($query){
-					$query -> with([
-						'productInfo' => function($query){
-							$query -> field('id,title,keyword,img_sl,param_one,price,stock,package');
-						}
-					]) -> field('id,order_id,goods_id,goods_name,goods_image,goods_price,quantity,specifications');
-				}
-			])->where($where)->count();
-			$lists = OM::onlyTrashed()->with([
-				'userinfo',
-				'orderItem' => function($query){
-					$query -> with([
-						'productInfo' => function($query){
-							$query -> field('id,title,keyword,img_sl,param_one,price,stock,package');
-						}
-					]) -> field('id,order_id,goods_id,goods_name,goods_image,goods_price,quantity,specifications');
-				}
-			])->where($where)->order('wtime desc,id desc')->select()->toArray();
+			$searchItem = request()->param();
 			View::assign([
-				'lists' => $lists,
 				'searchItem' => $searchItem,
 			]);
 			return View::fetch();
 		}
 	}
+	
 	public function recycle_make(){
-		$param = Request::param();
-		if(Request::isPost()){
-			$act = $param['act'];
-			$id = $param['id']??'';
-			$checkbox = $param['checkbox'] ?? '';
-			if(empty($id)){
-				return json(['code'=>201,'msg'=>$this->langHtml['tip']['noData']]);
-			}
-			if($act == 'recovery'){
-				if(empty($checkbox)){
-					return json(['code'=>201,'msg'=>$this->langHtml['tip']['selectData']]);
-				}
-				try{
-					foreach ($id as $key => $value){
-						if(isset($checkbox[$value]) && $checkbox[$value] == 'on'){
-							OM::onlyTrashed()->find($value)->restore();
-						}
-					}
-					return ['code'=>200,'msg'=>$this->langHtml['tip']['operate'].$this->langHtml['tip']['success']];
-				}catch (\Exception $e){
-					return ['code'=>201,'msg'=>$this->langHtml['tip']['operate'].$this->langHtml['tip']['fail'].$e->getMessage()];
-				}
-			}
-			if($act == 'remove'){
-				if(empty($checkbox)){
-					return json(['code'=>201,'msg'=>$this->langHtml['tip']['selectData']]);
-				}
-				try{
-					foreach ($id as $key => $value){
-						if(isset($checkbox[$value]) && $checkbox[$value] == 'on'){
-							$delFind = OM::onlyTrashed()->with(['orderItem'])->where('id',$value)->find();
-							if($delFind['pay_status'] == 0){
-								foreach ($delFind['orderItem'] as $k => $v) {
-									$proFind = ProCo::where('id',$v['goods_id'])->field('stock')->find();
-									$proData['stock'] = $proFind['stock'] + $v['quantity'];
-									ProCo::where('id',$v['goods_id'])->update($proData);
-								}
-							}
-							OM::destroy($value,true);
-							OIS::destroy(['order_id' => $value],true);
-						}
-					}
-					return ['code'=>200,'msg'=>$this->langHtml['tip']['operate'].$this->langHtml['tip']['success']];
-				}catch (\Exception $e){
-					return ['code'=>201,'msg'=>$this->langHtml['tip']['operate'].$this->langHtml['tip']['fail'].$e->getMessage()];
-				}
-			}
-		}
+		$param = request()->param();
+		return $this->recycleMake($this->service,$param);
 	}
 
 

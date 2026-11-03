@@ -34,7 +34,7 @@ trait Util
 		$type   = $this->getResponseType();
 		
 		if ('html' == strtolower($type)) {
-			$response = Response::create(Config::get('app.error_tmpl'), 'view')->assign($result)->header($header);
+			$response = view(Config::get('app.error_tmpl'), $result)->header($header);
 		} else {
 			$response = Response::create($result, $type)->header($header);
 		}
@@ -60,7 +60,7 @@ trait Util
 		$result = ['code' => 1, 'msg' => $msg, 'data' => $data, 'url' => $url, 'wait' => $wait,];
 		$type = $this->getResponseType();
 		if ('html' == strtolower($type)) {
-			$response = Response::create(Config::get('app.success_tmpl'), 'view')->assign($result)->header($header);
+			$response = view(Config::get('app.error_tmpl'), $result)->header($header);
 		} else {
 			$response = Response::create($result, $type)->header($header);
 		}

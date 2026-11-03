@@ -4,7 +4,6 @@ namespace app\index\controller;
 use think\facade\View;
 use think\facade\Session;
 use think\facade\Lang;
-use think\facade\Cache;
 use app\common\model\PersonCart as PC;
 use app\common\model\Person;
 use app\common\model\PersonMessage as PM;

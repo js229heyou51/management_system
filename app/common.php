@@ -4,10 +4,17 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Writer\Html;
 use app\common\model\ParamCo;
+use app\common\model\Gallery;
+use app\common\model\Video;
 
 // 应用公共文件
 //转换类型
 if (!function_exists('changety')) {
+	/**
+	 * 转换类型
+	 *
+	 * @param  string|int $str     字符串
+	 */
 	function changety($str){
 		if ($str=='true'||$str==1){
 			return true;
@@ -23,6 +30,10 @@ if (!function_exists('changety')) {
  * 为字符串或数组元素添加反斜杠
  */
 if (!function_exists('addslash')) {
+	/**
+	 * 为字符串或数组元素添加反斜杠
+	 * @param  string $str     字符串
+	 */
 	function addslash($str){
 		if(!is_array($str)){
 			//如果传进来不不是数组
@@ -62,6 +73,9 @@ if (!function_exists('set_web')) {
 if (!function_exists('get_arr_tree')) {
 	/**
 	 * 递归配置数组
+	 * @param  string $key     键
+	 * @param  array $data    数组
+	 * @param  string $level  缩进级别
 	 */
 	function get_arr_tree($key,$data,$level="\t")
 	{
@@ -149,6 +163,11 @@ if (!function_exists('listTree')) {
 }
 
 if(!function_exists('tableExists')){
+	/**
+	 * 检查表是否存在
+	 *
+	 * @param string  $tableName     表名
+	 */
 	function tableExists($tableName){  
 		// 假设你的数据库默认连接是 MySQL  
 		$sql = "SELECT * FROM information_schema.tables WHERE table_schema = ? AND table_name = ?";  
@@ -163,7 +182,7 @@ if(!function_exists('checkusername')){
 	/**
 	 * 检查字母+数字-
 	 *
-	 * @parame  $pid     字符串
+	 * @param int $pid     字符串
 	 */
 	function checkusername($pid){
 		if(!is_array($pid)){
@@ -185,7 +204,7 @@ if(!function_exists('checkpassword')){
 	/**
 	 * 检查非汉字
 	 *
-	 * @parame  $pid     字符串
+	 * @param int $pid     字符串
 	 */
 	function checkpassword($pid){
 		if (!is_array($pid)){
@@ -210,7 +229,7 @@ if(!function_exists('showseo')){
 	 * @parame  $sy_id  系统的id  
 	 * @parame  $aparr  外部自定义的seo
 	 */
-	function showseo($sy_id='',$aparr=''){
+	function showseo($sy_id='',$aparr=[]){
 		$lang = think\facade\Lang::getLangSet();
 		$cong = app\common\model\SetupGl::where('lang',$lang)->find();
 		$rs=array();
@@ -273,7 +292,7 @@ if(!function_exists('checknum')){
 	/**
 	 * 检查数字
 	 *
-	 * @parame  $pid     数字
+	 * @param int  $pid     数字
 	 */
 	function checknum($pid){
 		if (!is_array($pid)){
@@ -317,7 +336,11 @@ if(!function_exists('html')){
 }
 
 if(!function_exists('importExecl')){
-	// 导入
+	/**
+	 * 导入execl
+	 *
+	 * @param string  $savePath     文件路径
+	 */
 	function importExecl($savePath){
 		$spreadsheet = IOFactory::load($savePath);  
 		$worksheet = $spreadsheet->getActiveSheet();  
@@ -341,6 +364,11 @@ if(!function_exists('importExecl')){
 }
 
 if(!function_exists('getRandom')){
+	/**
+	 * 获取随机数
+	 *
+	 * @param string  $param     参数
+	 */
 	function getRandom($param){
 		$str="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		$key = "";
@@ -380,6 +408,13 @@ if(!function_exists('getParamLists')){
 }
 
 if(!function_exists('translate')){
+	/**
+	 * 翻译
+	 *
+	 * @param string  $query     翻译内容
+	 * @param string  $from     源语言
+	 * @param string  $to     目标语言
+	 */
 	//翻译入口
 	function translate($query, $from, $to){
 		$args = array(
@@ -400,6 +435,14 @@ if(!function_exists('translate')){
 }
 
 if(!function_exists('buildSign')){
+	/**
+	 * 签名
+	 *
+	 * @param string  $query     翻译内容
+	 * @param string  $appID     appid
+	 * @param string  $salt     随机数
+	 * @param string  $secKey     密钥
+	 */
 	function buildSign($query, $appID, $salt, $secKey){
 		$str = $appID . $query . $salt . $secKey;
 		$ret = md5($str);
@@ -407,6 +450,16 @@ if(!function_exists('buildSign')){
 	}
 }
 if(!function_exists('call')){
+	/**
+	 * 签名
+	 *
+	 * @param string  $url     url
+	 * @param string  $args     参数
+	 * @param string  $method     方法
+	 * @param string  $testflag     测试
+	 * @param string  $timeout     超时
+	 * @param string  $headers     头
+	 */
 	function call($url, $args=null, $method="post", $testflag = 0, $timeout = 10, $headers=array()){
 		$timeout = env('API_TRANS_CURL_TIMEOUT');
 		$ret = false;
@@ -424,7 +477,7 @@ if(!function_exists('call')){
 }
 
 if(!function_exists('callOnce')){
-	function callOnce($url, $args=null, $method="post", $withCookie = false, $timeout = CURL_TIMEOUT, $headers=array()){
+	function callOnce(?string $url, $args=null, $method="post", $withCookie = false, ?int $timeout = CURLOPT_TIMEOUT, $headers=array()){
 		$ch = curl_init();
 		if($method == "post") 
 		{
@@ -465,6 +518,11 @@ if(!function_exists('callOnce')){
 }
 
 if(!function_exists('convert')){
+	/**
+	 * 参数转换
+	 *
+	 * @param string  $args     参数
+	 */
 	function convert(&$args){
 		$data = '';
 		if (is_array($args))
@@ -530,6 +588,11 @@ if(!function_exists('getDatabaseTables')){
 }
 
 if(!function_exists('getStateWidth')){
+	/**
+	 * 获取状态宽度
+	 *
+	 * @param array  $conf     配置
+	 */
 	function getStateWidth($conf){
 		$stateWidth = 0;
 		if((isset($conf['co']['ding']) && $conf['co']['ding']) && $stateWidth == 0){
@@ -569,6 +632,11 @@ if(!function_exists('getStateWidth')){
 }
 
 if(!function_exists('getLmStateWidth')){
+	/**
+	 * 获取状态宽度
+	 *
+	 * @param array  $conf     配置
+	 */
 	function getLmStateWidth($conf){
 		$stateWidth = 0;
 
@@ -629,4 +697,100 @@ if(!function_exists('getVideoList')){
 			->orderRaw('FIELD(id, ' . implode(',', $videoIds) . ')')
 			->select();
 	}
+}
+
+if(!function_exists('loadGalleries')){
+	/** 
+	 * 加载图片列表
+	 * @param object $objects 产品列表
+	 * 
+	*/
+	function loadGalleries($objects){
+
+		if ($objects->isEmpty()) {
+			return $objects;
+		}
+		// 1. 收集所有产品中的图片ID（去重）
+		$allGalleryIds = [];
+		foreach ($objects as $object) {
+			$ids = ($object->img_sl ? : []) ?  : ($object->img_sl_lm? : []);
+			$allGalleryIds = array_merge($allGalleryIds, $ids);
+		}
+		$allGalleryIds = array_unique($allGalleryIds);
+		if (empty($allGalleryIds)) {
+			// 没有图片，直接给每个产品设置空数组
+			foreach ($objects as $object) {
+				$object->gallery_list = [];
+			}
+			return $objects;
+		}
+		// 2. 批量查询所有图片，并按ID索引
+		$galleries = Gallery::where('status', 1)  // 假设只查询正常状态的图片
+			->whereIn('id', $allGalleryIds)
+			->select()
+			->column(null, 'id'); // 以ID为键的数组
+
+		// 3. 为每个产品按原顺序组装图片列表
+		foreach ($objects as $object) {
+			$galleryIds = ($object->img_sl ?: []) ?  : ($object->img_sl_lm? : []);
+			$objectGalleries = [];
+			foreach ($galleryIds as $id) {
+				if (isset($galleries[$id])) {
+					$objectGalleries[] = $galleries[$id];
+				}
+			}
+			// 动态添加属性 gallery_list
+			$object->gallery_list = $objectGalleries;
+		}
+		
+		return $objects;
+	}
+}
+if(!function_exists('loadVideos')){
+	/** 
+	 * 加载视频列表
+	 * @param object $objects 产品列表
+	 * 
+	*/
+	function loadVideos($objects){
+
+		if ($objects->isEmpty()) {
+			return $objects;
+		}
+		// 1. 收集所有产品中的视频ID（去重）
+		$allVideoIds = [];
+		foreach ($objects as $object) {
+			$ids = $object->vid_sl ? : [];
+			$allVideoIds = array_merge($allVideoIds, $ids);
+		}
+		$allVideoIds = array_unique($allVideoIds);
+		if (empty($allVideoIds)) {
+			// 没有视频，直接给每个产品设置空数组
+			foreach ($objects as $object) {
+				$object->video_list = [];
+			}
+			return $objects;
+		}
+		// 2. 批量查询所有视频，并按ID索引
+		$videos = Video::where('status', 1)  // 假设只查询正常状态的视频
+			->whereIn('id', $allVideoIds)
+			->select()
+			->column(null, 'id'); // 以ID为键的数组
+
+		// 3. 为每个产品按原顺序组装视频列表
+		foreach ($objects as $object) {
+			$videoIds = $object->vid_sl ?: [];
+			$objectVideos = [];
+			foreach ($videoIds as $id) {
+				if (isset($videos[$id])) {
+					$objectVideos[] = $videos[$id];
+				}
+			}
+			// 动态添加属性 video_list
+			$object->video_list = $objectVideos;
+		}
+		
+		return $objects;
+	}
+	
 }

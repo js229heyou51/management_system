@@ -13,7 +13,7 @@ class SetupSyService{
 		return $setupSy->getConfig($sy_id);
 	}
 
-	public static function getBySyId($id){
+	public static function getBySyId(?int $id){
 		$setupSy = new SetupSy();
 		return $setupSy->getBySyId($id);
 	}
@@ -23,7 +23,7 @@ class SetupSyService{
 		return $setupSy->getByWhere($where);
 	}
 
-	public static function update($sy_id,$conf){
+	public static function update(?int $sy_id,?array $conf){
 		if(isset($conf['sy']['need_lm'])){
 			$conf['sy']['need_lm'] = changety($conf['sy']['need_lm']);
 		}

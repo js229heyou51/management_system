@@ -11,7 +11,7 @@ class KeyCo extends Base{
 	protected $middleware = ['AdminCheck','AdminPermission'];
 
 	protected $conf = [];
-	protected $service = [];
+	protected IS $service;
 
 	protected function initialize() {
 		parent::initialize();
@@ -24,7 +24,6 @@ class KeyCo extends Base{
 		}else{
 			$searchItem = request()->param();
 			View::assign([
-				'lists' => $lists,
 				'searchItem' => $searchItem,
 			]);
 			return View::fetch();
@@ -111,7 +110,7 @@ class KeyCo extends Base{
 		}
 		try{
 			$bol = $this->service->delete($id);
-			Base::master_log($this->langHtml['tip']['del'].$this->langHtml['tip']['keyword'].$find['title']);
+			Base::master_log($this->langHtml['tip']['del'].$this->langHtml['tip']['keyword'].$id);
 			return json(['code'=>200,'msg'=>$this->langHtml['tip']['del'].$this->langHtml['tip']['success']]);
 		}catch (\Exception $e){
 			return json(['code'=>201,'msg'=>$this->langHtml['tip']['del'].$this->langHtml['tip']['fail'].$e->getMessage()]);
@@ -120,7 +119,7 @@ class KeyCo extends Base{
 
 	public function make(){
 		$params = request()->param();
-		return $this->statusMake($this->service,$params);
+		return $this->statusMake($this->service,$params,$this->conf);
 	}
 }
 

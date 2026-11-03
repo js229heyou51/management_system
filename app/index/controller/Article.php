@@ -12,8 +12,8 @@ class Article extends Base{
 
 	public $nav = 'article';
 
-	public function __construct(){
-		parent::__construct();
+	public function initialize(){
+		parent::initialize();
 
 		
 		$articleCategory = ArticleLm::where($this->where)->order($this->orderLm)->select();

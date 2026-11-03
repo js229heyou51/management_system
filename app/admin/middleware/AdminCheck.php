@@ -9,6 +9,9 @@ class AdminCheck
 {
 	/**
 	* 处理请求
+	* @param \think\Request $request
+	* @param \Closure $next
+	* @return \think\Response
 	*/
 	public function handle($request, \Closure $next)
 	{

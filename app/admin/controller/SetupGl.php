@@ -2,12 +2,6 @@
 namespace app\admin\controller;
 
 use think\facade\View;
-use think\facade\Request;
-use think\facade\Db;
-use think\Controller;  
-use think\facade\Filesystem;
-use app\common\model\SetupGl as MG;
-use app\common\model\SetupSy as MS;
 use app\common\service\SetupSyService;
 use app\common\service\SetupGlService;
 
@@ -17,7 +11,7 @@ class SetupGl extends Base{
 
 	public $sy_id = 0;
 	public $conf = '';
-	public $service = [];
+	public SetupGlService $service;
 
 	public function initialize(){
 		parent::initialize();

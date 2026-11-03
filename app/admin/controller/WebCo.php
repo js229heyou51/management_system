@@ -19,8 +19,10 @@ use app\common\service\WebService as IS;
 use app\common\service\WebCategoryService as CS;
 use app\common\service\PlinfoService;
 use app\common\service\PlfileService;
+use app\common\trait\ParseListParams;
 
 class WebCo extends Base{
+	use ParseListParams;
 
 	protected $middleware = ['AdminCheck','AdminPermission'];
 
@@ -78,23 +80,15 @@ class WebCo extends Base{
 	 */
 	public function default(){
 		if(request()->isPost()){
+			return $this->index();
 		}else{
 			if(empty($this->conf)){
 				return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['configSettingsFile'].'</h1>';
 				die();
 			}
 			$searchItem = request()->param();
-			$params['where'] = $this->setWhere($searchItem);
-			$params['keyword'] = $searchItem['keyword']??'';
-			$withCount = [
-				'record' => function($query) {
-					$query->whereTime('wtime','today');
-				}];
-			$with = ['profile'];
-			$lists = $this->service->getListAll($params,false,$with,$withCount);
 			$category = $this->categoryService->getCategoryList([],['info']);
 			View::assign([
-				'lists' => $lists,
 				'category' => $category,
 				'searchItem' => $searchItem
 			]);
@@ -102,14 +96,15 @@ class WebCo extends Base{
 		}
 	}
 
-	public function index(?array $params = []){
-		$param = request()->param();
-		$param['order'] = $params['order'] ?? 'ding desc,px desc,wtime desc,id desc';
-		$param['with'] = 'profile';
-		if(!empty($params)){
-			$param = $params;
-		}
-		return $this->dataTable($this->service,$param);
+	public function index(){
+		$params = $this->parseListParams(['lm']);
+		$withCount = [
+			'record' => function($query) {
+				$query->whereTime('wtime','today');
+			}];
+		$params['with'] = 'profile';
+		$params['withCount'] = $withCount;
+		return $this->dataTable($this->service,$params);
 	}
 
 

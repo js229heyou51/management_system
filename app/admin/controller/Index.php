@@ -6,13 +6,12 @@ namespace app\admin\controller;
 use think\facade\View;
 use think\facade\Session;
 use think\facade\Request;
+use think\facade\Db;
 use app\common\model\Master as M;
 use app\common\model\MasterMenu;
 use app\common\model\Config;
 use app\admin\validate\Master as V;
-use app\common\model\ArticleCo;
 use app\common\model\FeedRecord;
-use app\common\model\ProCo;
 use app\common\model\VisitLog;
 use app\common\service\ProService;
 use app\common\service\ArticleService;
@@ -39,12 +38,7 @@ class Index extends Base{
 		$list = Config::where('type','config')->field('lists')->find();
 
 		$langList = unserialize($list['lists']??'');
-
 		$menus = MasterMenu::where('lang',$this->lang)->whereRaw($where)->order('fid asc,px asc,id asc')->select()->toArray();
-
-		if(!$menus){
-			
-		}
 
 		$menuTree = [];
 		foreach ($menus as $key => $value) {
@@ -107,7 +101,7 @@ class Index extends Base{
 		$serverInfo['run'] = Request::server('SERVER_SOFTWARE');
 		$serverInfo['php'] = PHP_VERSION;
 		$serverInfo['php_run'] = php_sapi_name();
-		$serverInfo['mysql'] = function_exists('mysql_get_server_info')?mysql_get_server_info():\think\facade\Db::query('SELECT VERSION() as mysql_version')[0]['mysql_version'];
+		$serverInfo['mysql'] = Db::query('SELECT VERSION() AS v')[0]['v'];;
 		$serverInfo['think'] = app()->version();
 		$serverInfo['upload'] = ini_get('upload_max_filesize');
 		$serverInfo['max'] = ini_get('max_execution_time').'秒';
@@ -159,16 +153,75 @@ class Index extends Base{
 		return View::fetch();
 	}
 	# 清除缓存
-	public function clear(){
-		$a = delete_dir_file(Env::get('runtime_path').'cache/');
-		$b = delete_dir_file(Env::get('runtime_path').'temp/');
-		// $redis = Cache::store('redis')->handler();
-		// $redis->flushDb();
-		return json(['code'=>200,'msg'=>'清除成功']);
-		if ($a || $b) {
-			return json(['code'=>200]);
-		} else {
-			return json(['code'=>201,'msg'=>'清除失败']);
+	/**
+	 * 清除 runtime 下的 cache 和 temp
+	 */
+	public function clear()
+	{
+		$runtimePath = app()->getRuntimePath(); // 更可靠，不依赖 .env
+
+		$targets = [
+			$runtimePath . 'cache/',
+			$runtimePath . 'temp/',
+		];
+
+		$success = [];
+		$failed  = [];
+
+		foreach ($targets as $path) {
+			// 1. 路径必须存在且是目录，否则跳过（视为已清理）
+			if (!is_dir($path)) {
+				$success[] = $path;
+				continue;
+			}
+
+			// 2. 执行删除
+			if ($this->deleteDir($path)) {
+				$success[] = $path;
+				// 3. 删除后重建目录，保证后续缓存能写入
+				@mkdir($path, 0755, true);
+			} else {
+				$failed[] = $path;
+			}
+		}
+
+		// 4. 统一返回，不提前 return
+		if (!empty($failed)) {
+			return json([
+				'code' => 201,
+				'msg'  => '清除失败',
+				'data' => ['failed' => $failed],
+			]);
+		}
+
+		return json([
+			'code' => 200,
+			'msg'  => '清除成功',
+			'data' => ['cleared' => $success],
+		]);
+	}
+
+	/**
+	 * 递归删除目录
+	 */
+	protected function deleteDir(string $dir): bool
+	{
+		if (!is_dir($dir)) {
+			return false;
+		}
+
+		try {
+			$iterator = new \RecursiveIteratorIterator(
+				new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
+				\RecursiveIteratorIterator::CHILD_FIRST
+			);
+			foreach ($iterator as $file) {
+				$file->isDir() ? @rmdir($file->getRealPath()) : @unlink($file->getRealPath());
+			}
+			return @rmdir($dir);
+		} catch (\Throwable $e) {
+			\think\facade\Log::error('clear cache error: ' . $e->getMessage());
+			return false;
 		}
 	}
 

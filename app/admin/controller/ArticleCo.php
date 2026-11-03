@@ -6,20 +6,23 @@ use app\common\service\SetupSyService;
 use app\common\service\ArticleService as IS;
 use app\common\service\ArticleCategoryService as CS;
 use think\ai\Client;
+use app\common\trait\ParseListParams;
 use Parsedown;
 
 class ArticleCo extends Base{
+	use ParseListParams;
 
 	protected $middleware = ['AdminCheck','AdminPermission'];
 
 	protected $sy_id = 8;
 	protected $conf = [];
-	protected $service = [];
-	protected $categoryService = [];
+	protected IS $service;
+	protected CS $categoryService;
+
 
 	/**
 	 * [initialize description]
-	 * @return [type] [description]
+	 * @return view [description]
 	 */
 	protected function initialize(){
 		parent::initialize();
@@ -35,7 +38,7 @@ class ArticleCo extends Base{
 
 	/**
 	 * [recycle 回收站]
-	 * @return [type]                  [description]
+	 * @return View                 [description]
 	 */
 	public function recycle(){
 		if(request()->isPost()){
@@ -53,7 +56,7 @@ class ArticleCo extends Base{
 
 	/**
 	 * [recycle_make 回收站操作]
-	 * @return [type]          [description]
+	 * @return array          [description]
 	 */
 	public function recycle_make(){
 		$param = request()->param();
@@ -62,10 +65,12 @@ class ArticleCo extends Base{
 
 	/**
 	 * [default 信息首页]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function default(){
 		if(request()->isPost()){
+			$param = request()->param();
+			return $this->index($param);
 		}else{
 			if(empty($this->conf)){
 				return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['configSettingsFile'].'</h1>';
@@ -82,13 +87,9 @@ class ArticleCo extends Base{
 	}
 
 	public function index(?array $params = []){
-		$param = request()->param();
-		$param['order'] = $params['order'] ?? 'ding desc,px desc,wtime desc,id desc';
-		$param['with'] = 'profile';
-		if(!empty($params)){
-			$param = $params;
-		}
-		return $this->dataTable($this->service,$param);
+		$params = $this->parseListParams(['lm']);
+		$params['with'] = 'profile';
+		return $this->dataTable($this->service,$params);
 	}
 
 	/**
@@ -109,7 +110,7 @@ class ArticleCo extends Base{
 
 	/**
 	 * [edit 编辑]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function edit(){
 		$data = request()->param();
@@ -133,7 +134,7 @@ class ArticleCo extends Base{
 
 	/**
 	 * [del 删除]
-	 * @return [type]          [description]
+	 * @return array          [description]
 	 */
 	public function del(){
 		$data = request()->param();
@@ -142,11 +143,11 @@ class ArticleCo extends Base{
 
 	/**
 	 * [make 操作]
-	 * @return [type] [description]
+	 * @return array [description]
 	 */
 	public function make(){
 		$params = request()->param();
-		return $this->statusMake($this->service,$params);
+		return $this->statusMake($this->service,$params,$this->conf);
 	}
 
 
@@ -201,7 +202,7 @@ class ArticleCo extends Base{
 		}
 	}
 
-	private function getH1Text($html) {
+	private function getH1Text(?string $html) {
 		$dom = new \DOMDocument();
 		@$dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
 		$xpath = new \DOMXPath($dom);
@@ -212,7 +213,7 @@ class ArticleCo extends Base{
 		return '';
 	}
 
-	private function removeH1Tags($html) {
+	private function removeH1Tags(?string $html) {
 		$dom = new \DOMDocument();
 		@$dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
 		$xpath = new \DOMXPath($dom);
@@ -229,7 +230,7 @@ class ArticleCo extends Base{
 		return trim(ltrim($innerHtml));
 	}
 
-	private function getBrief($html, $length = 150)
+	private function getBrief(?string $html, $length = 150)
     {
         // 1. 去除所有 HTML 标签，得到纯文本
         $text = strip_tags($html);

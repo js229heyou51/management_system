@@ -13,8 +13,8 @@ class ProLm extends Base{
 
 	protected $sy_id = 3;
 	protected $conf = [];
-	protected $service = [];
-	protected $categoryService = [];
+	protected IS $service;
+	protected CS $categoryService;
 
 	protected function initialize() {
 		parent::initialize();
@@ -30,18 +30,13 @@ class ProLm extends Base{
 
 	/**
 	 * [recycle 回收站]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function recycle(){
 		if(request()->isPost()){
-			
-
 		}else{
 			$searchItem = request()->param();
-			$keyword = $searchItem['keyword']??'';
-			$lists = $this->categoryService->getCategoryList(['keyword' => $keyword], [], true);
 			View::assign([
-				'lists' => $lists,
 				'searchItem' => $searchItem,
 			]);
 			return View::fetch();
@@ -50,7 +45,7 @@ class ProLm extends Base{
 
 	/**
 	 * [recycle_make 回收站操作]
-	 * @return [type]                  [description]
+	 * @return array                  [description]
 	 */
 	public function recycle_make(){
 		$param = request()->param();
@@ -59,7 +54,7 @@ class ProLm extends Base{
 	
 	/**
 	 * [setconfig 系统配置]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function setconfig(){
 		if(request()->isPost()){
@@ -79,7 +74,7 @@ class ProLm extends Base{
 
 	/**
 	 * [default 首页]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function default(){
 		if(request()->isPost()){
@@ -93,6 +88,14 @@ class ProLm extends Base{
 			}
 			return View::fetch();
 		}
+	}
+
+	public function index(){
+		$searchItem = request()->param();
+		$keyword = $searchItem['keyword']??'';
+		$lists = $this->categoryService->getCategoryList(['keyword' => $keyword], [], true);
+		$count = count($lists);
+		return json(['code'=>0,'data'=>$lists,'count' => $count]);
 	}
 
 	public function getParamData(){
@@ -156,7 +159,7 @@ class ProLm extends Base{
 
 	/**
 	 * [edit 编辑]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function edit(){
 		$data = request()->param();
@@ -199,31 +202,21 @@ class ProLm extends Base{
 
 	/**
 	 * [del 删除]
-	 * @return [type]                  [description]
+	 * @return array                  [description]
 	 */
 	public function del(){
 		$data = request()->param();
-		$id_lm = $data['id_lm'];
-		if(empty($id_lm)){
-			return json(['code'=>201,'msg'=>$this->langHtml['tip']['id'].$this->langHtml['tip']['cannotBeEmpty']]);
-		}
-		$find = $this->categoryService->getCategoryById($id_lm);
-		try{
-			$this->categoryService->deleteCategory($id_lm);
-			Base::master_log($this->langHtml['tip']['del'].$this->conf['sy']['name'].$this->langHtml['tip']['category'].'：'.$find['title_lm']);
-			return json(['code'=>200,'msg'=>$this->langHtml['tip']['del'].$this->langHtml['tip']['success']]);
-		}catch (\Exception $e){
-			return json(['code'=>201,'msg'=>$this->langHtml['tip']['del'].$this->langHtml['tip']['fail'].$e->getMessage()]);
-		}
+		$data['type'] = 'category';
+		return $this->delCommon($this->categoryService,$data,$this->conf);
 	}
 
 	/**
 	 * [make 操作]
-	 * @return [type]                  [description]
+	 * @return array                  [description]
 	 */
 	public function make(){
 		$param = request()->param();
-		return $this->statusLmMake($this->categoryService,$param);
+		return $this->statusLmMake($this->categoryService,$param,$this->conf);
 	}
 
 }

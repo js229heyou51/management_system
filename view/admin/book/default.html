@@ -92,7 +92,7 @@
 				}}
 			],
 			isPx: false,
-			where: {chakan:"{$searchItem.chakan}",keyword: "{$searchItem.keyword}"},
+			where: {chakan:"{$searchItem.chakan??''}",keyword: "{$searchItem.keyword??''}"},
 			isTitleEdit: false,
 		}
 	</script>

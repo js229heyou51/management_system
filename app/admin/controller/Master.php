@@ -9,7 +9,7 @@ use app\common\model\MasterAction as MA;
 use app\common\model\MasterMenu as MM;
 use app\common\model\MasterLog as ML;
 use app\admin\validate\Master as V;
-use app\common\service\MasterService;
+use app\common\service\MasterService as IS;
 /**
  * 
  */
@@ -18,12 +18,12 @@ class Master extends Base{
 	protected $middleware = ['AdminCheck','AdminPermission'];
 
 	protected $route;
-	protected $service;
+	protected IS $service;
 
 	protected function initialize() {
 		parent::initialize();
 		$this->route = Request::controller();
-		$this->service = new MasterService();
+		$this->service = new IS();
 		View::assign([
 			'route' => $this->route,
 		]);

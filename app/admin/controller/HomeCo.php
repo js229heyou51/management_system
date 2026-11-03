@@ -2,19 +2,20 @@
 namespace app\admin\controller;
 
 use think\facade\View;
-use think\facade\Session;
 use app\common\service\SetupSyService;
 use app\common\service\HomeService as IS;
 use app\common\service\HomeCategoryService as CS;
+use app\common\trait\ParseListParams;
 
 class HomeCo extends Base{
+	use ParseListParams;
 
 	protected $middleware = ['AdminCheck','AdminPermission'];
 
 	protected $sy_id = 1;
 	protected $conf = [];
-	protected $service = [];
-	protected $categoryService = [];
+	protected IS $service;
+	protected CS $categoryService;
 
 	protected function initialize() {
 		parent::initialize();
@@ -30,7 +31,7 @@ class HomeCo extends Base{
 
 	/**
 	 * [recycle 回收站]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function recycle(){
 		if(request()->isPost()){
@@ -48,7 +49,7 @@ class HomeCo extends Base{
 
 	/**
 	 * [recycle_make 回收站操作]
-	 * @return [type]          [description]
+	 * @return View          [description]
 	 */
 	public function recycle_make(){
 		$param = request()->param();
@@ -57,9 +58,7 @@ class HomeCo extends Base{
 
 	/**
 	 * [default 信息首页]
-	 * @param  IS     $service         [对应模型的信息service]
-	 * @param  CS     $categoryService [对应模型的分类service]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function default(){
 		if(request()->isPost()){
@@ -79,13 +78,9 @@ class HomeCo extends Base{
 	}
 
 	public function index(?array $params = []){
-		$param = request()->param();
-		$param['order'] = $params['order'] ?? 'ding desc,px desc,wtime desc,id desc';
-		$param['with'] = 'profile';
-		if(!empty($params)){
-			$param = $params;
-		}
-		return $this->dataTable($this->service,$param);
+		$params = $this->parseListParams(['lm']);
+		$params['with'] = 'profile';
+		return $this->dataTable($this->service,$params);
 	}
 
 	/**
@@ -106,7 +101,7 @@ class HomeCo extends Base{
 
 	/**
 	 * [edit 编辑]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function edit(){
 		$data = request()->param();
@@ -132,7 +127,7 @@ class HomeCo extends Base{
 
 	/**
 	 * [del 删除]
-	 * @return [type]          [description]
+	 * @return array          [description]
 	 */
 	public function del(){
 		$data = request()->param();
@@ -141,8 +136,7 @@ class HomeCo extends Base{
 
 	/**
 	 * [make 操作]
-	 * @param  IS     $service [对应模型的信息service]
-	 * @return [type]          [description]
+	 * @return array          [description]
 	 */
 	public function make(){
 		$params = request()->param();
@@ -152,7 +146,7 @@ class HomeCo extends Base{
 			$findLm = $this->categoryService->getCategoryById($lm);
 			return json(['code'=>200,'data'=>$findLm]);
 		}
-		return $this->statusMake($this->service,$params);
+		return $this->statusMake($this->service,$params,$this->conf);
 	}
 
 }

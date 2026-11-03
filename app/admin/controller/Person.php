@@ -1,16 +1,8 @@
 <?php  
 namespace app\admin\controller;
 
-use think\facade\Db;
 use think\facade\View;
 use think\facade\Request;
-use think\facade\Filesystem;
-use think\facade\Session;
-use app\common\model\Pl_info;
-use app\common\model\Pl_file;
-use app\common\model\Pl_image;
-use app\common\model\SetupSy as MS;
-use app\common\model\Person as MC;
 use app\common\service\PersonService;
 use app\common\service\SetupSyService;
 
@@ -19,10 +11,8 @@ class Person extends Base{
 	protected $middleware = ['AdminCheck','AdminPermission'];
 
 	protected $sy_id = 10;
-	protected $service;
+	protected PersonService $service;
 	protected $route;
-	protected $tableLmName;
-	protected $tableCoName;
 	protected $conf = [];
 
 	protected function initialize() {
@@ -134,7 +124,7 @@ class Person extends Base{
 	// 
 	public function make(){
 		$params = request()->param();
-		return $this->statusMake($this->service,$params);
+		return $this->statusMake($this->service,$params,$this->conf);
 	}
 
 }

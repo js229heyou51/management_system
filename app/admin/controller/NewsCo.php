@@ -5,19 +5,21 @@ use think\facade\View;
 use app\common\service\SetupSyService;
 use app\common\service\NewsService as IS;
 use app\common\service\NewsCategoryService as CS;
+use app\common\trait\ParseListParams;
 
 class NewsCo extends Base{
+	use ParseListParams;
 
 	protected $middleware = ['AdminCheck','AdminPermission'];
 
 	protected $sy_id = 5;
 	protected $conf = [];
-	protected $service = [];
-	protected $categoryService = [];
+	protected IS $service;
+	protected CS $categoryService;
 
 	/**
 	 * [initialize description]
-	 * @return [type] [description]
+	 * @return View [description]
 	 */
 	protected function initialize(){
 		parent::initialize();
@@ -33,7 +35,7 @@ class NewsCo extends Base{
 
 	/**
 	 * [recycle 回收站]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function recycle(){
 		if(request()->isPost()){
@@ -51,7 +53,7 @@ class NewsCo extends Base{
 
 	/**
 	 * [recycle_make 回收站操作]
-	 * @return [type]          [description]
+	 * @return array          [description]
 	 */
 	public function recycle_make(){
 		$param = request()->param();
@@ -60,7 +62,7 @@ class NewsCo extends Base{
 
 	/**
 	 * [default 信息首页]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function default(){
 		if(request()->isPost()){
@@ -80,13 +82,9 @@ class NewsCo extends Base{
 	}
 
 	public function index(?array $params = []){
-		$param = request()->param();
-		$param['order'] = $params['order'] ?? 'ding desc,px desc,wtime desc,id desc';
-		$param['with'] = 'profile';
-		if(!empty($params)){
-			$param = $params;
-		}
-		return $this->dataTable($this->service,$param);
+		$params = $this->parseListParams(['lm']);
+		$params['with'] = 'profile';
+		return $this->dataTable($this->service,$params);
 	}
 
 	/**
@@ -107,7 +105,7 @@ class NewsCo extends Base{
 
 	/**
 	 * [edit 编辑]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function edit(){
 		$data = request()->param();
@@ -131,7 +129,7 @@ class NewsCo extends Base{
 
 	/**
 	 * [del 删除]
-	 * @return [type]          [description]
+	 * @return array          [description]
 	 */
 	public function del(){
 		$data = request()->param();
@@ -140,11 +138,11 @@ class NewsCo extends Base{
 
 	/**
 	 * [make 操作]
-	 * @return [type] [description]
+	 * @return array [description]
 	 */
 	public function make(){
 		$params = request()->param();
-		return $this->statusMake($this->service,$params);
+		return $this->statusMake($this->service,$params,$this->conf);
 	}
 }
 

@@ -1,7 +1,6 @@
 <?php  
 namespace app\admin\controller;
 
-use think\facade\Cache;
 use app\common\model\ArticleCo;
 use app\common\utils\RateLimiter;
 /**
@@ -9,7 +8,7 @@ use app\common\utils\RateLimiter;
  */
 class textRedis
 {
-	function romanToInt($s) {
+	function romanToInt(?string $s) {
 		$arr = [
 			'I' => 1,
 			'V' => 5,
@@ -55,7 +54,7 @@ class textRedis
 		return $sum;
 	}
 
-	function intToRoman($num) {
+	function intToRoman(?int $num) {
 		$arr = [
 			'I' => 1,
 			'V' => 5,
@@ -78,12 +77,12 @@ class textRedis
 
 		return $str;
 	}	
-	function lengthOfLastWord($s){
+	function lengthOfLastWord(?string $s){
 		$s_arr = explode(' ',trim($s));
 		return strlen(end($s_arr));
 	}
 
-	function longestCommonPrefix($strs){
+	function longestCommonPrefix(?array $strs){
 		$res = '';
 		foreach ($strs as $key => $value) {
 			for ($i=0; $i < strlen($value); $i++) { 
@@ -94,7 +93,7 @@ class textRedis
 		return $res;
 	}
 
-	function isPalindrome($s){
+	function isPalindrome(?string $s){
 		$result = preg_replace('/[^a-zA-Z0-9]/','',$s);
 		$result = strtolower($result);
 		dump($result);
@@ -120,7 +119,7 @@ class textRedis
 		}
 	}
 
-	function isSubsequence($s, $t) {
+	function isSubsequence(?string $s, ?string $t) {
 		$len = strlen($s);
 		$arr = mb_str_split($t);
 		$flag = false;
@@ -203,7 +202,7 @@ class textRedis
 	function index()
 	{
 		$limiter = new RateLimiter(5, 900);
-		$ip    = request()->ip(true);
+		$ip    = request()->ip();
 		$email = trim($_POST['email'] ?? '');
 
 		// 任意一个维度超限就拦下

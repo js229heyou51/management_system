@@ -3,12 +3,10 @@
 namespace app\admin\controller;
 
 use think\facade\View;
-use think\facade\Request;
 use think\facade\Db;
 use think\Response;
 use app\common\service\GalleryService;
 use app\common\service\GalleryCategoryService;
-use app\common\model\SetupSy as MS;
 
 class Gallery extends Base
 {
@@ -177,7 +175,7 @@ class Gallery extends Base
 	/**
 	 * 获取图片详情
 	 */
-	public function detail($id)
+	public function detail(?int $id)
 	{
 		$gallery = \app\common\model\Gallery::find($id);
 		
@@ -195,7 +193,7 @@ class Gallery extends Base
 	/**
 	 * 删除图片（软删除）
 	 */
-	public function delete($id)
+	public function delete(?int $id)
 	{
 		$gallery = \app\common\model\Gallery::find($id);
 		
@@ -299,7 +297,7 @@ class Gallery extends Base
 	/**
 	 * 直接访问图片（防止盗链）
 	 */
-	public function image($path)
+	public function image(?string $path)
 	{
 		$fullPath = public_path() . '' . $path;
 		

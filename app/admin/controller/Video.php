@@ -4,7 +4,6 @@ namespace app\admin\controller;
 
 use app\common\service\VideoService;
 use app\common\service\VideoCategoryService;
-use app\common\validate\VideoValidate;
 use think\facade\View;
 
 class Video extends Base
@@ -63,7 +62,7 @@ class Video extends Base
 	/**
 	 * 视频详情
 	 */
-	public function detail($id)
+	public function detail(?int $id)
 	{
 		$video = VideoService::getDetail($id);
 		if (!$video) {
@@ -103,7 +102,7 @@ class Video extends Base
 	/**
 	 * 删除视频
 	 */
-	public function delete($id)
+	public function delete(?int $id)
 	{
 		$userId = request()->userId ?? 0; // 从token获取
 		$result = VideoService::delete($id, $userId);
@@ -113,7 +112,7 @@ class Video extends Base
 	/**
 	 * 设置推荐
 	 */
-	public function setRecommend($id)
+	public function setRecommend(?int $id)
 	{
 		$isRecommend = request()->param('is_recommend/d', 1);
 		$result = VideoService::setRecommend($id, $isRecommend);
@@ -125,7 +124,7 @@ class Video extends Base
 	 */
 	public function categoryTree()
 	{
-		$tree = VideoCategory::getTree();
+		$tree = VideoCategoryService::getTree(0);
 		return json(['code' => 0, 'data' => $tree]);
 	}
 }

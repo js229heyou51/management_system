@@ -10,8 +10,8 @@ use app\common\service\HomeCategoryService;
 class About extends Base{
 
 	public $nav = 'about';
-	protected $homeService;
-	protected $homeCategoryService;
+	protected HomeService $homeService;
+	protected HomeCategoryService $homeCategoryService;
 
 	public function initialize(){
 		parent::initialize();

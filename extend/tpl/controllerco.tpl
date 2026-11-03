@@ -14,12 +14,12 @@ class {{$table}}Co extends Base{
 
 	protected $sy_id = {{$sy_id}};
 	protected $conf = [];
-	protected $service = [];
-	protected $categoryService = [];
+	protected IS $service;
+	protected CS $categoryService;
 
 	/**
 	 * [initialize description]
-	 * @return [type] [description]
+	 * @return View [description]
 	 */
 	protected function initialize(){
 		parent::initialize();
@@ -35,7 +35,7 @@ class {{$table}}Co extends Base{
 
 	/**
 	 * [recycle 回收站]
-	 * @return [type]                  [description]
+	 * @return View                 [description]
 	 */
 	public function recycle(){
 		if(request()->isPost()){
@@ -53,7 +53,7 @@ class {{$table}}Co extends Base{
 
 	/**
 	 * [recycle_make 回收站操作]
-	 * @return [type]          [description]
+	 * @return array          [description]
 	 */
 	public function recycle_make(){
 		$param = request()->param();
@@ -62,11 +62,11 @@ class {{$table}}Co extends Base{
 
 	/**
 	 * [default 信息首页]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function default(){
 		if(request()->isPost()){
-
+			return $this->index();
 		}else{
 			if(empty($this->conf)){
 				return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['configSettingsFile'].'</h1>';
@@ -82,14 +82,10 @@ class {{$table}}Co extends Base{
 		}
 	}
 
-	public function index(?array $params = []){
-		$param = request()->param();
-		$param['order'] = $params['order'] ?? 'ding desc,px desc,wtime desc,id desc';
-		$param['with'] = 'profile';
-		if(!empty($params)){
-			$param = $params;
-		}
-		return $this->dataTable($this->service,$param);
+	public function index(){
+		$params = $this->parseListParams(['lm']);
+		$params['with'] = 'profile';
+		return $this->dataTable($this->service,$params);
 	}
 
 	/**
@@ -98,28 +94,7 @@ class {{$table}}Co extends Base{
 	public function add(){
 		if(request()->isPost()){
 			$data = request()->param();
-			try{
-
-				$info = $this->service->create($data);
-				$id = $info->getLastInsID();
-
-				if(!empty($this->conf['co']['info']) && $this->conf['co']['info'] == true){
-					$plinfo = $this->plInfoCreate($id,$this->sy_id);
-					if(!$plinfo){
-						return json(['code'=>201,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['fail']]);
-					}
-				}
-				if(!empty($this->conf['co']['file']) && $this->conf['co']['file'] == true){
-					$plFile = $this->plFnfoCreate($id,$this->sy_id);
-					if(!$plFile){
-						return json(['code'=>201,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['fail']]);
-					}
-				}
-				Base::master_log($this->langHtml['tip']['add'].$this->conf['sy']['name'].$this->langHtml['tip']['information'].'：'.$data['title']);
-				return json(['code'=>200,'msg'=>$this->langHtml['tip']['add'].$this->langHtml['tip']['success']]);
-			}catch (\Exception $e){
-				return json(['code'=>201,'msg'=>$this->langHtml['tip']['add'].$this->langHtml['tip']['fail'].$e->getMessage()]);
-			}
+			return $this->addCommon($this->service,$data,$this->conf,$this->sy_id);
 		}else{
 			$category = $this->categoryService->getCategoryList();
 			View::assign([
@@ -131,23 +106,17 @@ class {{$table}}Co extends Base{
 
 	/**
 	 * [edit 编辑]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function edit(){
 		$data = request()->param();
 		if(request()->isPost()){
-			$id = $data['id'] ?? '';
-			try{
-				$update = $this->service->update($id,$data);
-				Base::master_log($this->langHtml['tip']['edit'].$this->conf['sy']['name'].$this->langHtml['tip']['information'].'：'.$data['title']);
-				return json(['code'=>200,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['success']]);
-			}catch (\Exception $e){
-				return json(['code'=>201,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['fail'].$e->getMessage()]);
-			}
+			return $this->editCommon($this->service,$data,$this->conf);
 		}else{
 			$id = $data['id']??'';
 			if(empty($id)){
-				return json(['code'=>201,'msg'=>$this->langHtml['tip']['id'].$this->langHtml['tip']['cannotBeEmpty']]);   
+				return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['id'].$this->langHtml['tip']['cannotBeEmpty'].'</h1>';
+				die();
 			}
 			$find = $this->service->getById($id);
 			$category = $this->categoryService->getCategoryList();
@@ -161,30 +130,20 @@ class {{$table}}Co extends Base{
 
 	/**
 	 * [del 删除]
-	 * @return [type]          [description]
+	 * @return array          [description]
 	 */
 	public function del(){
 		$data = request()->param();
-		$id = $data['id'];
-		if(empty($id)){
-			return json(['code'=>201,'msg'=>$this->langHtml['tip']['id'].$this->langHtml['tip']['cannotBeEmpty']]);
-		}
-		try{
-			$bol = $this->service->delete($id);
-			Base::master_log($this->langHtml['tip']['del'].$this->conf['sy']['name'].$this->langHtml['tip']['information'].'：'.$id);
-			return json(['code'=>200,'msg'=>$this->langHtml['tip']['del'].$this->langHtml['tip']['success']]);
-		}catch (\Exception $e){
-			return json(['code'=>201,'msg'=>$this->langHtml['tip']['del'].$this->langHtml['tip']['fail'].$e->getMessage()]);
-		}
+		return $this->delCommon($this->service,$data,$this->conf);
 	}
 
 	/**
 	 * [make 操作]
-	 * @return [type] [description]
+	 * @return array [description]
 	 */
 	public function make(){
 		$params = request()->param();
-		return $this->statusMake($this->service,$params);
+		return $this->statusMake($this->service,$params,$this->conf);
 	}
 
 }

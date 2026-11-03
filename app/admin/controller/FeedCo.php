@@ -1,37 +1,29 @@
 <?php  
 namespace app\admin\controller;
 
-use think\facade\Db;
 use think\facade\View;
 use think\facade\Request;
-use think\facade\Session;
-use app\common\model\Pl_info;
-use app\common\model\Pl_file;
-use app\common\model\Pl_image;
-use app\common\model\SetupSy as MS;
-use app\common\model\FeedLm as ML;
-use app\common\model\FeedCo as MC;
 use app\common\model\ArticleLm;
 use app\common\model\WebCo;
 use app\common\model\FeedRecord;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;  
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx; 
-use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use app\common\service\SetupSyService;
 use app\common\service\FeedRecordService;
 use app\common\service\FeedService as IS;
 use app\common\service\FeedCategoryService as CS;
-use app\common\service\ArticleCategoryService;
+use app\common\trait\ParseListParams;
 
 class FeedCo extends Base{
+	use ParseListParams;
 
 	protected $middleware = ['AdminCheck','AdminPermission'];
 
 	protected $sy_id = 9;
 	protected $conf = [];
-	protected $service = [];
-	protected $categoryService = [];
+	protected IS $service;
+	protected CS $categoryService;
 
 	protected function initialize() {
 		parent::initialize();
@@ -84,8 +76,6 @@ class FeedCo extends Base{
 	}
 
 	public function index(?array $params = []){
-		$param = request()->param();
-		$param['order'] = $params['order'] ?? 'px desc,wtime desc,id desc';
 		$with = [
 				'article' => function($query){
 					$query->withCount([
@@ -100,16 +90,14 @@ class FeedCo extends Base{
 					]);
 				}
 			];
-		$param['with'] = $params['with'] ?? $with;
 		$withCount = [
 			'record' => function($query) {
 				$query->whereTime('wtime','today');
 			}];
-		$param['withCount'] = $params['withCount'] ?? $withCount;
-		if(!empty($params)){
-			$param = $params;
-		}
-		return $this->dataTable($this->service,$param);
+		$params = $this->parseListParams(['lm']);
+		$params['with'] = $with;
+		$params['withCount'] = $withCount;
+		return $this->dataTable($this->service,$params);
 	}
 
 	// 添加信息
@@ -197,7 +185,7 @@ class FeedCo extends Base{
 	// 
 	public function make(){
 		$params = Request::param();
-		return $this->statusMake($this->service,$params);
+		return $this->statusMake($this->service,$params,$this->conf);
 	}
 	//
 	public function createWeb(){

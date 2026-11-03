@@ -14,12 +14,12 @@ class {{$table}}Lm extends Base{
 
 	protected $sy_id = {{$sy_id}};
 	protected $conf = [];
-	protected $service = [];
-	protected $categoryService = [];
+	protected IS $service;
+	protected CS $categoryService;
 	
 	/**
 	 * [initialize description]
-	 * @return [type] [description]
+	 * @return View [description]
 	 */
 	protected function initialize() {
 		parent::initialize();
@@ -35,17 +35,14 @@ class {{$table}}Lm extends Base{
 
 	/**
 	 * [recycle 回收站]
-	 * @return [type]                  [description]
+	 * @return View                [description]
 	 */
 	public function recycle(){
 		if(request()->isPost()){
 			
 		}else{
 			$searchItem = request()->param();
-			$keyword = $searchItem['keyword']??'';
-			$lists = $this->categoryService->getCategoryList(['keyword' => $keyword], [], true);
 			View::assign([
-				'lists' => $lists,
 				'searchItem' => $searchItem,
 			]);
 			return View::fetch();
@@ -96,6 +93,14 @@ class {{$table}}Lm extends Base{
 			}
 			return View::fetch();
 		}
+	}
+
+	public function index(){
+		$searchItem = request()->param();
+		$keyword = $searchItem['keyword']??'';
+		$lists = $this->categoryService->getCategoryList(['keyword' => $keyword], [], true);
+		$count = count($lists);
+		return json(['code'=>0,'data'=>$lists,'count' => $count]);
 	}
 
 	/**
@@ -176,18 +181,8 @@ class {{$table}}Lm extends Base{
 	 */
 	public function del(){
 		$data = request()->param();
-		$id_lm = $data['id_lm'];
-		if(empty($id_lm)){
-			return json(['code'=>201,'msg'=>$this->langHtml['tip']['id'].$this->langHtml['tip']['cannotBeEmpty']]);
-		}
-		$find = $this->categoryService->getCategoryById($id_lm);
-		try{
-			$this->categoryService->deleteCategory($id_lm);
-			Base::master_log($this->langHtml['tip']['del'].$this->conf['sy']['name'].$this->langHtml['tip']['category'].'：'.$find['title_lm']);
-			return json(['code'=>200,'msg'=>$this->langHtml['tip']['del'].$this->langHtml['tip']['success']]);
-		}catch (\Exception $e){
-			return json(['code'=>201,'msg'=>$this->langHtml['tip']['del'].$this->langHtml['tip']['fail'].$e->getMessage()]);
-		}
+		$data['type'] = 'category';
+		return $this->delCommon($this->categoryService,$data,$this->conf);
 	}
 
 	/**

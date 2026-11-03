@@ -49,8 +49,9 @@ class Login extends Base{
 				// 'lang'=> $this->lang,
 			];
 
+
 			$limiter = new RateLimiter(5, 900);
-			$ip = request()->ip(true);
+			$ip = request()->ip();
 
 			$user = M::where($where)->find();
 			if(!$user){
@@ -67,6 +68,7 @@ class Login extends Base{
 				return json(array('code'=>201,'msg' => $this->langHtml['tip']['notPermission']));
 			}
 			if($user->error_num < 3 || ($user->error_time > 0 && (time() - $user->error_time) > 900)){
+
 				if(!password_verify($password, $user->password)){
 					if($user->error_num == 0 || ($user->error_time>0&&(time()-$user->error_time)>900) ){
 						M::where('id',$user->id)->update(['error_num' => 1,'error_time'=>time()]);

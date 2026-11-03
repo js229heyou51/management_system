@@ -4,11 +4,9 @@ namespace app\admin\controller;
 use think\facade\Request;
 use think\facade\View;
 use think\facade\Db;
-use think\facade\Filesystem;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;  
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx; 
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
-use think\Response;
 
 use app\common\model\Config as MP;
 
@@ -18,9 +16,9 @@ class PlDao extends Base{
 
 	protected $conf = [];
 	protected $route;
-	protected $exportTableName;
-	protected $importTableName;
-	protected $imgUploadTableName;
+	protected $exportTableName = '';
+	protected $importTableName = '';
+	protected $imgUploadTableName = '';
 	protected $plConf = [];
 
 	protected function initialize() {
@@ -148,6 +146,7 @@ class PlDao extends Base{
 			if($img_sl == ''){
 				return json(['code'=>201,'msg'=>'图片不能为空']);
 			}
+			$data = [];
 			foreach ($img_sl as $key => $value) {
 				$arr['title'] = $param['title'][$key];
 				$arr['img_sl'] = $param['img_sl'][$key];

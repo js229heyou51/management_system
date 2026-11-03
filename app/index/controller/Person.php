@@ -55,6 +55,7 @@ class Person extends Base{
 
 		$productLists = ProCo::where($this->where)->order($this->orderCo)->where('tuijian',1)->limit(5)->select();
 
+		$productList = [];
 		foreach ($productLists as $key => $value) {
 
 			$paramArr = [];
@@ -216,7 +217,7 @@ class Person extends Base{
 				try{
 					$update = PI::where('id',$this->userInfo['id'])->update(['img_sl'=>$new_file]);
 					return json(['code'=>200,'msg'=>'上传成功','file'=>$new_file]);
-				}catch(Exception $e){
+				}catch(\Exception $e){
 					return json(['code'=>201,'msg'=>'上传失败'.$e->getMessage()]);
 				}
 			}
@@ -233,7 +234,7 @@ class Person extends Base{
 		try{
 			$update = PI::where('id',$id)->update($params);
 			return json(['code'=>200,'msg'=>'保存成功']);
-		}catch(Exception $e){
+		}catch(\Exception $e){
 			return json(['code'=>201,'msg'=>'保存失败'.$e->getMessage()]);
 		}
 
@@ -280,12 +281,12 @@ class Person extends Base{
 		$order_sn = $params['order_sn'] ??'';
 
 		if(empty($order_sn)){
-			$this->error('参数错误',null,0);
+			//$this->error('参数错误',null,0);
 		}
 
 		$find = Order::with(['orderItem','address'])->where('order_sn',$order_sn)->find();
 		if(empty($find)){
-			$this->error('订单不存在',null,0);
+			//$this->error('订单不存在',null,0);
 		}
 		View::assign([
 			'find' => $find,

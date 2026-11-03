@@ -117,7 +117,7 @@ class Cart extends Base{
 			try{
 				$del = PersonCart::where('id',$id)->update(['delete_time'=>date('Y-m-d H:i:s')]);
 				return json(['code'=>200,'msg'=>'删除成功']);
-			}catch(Exception $e){
+			}catch(\Exception $e){
 				return json(['code'=>201,'msg'=>'删除失败'.$e->getMessage()]);
 			}
 		}
@@ -497,7 +497,7 @@ class Cart extends Base{
 				$update = PersonCollect::where($where)->update($updateData);
 				PersonCollect::destroy($find['id'],true);
 				return json(['code'=>200,'msg'=>'取消收藏','text'=>'移入收藏']);
-			}catch(Exception $e){
+			}catch(\Exception $e){
 				return json(['code'=>201,'msg'=>'操作失败'.$e->getMessage()]);
 			}
 		}else{
@@ -507,7 +507,7 @@ class Cart extends Base{
 			try{
 				$inser = PersonCollect::insert($insertData);
 				return json(['code'=>200,'msg'=>'成功收藏','text'=>'取消收藏']);
-			}catch(Exception $e){
+			}catch(\Exception $e){
 				return json(['code'=>201,'msg'=>'操作失败'.$e->getMessage()]);
 			}
 		}

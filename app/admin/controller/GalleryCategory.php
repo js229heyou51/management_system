@@ -2,10 +2,10 @@
 // app/controller/GalleryCategoryController.php
 namespace app\admin\controller;
 
-use app\BaseController;
 use app\common\service\GalleryCategoryService;
 use think\facade\Request;
 use think\facade\View;
+use app\common\model\GalleryCategory as GM;
 
 class GalleryCategory extends Base
 {
@@ -61,7 +61,7 @@ class GalleryCategory extends Base
 	/**
 	 * 更新分类
 	 */
-	public function update($id)
+	public function update(?int $id)
 	{
 		if(Request::isPost()){
 			try {
@@ -99,7 +99,7 @@ class GalleryCategory extends Base
 	/**
 	 * 删除分类
 	 */
-	public function delete($id)
+	public function delete(?int $id)
 	{
 		try {
 			$force = Request::post('force', 0);
@@ -120,7 +120,7 @@ class GalleryCategory extends Base
 	/**
 	 * 分类详情
 	 */
-	public function detail($id)
+	public function detail(?int $id)
 	{
 		try {
 			$category = GalleryCategoryService::getDetail($id);
@@ -141,7 +141,7 @@ class GalleryCategory extends Base
 	/**
 	 * 移动分类
 	 */
-	public function move($id)
+	public function move(?int $id)
 	{
 		try {
 			$newParentId = Request::post('parent_id', 0);
@@ -199,7 +199,7 @@ class GalleryCategory extends Base
 	/**
 	 * 根据slug获取分类
 	 */
-	public function getBySlug($slug)
+	public function getBySlug(?string $slug)
 	{
 		try {
 			$category = GalleryCategoryService::getBySlug($slug);
@@ -228,11 +228,11 @@ class GalleryCategory extends Base
 			
 			switch ($action) {
 				case 'enable':
-					GalleryCategory::whereIn('id', $ids)->update(['status' => 1]);
+					GM::whereIn('id', $ids)->update(['status' => 1]);
 					break;
 					
 				case 'disable':
-					GalleryCategory::whereIn('id', $ids)->update(['status' => 0]);
+					GM::whereIn('id', $ids)->update(['status' => 0]);
 					break;
 					
 				case 'delete':

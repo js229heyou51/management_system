@@ -2,6 +2,7 @@
 namespace app\admin\controller;
 
 use think\facade\View;
+use think\facade\Lang;
 use app\common\service\BookService;
 use app\common\service\SetupSyService;
 
@@ -66,29 +67,6 @@ class Book extends Base{
 				die();
 			}
 			$searchItem = request()->param();
-
-			// $where[] = ['id_re','=',0];
-			// if(!empty($searchItem['chakan'])){
-			// 	if($searchItem['chakan'] == 'chakan1'){
-			// 		$where[] = ['chakan','=',1];
-			// 	}else if($searchItem['chakan'] == 'chakan2'){
-			// 		$where[] = ['chakan','=',0];
-			// 	}else if($searchItem['chakan'] == 'huifu1'){
-			// 		$where[] = ['huifu','=',1];
-			// 	}else if($searchItem['chakan'] == 'huifu2'){
-			// 		$where[] = ['huifu','=',0];
-			// 	}else if($searchItem['chakan'] == 'pass1'){
-			// 		$where[] = ['pass','=',1];
-			// 	}else if($searchItem['chakan'] == 'pass2'){
-			// 		$where[] = ['pass','=',0];
-			// 	}
-			// }
-			// if(!empty($searchItem['keyword'])){
-			// 	$where[] = ['title','like','%'.$searchItem['keyword'].'%'];
-			// }
-
-			// $lists = $this->service->getListAll(['where' => $where ,'order' => 'wtime desc'],false,[]);
-
 			View::assign([
 				'searchItem' => $searchItem,
 			]);
@@ -159,7 +137,7 @@ class Book extends Base{
 				}
 			}else{
 				try{
-					$update = $this->service->updateByWhere(['id_re' => $id],$update);
+					$update = $this->service->updateByWhere(['id_re' => $id],$data);
 					Base::master_log($this->langHtml['tip']['edit'].$this->conf['sy']['name'].$this->langHtml['tip']['information'].'：'.$find['title'].'');
 					return json(['code'=>200,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['success']]);
 				}catch (\Exception $e){

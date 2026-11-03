@@ -4,12 +4,12 @@ namespace app\admin\controller;
 use think\facade\Request;
 use think\facade\View;
 use think\facade\Session;
-use app\common\model\Pl_info;
 use app\common\service\PlinfoService as PS;
 
 class Plinfo extends Base{
 
 	protected $route;
+	protected PS $service;
 
 	public $config = [
 		'table' => 'pl_info',
@@ -25,6 +25,7 @@ class Plinfo extends Base{
 	protected function initialize(){
 		parent::initialize();
 		$this->route = Request::controller();
+		$this->service = new PS();
 		$data = Request::param();
 		$this->config['pl_id'] = !empty($this->config['pl_id'])?$this->config['pl_id']:($data['pl_id']??'');
 		$this->config['sy_id'] = !empty($this->config['sy_id'])?$this->config['sy_id']:($data['sy_id']??'');
@@ -42,18 +43,17 @@ class Plinfo extends Base{
 		$data = Request::param();
 		$pl_id = $data['pl_id']??'';
 		$sy_id = $data['sy_id']??'';
-		$info = new PS();
-		$pr_id = Session::get($info->getSesname());
+		$pr_id = Session::get($this->service->getSesname());
 		$where[] = ['lang','=',$this->lang];
 		$lists = [];
 		if($pl_id == ''){
 			if(!empty($pr_id)){
 				$where[] = ['pl_id','=',$pr_id];
-				$lists = $info->getAllList(['where'=>$where]);
+				$lists = $this->service->getAllList(['where'=>$where]);
 			}
 		}else{
 			$where[] = ['pl_id','=',$pl_id];
-			$lists = $info->getAllList(['where'=>$where]);
+			$lists = $this->service->getAllList(['where'=>$where]);
 		}
 		View::assign([
 			'conf' => $this->config,
@@ -69,9 +69,8 @@ class Plinfo extends Base{
 	public function pl_info_add(){
 		$data = Request::param();
 		if(Request::isPost()){
-			$plinfo = new PS();
 			try{
-				$insert = $plinfo->create($data);
+				$insert = $this->service->create($data);
 				return json(['code'=>200,'msg'=>$this->langHtml['tip']['add'].$this->langHtml['tip']['success']]);
 			}catch (\Exception $e){
 				return json(['code'=>201,'msg'=>$this->langHtml['tip']['add'].$this->langHtml['tip']['fail'].$e->getMessage()]);
@@ -92,8 +91,7 @@ class Plinfo extends Base{
 		if(Request::isPost()){
 			$id = $data['id'];
 			try{
-				$info = new PS();
-				$update = $info->update($id,$data);
+				$update = $this->service->update($id,$data);
 				return json(['code'=>200,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['success']]);
 			}catch (\Exception $e){
 				return json(['code'=>201,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['fail'].$e->getMessage()]);
@@ -103,8 +101,7 @@ class Plinfo extends Base{
 			if(empty($id)){
 				return json(['code'=>201,'msg'=>$this->langHtml['tip']['id'].$this->langHtml['tip']['cannotBeEmpty']]);
 			}
-			$info = new PS();
-			$find = $info->getById($id);
+			$find = $this->service->getById($id);
 
 			View::assign([
 				'conf' => $this->config,
@@ -123,7 +120,7 @@ class Plinfo extends Base{
 		}
 
 		try{
-			$update = PS::delete($id);
+			$update = $this->service->delete($id);
 			return json(['code'=>200,'msg'=>$this->langHtml['tip']['del'].$this->langHtml['tip']['success']]);
 		}catch (\Exception $e){
 			return json(['code'=>201,'msg'=>$this->langHtml['tip']['del'].$this->langHtml['tip']['fail'].$e->getMessage()]);
@@ -144,7 +141,7 @@ class Plinfo extends Base{
 				$id = $key;
 				$data['px'] = $px[$key];
 				try{
-					$up = PS::update($id,$data);
+					$up = $this->service->update($id,$data);
 				}catch (\Exception $e){
 					return json(['code'=>201,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['fail'].$e->getMessage()]);
 				}
@@ -155,14 +152,14 @@ class Plinfo extends Base{
 			if(empty($id)){
 				return json(['code'=>201,'msg'=>$this->langHtml['tip']['id'].$this->langHtml['tip']['cannotBeEmpty']]);
 			}
-			$find = PS::getById($id);
+			$find = $this->service->getById($id);
 			if($find['pass'] == 1){
 				$data['pass'] = 0;
 			}else{
 				$data['pass'] = 1;
 			}
 			try{
-				$update = PS::update($id,$data);
+				$update = $this->service->update($id,$data);
 				return json(['code'=>200,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['success']]);
 			}catch (\Exception $e){
 				return json(['code'=>201,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['fail'].$e->getMessage()]);
@@ -173,10 +170,10 @@ class Plinfo extends Base{
 			if($id == ''){
 				return json(['code'=>201,'msg'=>$this->langHtml['tip']['id'].$this->langHtml['tip']['cannotBeEmpty']]);
 			}
-			$find = PS::getById($id);
+			$find = $this->service->getById($id);
 
 			$data['px'] = $param['px'] ?? '100';
-			$update = PS::update($id,$data,false);
+			$update = $this->service->update($id,$data,false);
 
 			if(empty($update)){
 				return json(['code'=>201,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['fail']]);

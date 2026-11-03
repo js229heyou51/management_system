@@ -2,6 +2,7 @@
 namespace app\admin\controller;
 
 use app\common\service\VideoCategoryService;
+use app\common\model\VideoCategory as MV;
 use think\facade\View;
 
 class VideoCategory extends Base
@@ -58,7 +59,7 @@ class VideoCategory extends Base
 	/**
 	 * 更新分类
 	 */
-	public function update($id)
+	public function update(?int $id)
 	{
 		if(request()->isPost()){
 			try {
@@ -96,7 +97,7 @@ class VideoCategory extends Base
 	/**
 	 * 删除分类
 	 */
-	public function delete($id)
+	public function delete(?int $id)
 	{
 		try {
 			$force = request()->post('force', 0);
@@ -117,7 +118,7 @@ class VideoCategory extends Base
 	/**
 	 * 分类详情
 	 */
-	public function detail($id)
+	public function detail(?int $id)
 	{
 		try {
 			$category = VideoCategoryService::getDetail($id);
@@ -138,7 +139,7 @@ class VideoCategory extends Base
 	/**
 	 * 移动分类
 	 */
-	public function move($id)
+	public function move(?int $id)
 	{
 		try {
 			$newParentId = request()->post('parent_id', 0);
@@ -196,7 +197,7 @@ class VideoCategory extends Base
 	/**
 	 * 根据slug获取分类
 	 */
-	public function getBySlug($slug)
+	public function getBySlug(?string $slug)
 	{
 		try {
 			$category = VideoCategoryService::getBySlug($slug);
@@ -225,11 +226,11 @@ class VideoCategory extends Base
 			
 			switch ($action) {
 				case 'enable':
-					GalleryCategory::whereIn('id', $ids)->update(['status' => 1]);
+					MV::whereIn('id', $ids)->update(['status' => 1]);
 					break;
 					
 				case 'disable':
-					GalleryCategory::whereIn('id', $ids)->update(['status' => 0]);
+					MV::whereIn('id', $ids)->update(['status' => 0]);
 					break;
 					
 				case 'delete':

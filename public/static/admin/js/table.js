@@ -365,8 +365,17 @@ function search(url){
 function allState(url,type='zt_val'){
 	form.on('select('+type+')', function(data){
 		$.post(url,$('#sform').serialize(),function(res){
-			if(res.code==200){
-				setTimeout(function(){window.location.href=url+'?'+res.where;},500);
+			if(res.code==0){
+				layui.table.reload('dataTable', {
+					where: {
+						lm: $('#lm').val(),
+						zt_val: $('#zt_val').val(),
+						keyword: $('#keyword').val(),
+						startDate: $('#startDate').val(),
+						endDate: $('#endDate').val(),
+					}
+				})
+				// setTimeout(function(){window.location.href=url+'?'+res.where;},500);
 			}else{
 				layer.alert(res.msg,{icon:2});
 			}

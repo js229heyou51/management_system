@@ -16,7 +16,7 @@
 		<select name="zt_val" id="zt_val" lay-filter="zt_val">
 			<option value="">{:lang('common')['allState']??''}</option>
 			{if(isset($conf.co.ding) && $conf.co.ding == true)}
-			<option value="ding1" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'ding1'"}selected{/if}>{:lang('common')['topUp']??''}}</option>
+			<option value="ding1" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'ding1'"}selected{/if}>{:lang('common')['topUp']??''}</option>
 			<option value="ding2" {if condition="!empty($searchItem.zt_val) && $searchItem.zt_val == 'ding2'"}selected{/if}>{:lang('common')['notTopUp']??''}</option>
 			{/if}
 			{if(isset($conf.co.tuijian) && $conf.co.tuijian == true)}

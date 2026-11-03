@@ -2,9 +2,7 @@
 namespace app\admin\controller;
 
 use think\facade\View;
-use think\facade\Db;
 use think\facade\Request;
-use think\facade\Lang;
 use app\common\model\Config as CF;
 use app\common\model\MasterMenu as MM;
 use app\common\model\MasterAction as MA;
@@ -32,6 +30,7 @@ class Config extends Base{
 			$list['log'] = changety($param['log']??'');
 			$list['key'] = changety($param['key']??'');
 			$lang = $param['lang'];
+			$mlang = [];
 			if(!empty($lang)){
 				foreach ($lang as $k => $v) {
 					$arr['name'] = $param['name'][$k];

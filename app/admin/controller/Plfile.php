@@ -4,12 +4,12 @@ namespace app\admin\controller;
 use think\facade\Request;
 use think\facade\View;
 use think\facade\Session;
-use app\common\model\Pl_file;
 use app\common\service\PlfileService as PS;
 
 class Plfile extends Base{
 
 	protected $route;
+	protected PS $service;
 
 	public $config = [
 		'table' => 'pl_file',
@@ -26,6 +26,7 @@ class Plfile extends Base{
 	protected function initialize(){
 		parent::initialize();
 		$this->route = Request::controller();
+		$this->service = new PS();
 		$data = Request::param();
 		$this->config['pl_id'] = !empty($this->config['pl_id'])?$this->config['pl_id']:($data['pl_id']??'');
 		$this->config['sy_id'] = !empty($this->config['sy_id'])?$this->config['sy_id']:($data['sy_id']??'');
@@ -39,18 +40,18 @@ class Plfile extends Base{
 		$data = Request::param();
 		$pl_id = $data['pl_id']??'';
 		$sy_id = $data['sy_id']??'';
-		$info = new PS();
-		$pr_id = Session::get($info->getSesname());
+		
+		$pr_id = Session::get($this->service->getSesname());
 		$where[] = ['lang','=',$this->lang];
 		$lists = [];
 		if($pl_id == ''){
 			if(!empty($pr_id)){
 				$where[] = ['pl_id','=',$pr_id];
-				$lists = $info->getAllList(['where'=>$where]);
+				$lists = $this->service->getAllList(['where'=>$where]);
 			}
 		}else{
 			$where[] = ['pl_id','=',$pl_id];
-			$lists = $info->getAllList(['where'=>$where]);
+			$lists = $this->service->getAllList(['where'=>$where]);
 		}
 		View::assign([
 			'conf' => $this->config,
@@ -86,11 +87,10 @@ class Plfile extends Base{
 	// 相关信息编辑
 	public function pl_file_edit(){
 		$data = Request::param();
-		$info = new PS();
 		if(Request::isPost()){
 			$id = $data['id'];
 			try{
-				$update = $info->update($id,$data);
+				$update = $this->service->update($id,$data);
 				return json(['code'=>200,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['success']]);
 			}catch (\Exception $e){
 				return json(['code'=>201,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['fail'].$e->getMessage()]);
@@ -100,7 +100,7 @@ class Plfile extends Base{
 			if(empty($id)){
 				return json(['code'=>201,'msg'=>$this->langHtml['tip']['id'].$this->langHtml['tip']['cannotBeEmpty']]);
 			}
-			$find = $info->getById($id);
+			$find = $this->service->getById($id);
 
 			View::assign([
 				'conf' => $this->config,
@@ -120,7 +120,7 @@ class Plfile extends Base{
 		$data['delete_time'] = date('Y-m-d H:i:s',time());
 
 		try{
-			$update = Pl_info::where('id',$id)->save($data);
+			$update = $this->service->update($id,$data);
 			return json(['code'=>200,'msg'=>$this->langHtml['tip']['del'].$this->langHtml['tip']['success']]);
 		}catch (\Exception $e){
 			return json(['code'=>201,'msg'=>$this->langHtml['tip']['del'].$this->langHtml['tip']['fail'].$e->getMessage()]);
@@ -141,7 +141,7 @@ class Plfile extends Base{
 				$id = $key;
 				$data['px'] = $px[$key];
 				try{
-					$up = Pl_info::where('id',$id)->update($data);
+					$up = $this->service->update($id,$data);
 				}catch (\Exception $e){
 					return json(['code'=>201,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['fail'].$e->getMessage()]);
 				}
@@ -152,14 +152,14 @@ class Plfile extends Base{
 			if(empty($id)){
 				return json(['code'=>201,'msg'=>$this->langHtml['tip']['id'].$this->langHtml['tip']['cannotBeEmpty']]);
 			}
-			$find = Pl_info::where('id',$id)->find();
+			$find = $this->service->getById($id);
 			if($find['pass'] == 1){
 				$data['pass'] = 0;
 			}else{
 				$data['pass'] = 1;
 			}
 			try{
-				$update = Pl_info::where('id',$id)->save($data);
+				$update = $this->service->update($id,$data);
 				return json(['code'=>200,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['success']]);
 			}catch (\Exception $e){
 				return json(['code'=>201,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['fail'].$e->getMessage()]);
@@ -170,10 +170,10 @@ class Plfile extends Base{
 			if($id == ''){
 				return json(['code'=>201,'msg'=>$this->langHtml['tip']['id'].$this->langHtml['tip']['cannotBeEmpty']]);
 			}
-			$find = Pl_info::where('id',$id)->find();
+			$find = $this->service->getById($id);
 
 			$data['px'] = $param['px'] ?? '100';
-			$update = Pl_info::where('id',$id)->update($data);
+			$update = $this->service->update($id,$data,false);
 
 			if(empty($update)){
 				return json(['code'=>201,'msg'=>$this->langHtml['tip']['edit'].$this->langHtml['tip']['fail']]);

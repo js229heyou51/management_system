@@ -2,27 +2,25 @@
 namespace app\admin\controller;
 
 use think\facade\View;
-use think\facade\Session;
 use app\common\model\ParamCo;
-use app\common\model\ParamLm;
 use app\common\service\SetupSyService;
 use app\common\service\ProService as IS;
 use app\common\service\ProCategoryService as CS;
-use app\common\service\PlinfoService;
-use app\common\service\PlfileService;
+use app\common\trait\ParseListParams;
 
 class ProCo extends Base{
+	use ParseListParams;
 
 	protected $middleware = ['AdminCheck','AdminPermission'];
 
 	protected $sy_id = 3;
 	protected $conf = [];
-	protected $service = [];
-	protected $categoryService = [];
+	protected IS $service;
+	protected CS $categoryService;
 
 	/**
 	 * [initialize description]
-	 * @return [type] [description]
+	 * @return View [description]
 	 */
 	protected function initialize(){
 		parent::initialize();
@@ -38,7 +36,7 @@ class ProCo extends Base{
 
 	/**
 	 * [recycle 回收站]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function recycle(){
 		if(request()->isPost()){
@@ -56,7 +54,7 @@ class ProCo extends Base{
 
 	/**
 	 * [recycle_make 回收站操作]
-	 * @return [type]          [description]
+	 * @return array          [description]
 	 */
 	public function recycle_make(){
 		$param = request()->param();
@@ -65,10 +63,11 @@ class ProCo extends Base{
 
 	/**
 	 * [default 信息首页]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function default(){
 		if(request()->isPost()){
+			return $this->index();
 		}else{
 			if(empty($this->conf)){
 				return '<h1 style="text-align:center;padding-top:30px;">'.$this->langHtml['tip']['configSettingsFile'].'</h1>';
@@ -85,10 +84,9 @@ class ProCo extends Base{
 	}
 
 	public function index(){
-		$param = request()->param();
-		$param['order'] = 'ding desc,px desc,wtime desc,id desc';
-		$param['with'] = 'profile';
-		return $this->dataTable($this->service,$param);
+		$params = $this->parseListParams(['lm']);
+		$params['with'] = 'profile';
+		return $this->dataTable($this->service,$params);
 	}
 
 	public function getParamJson($list_lm = ''){
@@ -155,7 +153,7 @@ class ProCo extends Base{
 
 	/**
 	 * [edit 编辑]
-	 * @return [type]                  [description]
+	 * @return View                  [description]
 	 */
 	public function edit(){
 		$data = request()->param();
@@ -182,7 +180,7 @@ class ProCo extends Base{
 
 	/**
 	 * [del 删除]
-	 * @return [type]          [description]
+	 * @return array          [description]
 	 */
 	public function del(){
 		$data = request()->param();
@@ -191,11 +189,11 @@ class ProCo extends Base{
 
 	/**
 	 * [make 操作]
-	 * @return [type]          [description]
+	 * @return array          [description]
 	 */
 	public function make(){
 		$params = request()->param();
-		return $this->statusMake($this->service,$params);
+		return $this->statusMake($this->service,$params,$this->conf);
 	}
 
 }

@@ -4,16 +4,13 @@ declare (strict_types = 1);
 namespace app\common\trait;
 
 use think\Model;
-use think\Paginator;
 use think\facade\Lang;
-use think\facade\Config;
-use think\facade\Validate;
 use think\exception\ValidateException;
 use app\admin\validate\Category as CategoryValidate;
 
 trait CrudCategoryTrait{
 
-	use CrudTrait;
+	// use CrudTrait;
 
 	/**
 	 * @var Model
@@ -48,7 +45,7 @@ trait CrudCategoryTrait{
 		if($data['fid'] != 0){
 			$list_lm = $this->getCategoryById($data['fid']);
 			if(empty($list_lm)){
-				throw new ValidateException($this->langHtml['tip']['NotExist']);
+				throw new ValidateException(lang('tip')['NotExist']);
 			}
 		}
 		$this->categoryModel->save($data);
@@ -58,7 +55,7 @@ trait CrudCategoryTrait{
 	/**
 	 * 更新类别
 	 */
-	public function updateCategory($id,?array $data = [],$force = true){
+	public function updateCategory(?int $id,?array $data = [],$force = true){
 		$cate = $this->categoryModel->find($id);
 		if (!$cate) {
 			throw new \Exception(Lang::get('tip')['noData']);
@@ -92,7 +89,7 @@ trait CrudCategoryTrait{
 	/**
 	 * 删除信息
 	 */
-	public function deleteCategory($id, $force = false){
+	public function deleteCategory(?int $id, $force = false){
 		$cate = $this->categoryModel->find($id);
 		if (!$cate) {
 			throw new \Exception(Lang::get('tip')['noData']);
@@ -109,7 +106,7 @@ trait CrudCategoryTrait{
 	/**
 	 * 根据id获取类别
 	 */
-	public function getCategoryById($id){
+	public function getCategoryById(?int $id){
 		$find = $this->categoryModel->find($id);
 		if($find['img_sl_lm']){
 			$find->imgList = getGalleryList($find['img_sl_lm']);
@@ -140,7 +137,7 @@ trait CrudCategoryTrait{
 	public function getCategoryTree($parentId = 0, $withCount = false){
 		$categories = $this->categoryModel->getTree($parentId);
 		if ($withCount) {
-			self::attachCategoryCount($categories);
+			//self::attachCategoryCount($categories);
 		}
 		return $categories;
 	}
@@ -178,7 +175,7 @@ trait CrudCategoryTrait{
 
 		$result = $query->select();
 
-		$lists = $this->loadGalleries($result);
+		$lists = loadGalleries($result);
 		
 		return $lists;
 	}
@@ -186,26 +183,26 @@ trait CrudCategoryTrait{
 	/**
 	 * 为分类树附加数量统计
 	 */
-	private function attachCategoryCount(&$categories)
+	private function attachCategoryCount(?array &$categories)
 	{
 		foreach ($categories as &$category) {
 			// 获取分类及其所有子分类的ID
 			$categoryIds = $this->categoryModel->getAllChildrenIds($category->id);
 			
 			// 统计图片数量
-			$count = $this->service->whereIn('lm', $categoryIds)->count();
-			$category->count = $count;
+			// $count = $this->model->whereIn('lm', $categoryIds)->count();
+			// $category->count = $count;
 			// 递归处理子分类
-			if (!empty($category->children)) {
-				self::attachCount($category->children);
-			}
+			// if (!empty($category->children)) {
+			// 	self::attachCount($category->children);
+			// }
 		}
 	}
 
 	/**
 	 * 恢复数据
 	 */
-	public function restore($id){
+	public function restore(?int $id){
 		$model = $this->categoryModel->onlyTrashed()->find($id);
 		if (!$model) {
 			throw new \Exception(Lang::get('tip')['noData']);
@@ -216,11 +213,14 @@ trait CrudCategoryTrait{
 	/**
 	 * 彻底删除
 	 */
-	public function destroy($id){
+	public function destroy(?int $id){
 		$model = $this->categoryModel->onlyTrashed()->find($id);
 		if (!$model) {
 			throw new \Exception(Lang::get('tip')['noData']);
 		}
 		return $model->destroy($id,true);;
 	}
+
+
+	
 }

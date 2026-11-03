@@ -3,19 +3,21 @@ namespace app\admin\controller;
 
 use think\facade\View;
 use think\facade\Request;
-use think\facade\Db;
 use app\common\model\SetupSy as MS;
+use app\common\service\SetupSyService as IS;
 
 class SetupSy extends Base{
 
 	protected $middleware = ['AdminCheck','AdminPermission'];
 	
 	protected $route;
+	protected IS $service;
 
 
 	protected function initialize() {
 		parent::initialize();
 		$this->route = Request::controller();
+		$this->service = new IS();
 		View::assign([
 			'route' => $this->route,
 		]);
