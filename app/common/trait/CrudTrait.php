@@ -186,7 +186,6 @@ trait CrudTrait{
 	            $data[$field] = $value;
 	        }
 	    }
-	    dump($data);die;
 
 		if(!empty($lm)){
 			$list_lm = $this->getCategoryById($lm);
