@@ -156,34 +156,53 @@ trait CrudTrait{
 	 * @return Model              [description]
 	 */
 	public function create(?array $data = [],?bool $force = true): Model{
+		$lm = $data['lm'] ?? null;
 		if($force){
 			// 验证数据
 			$validate = new InfoValidate();
 
-			if ($data['lm'] === 0) {
+			if ($lm === 0 || $lm === '0' || $lm === '' || $lm === null) {
 				$validate->remove('lm', 'require');
 			}
 			if (!$validate->check($data)) {
 				throw new ValidateException($validate->getError());
 			}
 		}
+		// 系统字段候选（无论表里有没有，先列出来）
+	    $systemFields = [
+	        'wtime'   => date('Y-m-d H:i:s'),
+	        'ip'      => request()->ip() ?: '0.0.0.0',
+	        'lang'    => Lang::getLangSet() ?: 'zh-cn',
+	        'ding'    => 0,
+	        'hot'     => 0,
+	        'tuijian' => 0,
+	        'pass'    => 1,
+	    ];
 
-		$data['wtime'] = $data['wtime'] ?? date('Y-m-d H:i:s');
-		$data['ip'] = request()->ip();
-		$data['lang'] = Lang::getLangSet();
-		$data['ding'] = 0;
-		$data['hot'] = 0;
-		$data['tuijian'] = 0;
-		$data['pass'] = 1;
-		if(!empty($data['lm'])){
-			$list_lm = $this->getCategoryById($data['lm']);
-			$data['list_lm'] = $list_lm['list_lm'];
+	    // 只保留表里真实存在的字段
+	    $tableFields = $this->model->getTableFields();
+	    foreach ($systemFields as $field => $value) {
+	        if (in_array($field, $tableFields, true)) {
+	            $data[$field] = $value;
+	        }
+	    }
+	    dump($data);die;
+
+		if(!empty($lm)){
+			$list_lm = $this->getCategoryById($lm);
+			if (empty($category)) {
+				throw new ValidateException('所选分类不存在');
+			}
+			$data['list_lm'] = $list_lm['list_lm'] ?? '';
 			// 可不要
 			if(empty($data['ym_key'])){
-				$data['ym_key'] = $list_lm['ym_key'];
+				$data['ym_key'] = $list_lm['ym_key'] ?? '';
 			}
 		}
-		$this->model->save($data);
+		$result = $this->model->save($data);
+		if ($result === false) {
+			throw new \RuntimeException('信息创建失败');
+		}
 		return $this->model;
 	}
 

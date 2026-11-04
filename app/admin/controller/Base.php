@@ -11,6 +11,8 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use app\common\model\MasterLog;
 use app\common\model\Config;
 use app\common\model\KeyCo as KC;
+use app\common\service\KeyService;
+use app\common\service\MasterLogService;
 use app\common\service\PlinfoService;
 use app\common\service\PlfileService;
 use app\common\service\SetupGlService;
@@ -767,10 +769,12 @@ class Base extends \app\BaseController{
 		if (!empty($result)){
 			return $result;
 		}else{
+			$keyService = new KeyService();
 			$where[] = ['lang','=',$this->lang];
-			$arr= KC::where($where)->order('px desc,id desc')->select();
+			$params['order'] = 'px desc,id desc';
+			$arr = $keyService->getList($params); 
 			foreach($arr as $v){
-				$result[]=array('title'=>$v['title'],'link_url'=>$v['link_url']);
+				$result[]=['title'=>$v['title'],'link_url'=>$v['link_url']];
 			}
 			if (empty($result)){
 				$result[0]='kong';  
@@ -787,11 +791,8 @@ class Base extends \app\BaseController{
 			}
 			$data['username'] = $username;
 			$data['z_body'] = $z_body;
-			$data['ip'] = request()->ip();
-			$data['wtime'] = time();
-			$data['create_at'] = date('Y-m-d H:i:s');
-			$data['lang'] = Lang::getLangSet();
-			MasterLog::insert($data);
+			$masterLogService = new MasterLogService();
+			$masterLogService->create($data,false);
 		}
 	}
 	
